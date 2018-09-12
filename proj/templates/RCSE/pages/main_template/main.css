@@ -13,6 +13,7 @@ header {
   justify-content: center;
   background: #091023;
   z-index: 1000;
+  position: fixed;
   box-shadow: 0 4px 16px RGBA(0, 0, 0, 40%); }
 
 .strip {
@@ -37,3 +38,10 @@ header {
   width: 50%;
   min-height: 256px;
   background: #e0e0e0; }
+
+/*========Footer=========*/
+footer {
+  display: flex;
+  width: 50%;
+  height: 42px;
+  background: #091023; }

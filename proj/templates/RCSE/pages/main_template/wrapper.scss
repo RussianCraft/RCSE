@@ -15,3 +15,13 @@
     min-height: 256px;
     background: $main_color_bright;
 }
+
+
+/*========Footer=========*/
+
+footer {
+    display: flex;
+    width: $main_width;
+    height: 42px;
+    background: $main_color_dark;
+}

@@ -10,6 +10,7 @@ header {
     justify-content: center;
     background: $main_color_dark;
     z-index: 1000;
+    position: fixed;
     box-shadow: $main_shadow;
 }
 
