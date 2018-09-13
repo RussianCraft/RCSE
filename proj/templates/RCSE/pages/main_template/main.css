@@ -26,6 +26,15 @@ header {
   position: relative;
   left: 3.33%; }
 
+.strip_menu {
+  display: flex;
+  list-style-type: none;
+  justify-content: space-between;
+  align-items: center;
+  height: inherit;
+  width: 27.08%;
+  font-size: 20pt; }
+
 /*========Wrapper=========*/
 .wrapper {
   display: flex;
