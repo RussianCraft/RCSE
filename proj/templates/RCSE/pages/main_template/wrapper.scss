@@ -21,7 +21,25 @@
 
 footer {
     display: flex;
+    flex-direction: column;
     width: $main_width;
     height: 42px;
     background: $main_color_dark;
+    color: $text_color_bright;
+    font-weight: bold;
+    span {
+        padding: 2px;}
+    a {
+        text-decoration: none;
+        color: inherit;}
+}
+
+.footer_top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer_bottom {
+    display: flex;
+    justify-content: center;
 }

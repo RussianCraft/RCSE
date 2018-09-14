@@ -51,6 +51,22 @@ header {
 /*========Footer=========*/
 footer {
   display: flex;
+  flex-direction: column;
   width: 50%;
   height: 42px;
-  background: #091023; }
+  background: #091023;
+  color: #bebebe;
+  font-weight: bold; }
+  footer span {
+    padding: 2px; }
+  footer a {
+    text-decoration: none;
+    color: inherit; }
+
+.footer_top {
+  display: flex;
+  justify-content: space-between; }
+
+.footer_bottom {
+  display: flex;
+  justify-content: center; }
