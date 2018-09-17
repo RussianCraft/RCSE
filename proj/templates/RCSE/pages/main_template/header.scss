@@ -32,6 +32,14 @@ header {
     justify-content: space-between;
     align-items: center;
     height: inherit;
-    width: 27.08%;
+    width: 54.16%;
     font-size: 20pt;
+    li {
+        height: inherit;
+        padding: 0 8.4px;
+    }
+    a {
+        color: $text_color_bright;
+        text-decoration: none;
+    }
 }

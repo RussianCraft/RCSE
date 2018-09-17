@@ -32,8 +32,14 @@ header {
   justify-content: space-between;
   align-items: center;
   height: inherit;
-  width: 27.08%;
+  width: 54.16%;
   font-size: 20pt; }
+  .strip_menu li {
+    height: inherit;
+    padding: 0 8.4px; }
+  .strip_menu a {
+    color: #bebebe;
+    text-decoration: none; }
 
 /*========Wrapper=========*/
 .wrapper {
