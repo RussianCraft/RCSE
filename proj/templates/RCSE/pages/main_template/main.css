@@ -36,10 +36,48 @@ header {
   font-size: 20pt; }
   .strip_menu li {
     height: inherit;
-    padding: 0 8.4px; }
+    padding: 0 8.4px;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  .strip_menu li:hover {
+    background: #272e43; }
   .strip_menu a {
     color: #bebebe;
     text-decoration: none; }
+
+.stripe_user {
+  width: 72px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center; }
+  .stripe_user img {
+    width: 36px;
+    border-radius: 18px; }
+  .stripe_user .user_arrow {
+    position: relative;
+    height: 8px;
+    width: 16px;
+    text-align: center; }
+  .stripe_user .user_arrow:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 75%;
+    width: 50%;
+    background: #bebebe;
+    transform: skew(0deg, 22.5deg); }
+  .stripe_user .user_arrow:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 75%;
+    width: 50%;
+    background: #bebebe;
+    transform: skew(0deg, -22.5deg); }
 
 /*========Wrapper=========*/
 .wrapper {
