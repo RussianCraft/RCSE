@@ -31,36 +31,38 @@ header {
   list-style-type: none;
   justify-content: space-between;
   align-items: center;
-  height: inherit;
+  height: 62px;
   width: 54.16%;
   font-size: 20pt; }
   .strip_menu li {
-    height: inherit;
-    padding: 0 8.4px;
-    display: flex;
-    align-items: center;
-    justify-content: center; }
+    padding: 0 8.4px; }
   .strip_menu li:hover {
     background: #272e43; }
   .strip_menu a {
     color: #bebebe;
-    text-decoration: none; }
+    text-decoration: none;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
 
-.stripe_user {
+.strip_user {
   width: 72px;
+  height: 62px;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  align-items: center; }
-  .stripe_user img {
+  align-items: center;
+  cursor: pointer; }
+  .strip_user img {
     width: 36px;
     border-radius: 18px; }
-  .stripe_user .user_arrow {
+  .strip_user .user_arrow {
     position: relative;
     height: 8px;
     width: 16px;
     text-align: center; }
-  .stripe_user .user_arrow:before {
+  .strip_user .user_arrow:before {
     content: '';
     position: absolute;
     top: 0;
@@ -69,7 +71,7 @@ header {
     width: 50%;
     background: #bebebe;
     transform: skew(0deg, 22.5deg); }
-  .stripe_user .user_arrow:after {
+  .strip_user .user_arrow:after {
     content: '';
     position: absolute;
     top: 0;
