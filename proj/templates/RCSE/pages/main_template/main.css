@@ -38,6 +38,8 @@ header {
     padding: 0 8.4px; }
   .strip_menu li:hover {
     background: #272e43; }
+  .strip_menu li:last-of-type {
+    padding: 0; }
   .strip_menu a {
     color: #bebebe;
     text-decoration: none;
@@ -47,7 +49,7 @@ header {
     justify-content: center; }
 
 .strip_user {
-  width: 72px;
+  width: 80.4px;
   height: 62px;
   display: flex;
   flex-direction: row;
@@ -80,6 +82,13 @@ header {
     width: 50%;
     background: #bebebe;
     transform: skew(0deg, -22.5deg); }
+  .strip_user .user_menu_box {
+    display: flex;
+    position: absolute;
+    top: 62px;
+    width: inherit; }
+    .strip_user .user_menu_box .user_menu {
+      width: 100%; }
 
 /*========Wrapper=========*/
 .wrapper {

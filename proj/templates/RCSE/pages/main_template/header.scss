@@ -35,10 +35,13 @@ header {
     width: 54.16%;
     font-size: 20pt;
     li {
-        padding: 0 8.4px;
+        padding: 0 $strip_menu_padding;
     }
     li:hover {
         background: $list_hover_color_dark;
+    }
+    li:last-of-type {
+        padding: 0;
     }
     a {
         color: $text_color_bright;
@@ -50,9 +53,8 @@ header {
     }
 }
 
-
 .strip_user {
-    width: 72px;
+    width: 72px + $strip_menu_padding;
     height: $header_height;
     display: flex;
     flex-direction: row;
@@ -89,5 +91,14 @@ header {
         width: 50%;
         background: $text_color_bright;
         transform: skew(0deg, -22.5deg);
+    }
+    .user_menu_box {
+        display: flex;
+        position: absolute;
+        top: $header_height;
+        width: inherit;
+        .user_menu {
+            width: 100%;
+        }
     }
 }
