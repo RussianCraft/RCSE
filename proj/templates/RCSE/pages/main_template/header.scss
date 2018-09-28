@@ -8,7 +8,7 @@ header {
     display: flex;
     flex-basis: 60%;
     justify-content: center;
-    background: $main_color_dark;
+    background: $black;
     z-index: 1000;
     position: fixed;
     box-shadow: $main_shadow;
@@ -38,13 +38,13 @@ header {
         padding: 0 $strip_menu_padding;
     }
     li:hover {
-        background: $list_hover_color_dark;
+        background: $light_black;
     }
     li:last-of-type {
         padding: 0;
     }
     a {
-        color: $text_color_bright;
+        color: $mid_gray;
         text-decoration: none;
         height: $header_height;
         display: flex;
@@ -79,7 +79,7 @@ header {
         left: 0;
         height: 75%;
         width: 50%;
-        background: $text_color_bright;
+        background: $mid_gray;
         transform: skew(0deg, 22.5deg);
     }
     .user_arrow:after {
@@ -89,16 +89,31 @@ header {
         right: 0;
         height: 75%;
         width: 50%;
-        background: $text_color_bright;
+        background: $mid_gray;
         transform: skew(0deg, -22.5deg);
     }
     .user_menu_box {
         display: flex;
         position: absolute;
-        top: $header_height;
         width: inherit;
+        top: $header_height;
+        background: $bright_gray;
+        border: solid 1px $black;
+        border-top: none;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        box-shadow: $main_shadow;
         .user_menu {
             width: 100%;
+            list-style-type: none;
+            li:hover {
+                background: $mid_gray;
+            }
+            a {
+                color: $black;
+                font-size: 12.5px;
+            }
+
         }
     }
 }

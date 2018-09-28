@@ -13,7 +13,7 @@
     display: flex;
     width: $main_width;
     min-height: 256px;
-    background: $main_color_bright;
+    background: $bright_gray;
 }
 
 
@@ -24,8 +24,8 @@ footer {
     flex-direction: column;
     width: $main_width;
     height: 42px;
-    background: $main_color_dark;
-    color: $text_color_bright;
+    background: $black;
+    color: $mid_gray;
     font-weight: bold;
     span {
         padding: 2px;}
