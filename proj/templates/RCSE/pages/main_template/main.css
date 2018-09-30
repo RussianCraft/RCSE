@@ -90,17 +90,22 @@ header {
     background: #e0e0e0;
     border: solid 1px #091023;
     border-top: none;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
     box-shadow: 0 4px 16px RGBA(0, 0, 0, 40%); }
     .strip_user .user_menu_box .user_menu {
       width: 100%;
       list-style-type: none; }
       .strip_user .user_menu_box .user_menu li:hover {
         background: #bebebe; }
+      .strip_user .user_menu_box .user_menu li:hover:last-of-type {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px; }
       .strip_user .user_menu_box .user_menu a {
         color: #091023;
-        font-size: 10pt; }
+        font-size: 11.25pt;
+        height: auto;
+        padding: 2px 0; }
 
 /*========Wrapper=========*/
 .wrapper {
