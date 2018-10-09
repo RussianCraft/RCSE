@@ -4,5 +4,11 @@
 			"path": "."
 		}
     ],
-    "settings": {}
+    "settings": {
+        "editor.fontFamily": "'Ubuntu'",
+        "terminal.integrated.fontFamily": "monospace",
+        "editor.formatOnType": true,
+        "editor.fontLigatures": true,
+        "editor.mouseWheelZoom": true
+    }
 }

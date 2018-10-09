@@ -1,0 +1,23 @@
+{
+    "site": 
+    {
+        "name": "",
+        "about": "",
+        "keywords": "",
+        "installed": false,
+        "offline": false,
+        "theme": "",
+        "lang": "",
+        "start_page": "",
+        "plugins": false
+    },
+    "database":
+    {
+        "host": "",
+        "port": "",
+        "login": "",
+        "passw": "",
+        "name": "",
+        "driver": null
+    }
+}
