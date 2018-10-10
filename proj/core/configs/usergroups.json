@@ -1,6 +1,10 @@
 {
-    "default": {},
-    "user": {},
-    "moderator": {},
-    "admin": {}
+    "default": {
+        "level": 0 ,
+        "commenting": false,
+        "rating": false,
+        "banhammer": false,
+        "edit_own": false,
+        "edit_others": false
+    }
 }
