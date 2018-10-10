@@ -1,6 +1,30 @@
 {
-    "users": {},
-    "bans": {},
-    "news": {},
-    "comments": {}
+    "users": 
+    {
+        "insert" : "",
+        "update": "",
+        "remove": "",
+        "select": ""
+    },
+    "bans": 
+    {
+        "insert" : "",
+        "update": "",
+        "remove": "",
+        "select": ""
+    },
+    "news":
+    {
+        "insert" : "",
+        "update": "",
+        "remove": "",
+        "select": ""
+    },
+    "comments": 
+    {
+        "insert" : "",
+        "update": "",
+        "remove": "",
+        "select": ""
+    }
 }

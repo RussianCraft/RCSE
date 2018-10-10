@@ -1,10 +1,33 @@
 {
-    "default": {
+    "default": 
+    {
         "level": 0 ,
-        "commenting": false,
-        "rating": false,
-        "banhammer": false,
-        "edit_own": false,
-        "edit_others": false
+        "rate": false,
+        "news": 
+        {
+            "add_new": false,
+            "edit_own": false,
+            "edit_all": false,
+            "rem_own": false,
+            "rem_others": false
+        },
+        "comments":
+        {
+            "add_new": false,
+            "edit_own": false,
+            "edit_all": false,
+            "rem_own": false,
+            "rem_others": false
+        },
+        "accounts":
+        {
+            "edit_own": false,
+            "edit_others": false,
+            "banhammer": false,
+            "rem_own": false,
+            "rem_others": false,
+            "full_view": false
+        },
+        "admin": false
     }
 }
