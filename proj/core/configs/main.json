@@ -9,7 +9,8 @@
         "theme": "",
         "lang": "",
         "start_page": "",
-        "plugins": false
+        "plugins": false,
+        "log": true
     },
     "database":
     {
