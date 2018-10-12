@@ -23,32 +23,29 @@ class Configurator
     }
 
     /**
-     * Reads contents of ./configs/$file, if it exists, returns array with [true, contents_of_file], else returns [false]
+     * Reads contents of ./configs/$file, if it exists, returns contents_of_file, else throws FileNotFoundException and returns false
      *
      * @param string $file filename, must end with .json (i.e. "main.json)
-     * @return array
+     * @throws FileNotFoundException
+     * @return string|bool
      */
-    private function read_file(string $file) : array
+    private function read_file(string $file)
     {
         $file_handler; $file_contents;
         $file_path = "./configs/" . $file;
 
         if (file_exists($file_path)) {
-            try {
-                $file_handler = fopen($file_path, "rb");
-            }
-            catch(Exception $e) {
-                echo "Error (" . $e->getCode() . "): " . $e->getMessage();
-            }
+            $file_handler = fopen($file_path, "rb");
 
-            $file_contents = [ 0 => true, 1 => fread($file_handler, filesize($file_path)) ];
+            $file_contents = fread($file_handler, filesize($file_path));
             
             fclose($file_handler);
 
             return $file_contents;
         }
         else {
-            return [ 0 => false ];
+            throw new FileNotFoundException($file_path);
+            return false;
         }
 
     }
@@ -60,21 +57,21 @@ class Configurator
      */
     private function get_main_config() : bool
     {
+        try {
         $file = $this->read_file("main.json");
-
-        if(!$file[0]) {
-            echo "File error!";
-
+        }
+        catch (FileNotFoundException $e) {
+            echo "Error (" . $e->getCode() . "): " . $e->getMessage();
             return false;
         }
-        else {
-            $main_json = json_decode($file[1], true);
 
-            $this->site_json = $main_json['site'];
-            $this->db_json = $main_json['database'];
+        $main_json = json_decode($file[1], true);
 
-            return true;
-        }
+        $this->site_json = $main_json['site'];
+        $this->db_json = $main_json['database'];
+
+        return true;
+        
     }
 
     /**
