@@ -5,6 +5,9 @@ namespace RCSE\Core;
 $config = new Configurator();
 
 echo $config->is_logging_enabled();
+echo $config->is_installed();
+echo $config->is_plugins_enabled();
+echo $config->get_base_params();
 
 /**
  * class Configurator
@@ -26,7 +29,7 @@ class Configurator
      * Reads contents of ./configs/$file, if it exists, returns contents_of_file, else throws FileNotFoundException and returns false
      *
      * @param string $file filename, must end with .json (i.e. "main.json)
-     * @throws FileNotFoundException
+     * @throws \Exception
      * @return string|bool
      */
     private function read_file(string $file)
@@ -44,7 +47,7 @@ class Configurator
             return $file_contents;
         }
         else {
-            throw new FileNotFoundException($file_path);
+            throw new \Exception("File not found: " . $file_path . "\n", 404);
             return false;
         }
 
@@ -60,8 +63,8 @@ class Configurator
         try {
         $file = $this->read_file("main.json");
         }
-        catch (FileNotFoundException $e) {
-            echo "Error (" . $e->getCode() . "): " . $e->getMessage();
+        catch (\Exception $e) {
+            echo "Configurator Error (" . $e->getCode() . "): " . $e->getMessage() . "! Site should be reconfigured!";
             return false;
         }
 
@@ -87,8 +90,64 @@ class Configurator
             return $this->site_json['log'];
         } 
         else {
-            echo "Failed to get property, setting to default (true)";
+            echo "Configurator Error: Failed to get property 'log', setting to default (true)";
             return true;
+        }
+    }
+
+    /**
+     * If main.json read properly, returns plugins mode (i.e. on or off), else returns true
+     *
+     * @return boolean
+     */
+    public function is_plugins_enabled() : bool
+    {
+        $main_read = $this->get_main_config();
+
+        if ($main_read) {
+            return $this->site_json['plugins'];
+        }
+        else {
+            echo "Configurator Error: Failed to get property 'plugins', setting to default (true)";
+            return true;
+        }
+    }
+
+    /**
+     * If main.json read properly, returns installation state (i.e. installed or not), else returns true
+     *
+     * @return boolean
+     */
+    public function is_installed() : bool
+    {
+        $main_read = $this->get_main_config();
+
+        if($main_read) {
+            return $this->site_json['plugins'];
+        }
+        else {
+            echo "Configurator Error: Failed to get property 'installed',  setting to default (false)";
+            return true;
+        }
+    }
+
+    /**
+     * If main.json read properly, returns array of base parameters, else returns defaulted array of same parameters
+     *
+     * @return array
+     */
+    public function get_base_params() : array
+    {
+        $main_read = $this->get_main_config();
+
+        if($main_read) {
+            $temp_arr = ['name' => $this->site_json['name'], 'about' => $this->site_json['about'], 'keywords' => $this->site_json['keywords'], 'theme' => $this->site_json['theme'], 'lang' => $this->site_json['lang']];
+            return $temp_arr;
+        }
+        else {
+            echo "Configurator Error: Failed to get base properties, settiong to defaults";
+            $temp_arr = ['name' => "Unset", 'about' => "Configuration's dead", 'keywords' => "should, be, reinstalled", 'theme' => "default", 'lang' => "en"];
+            return $temp_arr;
         }
     }
 
