@@ -1,24 +1,24 @@
 {
     "site": 
     {
-        "name": "",
-        "about": "",
-        "keywords": "",
+        "name": "1",
+        "about": "1",
+        "keywords": "1",
         "installed": false,
         "offline": false,
-        "theme": "",
-        "lang": "",
-        "start_page": "",
+        "theme": "1",
+        "lang": "1",
+        "start_page": "1",
         "plugins": false,
         "log": true
     },
     "database":
     {
-        "host": "",
-        "port": "",
-        "login": "",
-        "passw": "",
-        "name": "",
+        "host": "1",
+        "port": "1",
+        "login": "1",
+        "passw": "1",
+        "name": "1",
         "driver": null
     }
 }
