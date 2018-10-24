@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace Core;
 
+define("ROOT", $_SERVER['DOCUMENT_ROOT']);
+
 /**
  * class Configurator
  * Parses from and to JSON config files
@@ -18,7 +20,7 @@ class Configurator
     }
 
     /**
-     * Reads contents of ./configs/$file, if it exists, returns contents_of_file, else throws FileNotFoundException
+     * Reads contents of /configs/$file, if it exists, returns contents_of_file, else throws FileNotFoundException
      *
      * @param string $file filename, must end with .json (i.e. "main.json)
      * @throws Exceptions\FileNotFoundException
@@ -27,7 +29,7 @@ class Configurator
     private function read_file(string $file) : string
     {
         $file_handler; $file_contents;
-        $file_path = $_SERVER['DOCUMENT_ROOT'] . "/configs/" . $file;
+        $file_path = ROOT. "/configs/" . $file;
 
         if (file_exists($file_path)) {
             $file_handler = fopen($file_path, "rb");
@@ -44,7 +46,7 @@ class Configurator
     }
 
     /**
-     * Reads main.json and parses config file, if failed echoes "File not found" and redirects to admin.php to reconfigure, 
+     * Reads main.json and parses it, if failed echoes "File not found" and redirects to admin.php to reconfigure, 
      * if succeeds returns array with chosen properties
      * @param string $type config type, defalut "site"
      *
@@ -60,14 +62,14 @@ class Configurator
             die;
         }
 
-        $main_json = json_decode($file, true);
+        $json = json_decode($file, true);
 
         switch(strtolower($type)) {
             case "site":
-                return $main_json['site'];
+                return $json['site'];
             case "db":
             case "database":
-                return $main_json['database'];
+                return $json['database'];
             default:
                 echo "Error!";
                 exit;
@@ -75,35 +77,39 @@ class Configurator
     }
     
     /**
-     * Reads queries.json and parses it, if failed echoes "File not found" and redirects to admin.php to reconfigure,
+     * Reads queries.json and parses it, if failed echoes "File not found" and redirects to admin.php to reconfigure, 
      * if succeeds returns array with chosen queries
-     * @param string $type
-     */
-
-
-
-    /**
-     * If main.json read properly, returns array of site properties
+     * @param string $type config type, defalut "site"
      *
      * @return array
      */
-    public function get_site_params() : array
+    public function get_queries(string $type) : array
     {
-        $main_read = $this->get_main_config();
+        try {
+        $file = $this->read_file("queries.json");
+        } catch (Exceptions\FileNotFoundException $e) {
+            $message = "Configurator Error (" . $e->getCode() . "): " . $e->getMessage() . "!\n Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n";
+            $this->errorhandler->config_error($message);
+            die;
+        }
 
-        return $this->site_json;
-    }
+        $json = json_decode($file, true);
 
-    /**
-     * If main.json read properly, returns array of database properties
-     * 
-     * @return array
-     */
-    public function get_db_params() : array
-    {
-        $main_read = $this->get_main_config();
-
-        return $this->db_json;
+        switch(strtolower($type)) {
+            case "users":
+            case "usr":
+                return $json['users'];
+            case "bans":
+                return $json['bans'];
+            case "news":
+                return $json['news'];
+            case "comments":
+            case "holywar":
+                return $json['comments'];
+            default:
+                echo "Error!";
+                exit;
+        }
     }
 
 }
