@@ -1,0 +1,18 @@
+{
+    "name": "lonesimba/rcse",
+    "type": "project",
+    "license": "GPL 3.0",
+    "authors": [
+        {
+            "name": "Vladimir",
+            "email": "vovamaster99@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Core\\": "./core",
+            "Core\\Exceptions\\": "./core/exceptions"
+        }
+    }
+}

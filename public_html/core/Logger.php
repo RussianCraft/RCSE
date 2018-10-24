@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace RCSE\Core;
+namespace Core;
 
 /**
  * class Logger
@@ -20,22 +20,21 @@ class Logger
      * @param string $file Filename
      * @return array
      */
-    public function __construct(string $file) : array
+    public function __construct(string $file) 
     {
         $this->configurator = new Configurator();
 
         if ($this->configurator->is_logging_enabled()) {
             $this->init_log($file);
             return [true, "Ready"];
-        }
-        else {
+        } else {
             return [false, "Disabled"];
         }
     }
 
-    public function __destruct() : bool 
+    public function __destruct() 
     {
-        return fclose($log_handler);
+        fclose($log_handler);
     }
 
     /**
@@ -48,13 +47,14 @@ class Logger
     {
         $this->datetime = date("Y-m-d_H-i-s");
         $this->log_file = "./logs/" + $this->datetime + "/" + $file + ".log";
+
         try {
             $this->log_handler = fopen($this->logfile, "cb");
-        } 
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo ("Logger error (" + $e->getCode() + "): " + $e->getMessage() );
             return false;
         }
+
         fwrite($this->log_handler, "RCSE Log, Module: " + $file + ". Date-Time: " + $this->datetime + "\n");
 
         return true;
@@ -69,10 +69,10 @@ class Logger
     public function write_to_log(string $message) : bool
     {
         $datetime = date("Y/m/d H:i:s");
+        
         try {
             fwrite($this->log_handler, "[" . $datetime . "]: " . $message);
-        }
-        catch(Exception $e) {
+        } catch(Exception $e) {
 
         }
     }

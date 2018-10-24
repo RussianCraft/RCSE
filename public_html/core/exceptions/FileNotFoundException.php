@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace RCSE\Core;
+namespace Core\Exceptions;
 
 class FileNotFoundException extends \Exception
 {
@@ -9,7 +9,7 @@ class FileNotFoundException extends \Exception
 
     public function __construct(string $file_path) 
     {
-        \Exception::__construct("File not found: " . $file_path . "\n", 404);
+        \Exception::__construct("File not found: " . $file_path, 404);
         $this->file_path = $file_path;
     }
 }

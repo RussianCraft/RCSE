@@ -1,10 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace RCSE\Core;
-
-$config = new Configurator();
-
-echo $config->get_main_config("1");
+namespace Core;
 
 /**
  * class Configurator
@@ -18,20 +14,20 @@ class Configurator
  
     function __construct()
     {
-        $errorhandler = new ErrorHandler();
+        $this->errorhandler = new ErrorHandler();
     }
 
     /**
-     * Reads contents of ./configs/$file, if it exists, returns contents_of_file, else throws FileNotFoundException and returns false
+     * Reads contents of ./configs/$file, if it exists, returns contents_of_file, else throws FileNotFoundException
      *
      * @param string $file filename, must end with .json (i.e. "main.json)
-     * @throws \Exception
-     * @return string|bool
+     * @throws Exceptions\FileNotFoundException
+     * @return string
      */
     private function read_file(string $file) : string
     {
         $file_handler; $file_contents;
-        $file_path = "./configs/" . $file;
+        $file_path = $_SERVER['DOCUMENT_ROOT'] . "/configs/" . $file;
 
         if (file_exists($file_path)) {
             $file_handler = fopen($file_path, "rb");
@@ -41,9 +37,8 @@ class Configurator
             fclose($file_handler);
 
             return $file_contents;
-        }
-        else {
-            throw new \Exception("File not found: " . $file_path,  404);
+        } else {
+            throw new Exceptions\FileNotFoundException($file_path);
         }
 
     }
@@ -59,8 +54,7 @@ class Configurator
     {
         try {
         $file = $this->read_file("main.json");
-        }
-        catch (\Exception $e) {
+        } catch (Exceptions\FileNotFoundException $e) {
             $message = "Configurator Error (" . $e->getCode() . "): " . $e->getMessage() . "!\n Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n";
             $this->errorhandler->config_error($message);
             die;
@@ -71,11 +65,9 @@ class Configurator
         switch(strtolower($type)) {
             case "site":
                 return $main_json['site'];
-                break;
             case "db":
             case "database":
                 return $main_json['database'];
-                break;
             default:
                 echo "Error!";
                 exit;
