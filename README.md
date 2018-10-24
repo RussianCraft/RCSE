@@ -1,2 +1,2 @@
 # RCSE
-RussianCraft Site Engine by LoneSimba (try #.... who counted?)
+RussianCraft Site Engine by LoneSimba (attempt #.... who counted?)
