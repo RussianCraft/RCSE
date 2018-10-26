@@ -58,6 +58,10 @@ class Logger
 
         fwrite($this->log_handler, "RCSE Log, Module: " + $file + ". Date-Time: " + $this->datetime + "\n");
 
+        if(!$this->is_debug_enabled()) {
+            fwrite($this->log_handler, "Debug logging is disabled!");
+        }
+
         return true;
     }
 
@@ -67,15 +71,58 @@ class Logger
      * @param string $message
      * @return boolean
      */
-    public function write_to_log(string $message) : bool
+    public function write_to_log(string $message, string $error_level) : bool
     {
         $datetime = date("Y/m/d H:i:s");
+        $message = $datetime . " ";
+
+        switch($error_level) {
+            case "debug":
+                if($this->is_debug_enabled()) {
+                    $message .= "[Debug]: ";
+                } else {
+                    exit;
+                }
+                break;
+            case "info":
+                $message .= "[Info]: ";
+                break;
+            case "notice":
+                $message .= "[Notice]";
+                break;
+            case "warn":
+            case "warning":
+                //placeholder
+                break;
+            case "err":
+            case "error":
+                //placeholder
+                break;
+            case "critical":
+                //placeholder
+                break;
+            case "alert":
+                //placeholder
+                break;
+            case "emergency":
+                //placeholder
+                break;
+            default:
+                //placeholder
+        }
         
         try {
-            fwrite($this->log_handler, "[" . $datetime . "]: " . $message);
+            fwrite($this->log_handler, $datetime . "[]: " . $message);
         } catch(Exception $e) {
 
         }
+    }
+
+    private function is_debug_enabled() : bool 
+    {
+        $properties = $this->configurator->get_module_properties("logger");
+
+        return $properties['debug'];
     }
 
 }

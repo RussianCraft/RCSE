@@ -14,6 +14,7 @@ class ErrorHandler
      */
     public function print_error_and_redirect(Logger $logger, string $message, string $redirect="home") 
     {
+        
         switch($redirect) {
 
         }

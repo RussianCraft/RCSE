@@ -1,6 +1,8 @@
 {
     "dbmanager": {},
-    "logger": {},
+    "logger": {
+        "debug": true
+    },
     "newsletter": {},
     "users": {},
     "forum": {},
