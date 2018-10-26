@@ -1,6 +1,7 @@
 {
     "default": 
     {
+        //Not sure about group leveling
         "level": 0 ,
         "rate": false,
         "news": 

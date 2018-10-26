@@ -10,6 +10,7 @@ class Logger
 {
     private 
         $configurator,
+        $errorHandler,
         $datetime, 
         $log_file,
         $log_handler;

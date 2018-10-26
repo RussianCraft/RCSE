@@ -7,12 +7,16 @@ class ErrorHandler
     /**
      * Undocumented function
      *
+     * @param Logger $logger
      * @param string $message
+     * @param string $redirect
      * @return void
      */
-    public function config_error(string $message) 
+    public function print_error_and_redirect(Logger $logger, string $message, string $redirect="home") 
     {
-        header("Refresh: 5; url=/admin.php?configerror");
+        switch($redirect) {
+
+        }
         $message = str_replace("\n", '<br>', $message);
         print($message);
     }

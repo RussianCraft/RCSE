@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Core;
 
 define("ROOT", $_SERVER['DOCUMENT_ROOT']);
+define ("ERROR_PREFIX", "Configurator Error: ");
 
 /**
  * class Configurator
@@ -12,11 +13,12 @@ class Configurator
 {
     private 
         $logger,
-        $errorhandler;
+        $errorHandler;
  
     function __construct()
     {
-        $this->errorhandler = new ErrorHandler();
+        $this->errorHandler = new ErrorHandler();
+        $this->logger = new Logger();
     }
 
     /**
@@ -41,6 +43,7 @@ class Configurator
             return $file_contents;
         } else {
             throw new Exceptions\FileNotFoundException($file_path);
+            //no return
         }
 
     }
@@ -57,8 +60,8 @@ class Configurator
         try {
         $file = $this->read_file("main.json");
         } catch (Exceptions\FileNotFoundException $e) {
-            $message = "Configurator Error (" . $e->getCode() . "): " . $e->getMessage() . "!\n Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n";
-            $this->errorhandler->config_error($message);
+            $message = ERROR_PREFIX . "(" . $e->getCode() . ") " . $e->getMessage() . "!\n Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n";
+            $this->errorHandler->config_error($message);
             die;
         }
 
@@ -67,19 +70,22 @@ class Configurator
         switch(strtolower($type)) {
             case "site":
                 return $json['site'];
+                //no break
             case "db":
             case "database":
                 return $json['database'];
+                //no break
             default:
-                echo "Error!";
-                exit;
+                $message = ERROR_PREFIX . "Incorrect config type or not selected, check source code of your installation or write to Issues in GitHub of project!";
+                $this->errorHandler->config_error($message);
+                die;
         }
     }
     
     /**
      * Reads queries.json and parses it, if failed echoes "File not found" and redirects to admin.php to reconfigure, 
      * if succeeds returns array with chosen queries
-     * @param string $type config type, defalut "site"
+     * @param string $type query type
      *
      * @return array
      */
@@ -89,7 +95,7 @@ class Configurator
         $file = $this->read_file("queries.json");
         } catch (Exceptions\FileNotFoundException $e) {
             $message = "Configurator Error (" . $e->getCode() . "): " . $e->getMessage() . "!\n Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n";
-            $this->errorhandler->config_error($message);
+            $this->errorHandler->config_error($message);
             die;
         }
 
