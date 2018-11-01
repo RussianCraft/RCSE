@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Core;
+error_reporting(-1);
 
 /**
  * class Logger
@@ -21,9 +22,9 @@ class Logger
      * @param string $file Filename
      * @return array
      */
-    public function __construct(string $file) 
+    public function __construct(string $file, Configurator $configurator) 
     {
-        $this->configurator = new Configurator();
+        $this->configurator = $configurator;
 
         if ($this->configurator->is_logging_enabled()) {
             $this->init_log($file);
