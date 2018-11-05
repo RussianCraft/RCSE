@@ -9,19 +9,29 @@ class ComposerStaticInite57377d4a79edb5faec2080c3e15e31d
     public static $prefixLengthsPsr4 = array (
         'C' => 
         array (
+            'Core\\Tools\\' => 11,
+            'Core\\Handlers\\' => 14,
             'Core\\Exceptions\\' => 16,
             'Core\\' => 5,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Core\\Tools\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/php/core/tools',
+        ),
+        'Core\\Handlers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/php/core/handlers',
+        ),
         'Core\\Exceptions\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/core/exceptions',
+            0 => __DIR__ . '/../..' . '/php/core/exceptions',
         ),
         'Core\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/core',
+            0 => __DIR__ . '/../..' . '/php/core',
         ),
     );
 

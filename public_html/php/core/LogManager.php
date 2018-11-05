@@ -7,7 +7,7 @@ error_reporting(-1);
  * class Logger
  * Provides logging features
  */
-class Logger
+class LogManager
 {
     private 
         $configurator,
@@ -20,9 +20,10 @@ class Logger
      * Initiates logging to $file, if enabled in config. Returns array with [true, "ready"] if enabled, else returns [false, "disabled"]
      *
      * @param string $file Filename
+     * @param Core\JSONManager $configurator
      * @return array
      */
-    public function __construct(string $file, Configurator $configurator) 
+    public function __construct(string $file, JSONManager $configurator) 
     {
         $this->configurator = $configurator;
 

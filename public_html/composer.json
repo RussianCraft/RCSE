@@ -11,8 +11,10 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Core\\": "./core",
-            "Core\\Exceptions\\": "./core/exceptions"
+            "Core\\": "./php/core",
+            "Core\\Exceptions\\": "./php/core/exceptions",
+            "Core\\Tools\\":  "./php/core/tools",
+            "Core\\Handlers\\": "./php/core/handlers"
         }
     }
 }

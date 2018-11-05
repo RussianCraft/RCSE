@@ -1,6 +1,6 @@
 {
     "dbmanager": {},
-    "logger": {
+    "logmanager": {
         "debug": true
     },
     "newsletter": {},
@@ -9,5 +9,5 @@
     "search": {},
     "adminpanel": {},
     "papi": {},
-    "templater": {}
+    "thememanager": {}
 }

@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Core\\Exceptions\\' => array($baseDir . '/core/exceptions'),
-    'Core\\' => array($baseDir . '/core'),
+    'Core\\Tools\\' => array($baseDir . '/php/core/tools'),
+    'Core\\Handlers\\' => array($baseDir . '/php/core/handlers'),
+    'Core\\Exceptions\\' => array($baseDir . '/php/core/exceptions'),
+    'Core\\' => array($baseDir . '/php/core'),
 );
