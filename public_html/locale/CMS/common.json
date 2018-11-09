@@ -1,14 +1,22 @@
 {
     "en": {
-        "errors": {},
+        "errors": {
+            "test_error": "Test error"
+        },
         "info": {},
         "user": {},
-        "panel": {}
+        "panel": {
+            "title": "Admin Panel"
+        }
     },
     "ru": {
-        "errors": {},
+        "errors": {
+            "test_error": "Тестовая ошибка"
+        },
         "info": {},
         "user": {},
-        "panel": {}
+        "panel": {
+            "title": "Панель Управления"
+        }
     }
 }
