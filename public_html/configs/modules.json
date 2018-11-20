@@ -1,13 +1,13 @@
 {
-    "dbmanager": {},
+    "dbmanager": [],
     "logmanager": {
-        "debug": true
+        "debug": false
     },
-    "newsletter": {},
-    "users": {},
-    "forum": {},
-    "search": {},
-    "adminpanel": {},
-    "papi": {},
-    "thememanager": {}
+    "newsletter": [],
+    "users": [],
+    "forum": [],
+    "search": [],
+    "adminpanel": [],
+    "papi": [],
+    "thememanager": []
 }

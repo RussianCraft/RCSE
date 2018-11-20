@@ -1,19 +1,18 @@
 {
-    "site": 
-    {
-        "name": "1",
-        "about": "1",
-        "keywords": "1",
+    "site": {
+        "name": "RCSE",
+        "about": "RCSE Test",
+        "keywords": "hello, test, aperture",
         "installed": false,
         "offline": false,
         "theme": "RCS",
-        "lang": "1",
+        "lang": "ru",
         "start_page": "1",
         "plugins": false,
-        "log": true
+        "log": true,
+        "debug": true
     },
-    "database":
-    {
+    "database": {
         "host": "1",
         "port": "1",
         "login": "1",

@@ -1,7 +1,8 @@
 {
     "en": {
         "errors": {
-            "test_error": "Test error"
+            "test_error": "Test error",
+            "test_error_1": "Another test"
         },
         "info": {},
         "user": {},

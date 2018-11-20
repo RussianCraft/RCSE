@@ -1,7 +1,21 @@
 <?php
 declare(strict_types=1);
 namespace Core;
+
 error_reporting(-1);
+
+if (defined("ROOT") === false) {
+    define("ROOT", $_SERVER['DOCUMENT_ROOT']);
+}
+if (defined("RECONFIG_REQUIRED") === false) {
+    define("RECONFIG_REQUIRED", "Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n");
+}
+if (defined("REPORT_ERROR") === false) {
+    define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
+}
+define("ERROR_PREFIX_LOG", "LogManager Error: ");
+define("ERROR_INIT", "Failed to initialize logging!\n");
+define("ERROR_WRITE", "Failed to write to log file!\n");
 
 /**
  * class Logger
@@ -9,12 +23,10 @@ error_reporting(-1);
  */
 class LogManager
 {
-    private 
-        $configurator,
-        $errorHandler,
-        $datetime, 
-        $log_file,
-        $log_handler;
+    private $configurator;
+    private $error_handler;
+    private $log_file;
+    private $log_handler;
 
     /**
      * Initiates logging to $file, if enabled in config. Returns array with [true, "ready"] if enabled, else returns [false, "disabled"]
@@ -23,21 +35,28 @@ class LogManager
      * @param Core\JSONManager $configurator
      * @return array
      */
-    public function __construct(string $file, JSONManager $configurator) 
+    public function __construct(string $file, JSONManager $configurator)
     {
         $this->configurator = $configurator;
-
-        if ($this->configurator->is_logging_enabled()) {
-            $this->init_log($file);
-            return [true, "Ready"];
-        } else {
-            return [false, "Disabled"];
+        $this->error_handler = new Handlers\ErrorHandler();
+        
+        if ($this->is_logging_enabled()) {
+            try {
+                $this->init_log($file);
+            } catch (\Exception $e) {
+                $message = ERROR_PREFIX_LOG . "(" . $e->getCode() . ") " . $e->getMessage() . REPORT_ERROR;
+                $this->error_handler->print_error_no_log($message);
+            }
         }
     }
 
-    public function __destruct() 
+    public function __destruct()
     {
-        fclose($log_handler);
+        $this->write_to_log("Log end.\n", "info");
+
+        if ($this->log_file != null && empty($this->log_file) === false) {
+            fclose($this->log_handler);
+        }
     }
 
     /**
@@ -48,20 +67,27 @@ class LogManager
      */
     private function init_log(string $file) : bool
     {
-        $this->datetime = date("Y-m-d_H-i-s");
-        $this->log_file = "./logs/" + $this->datetime + "/" + $file + ".log";
+        $datetime = date("Y-m-d_H-i-s");
+        $dir = ROOT . "/logs/" . $datetime . "/";
+        $this->log_file =  $dir . $file . ".log";
 
-        try {
-            $this->log_handler = fopen($this->logfile, "cb");
-        } catch (Exception $e) {
-            echo ("Logger error (" + $e->getCode() + "): " + $e->getMessage() );
-            return false;
+        if (is_dir($dir) === false) {
+            mkdir($dir, 0777);
         }
 
-        fwrite($this->log_handler, "RCSE Log, Module: " + $file + ". Date-Time: " + $this->datetime + "\n");
+        $this->log_handler = fopen($this->log_file, "cb");
+        
+        if ($this->log_handler === false) {
+            throw new Exceptions\FileCreationException($this->log_file);
+        }
+        
+        if (fwrite($this->log_handler, "RCSE Log, Module: " . $file . ". Date-Time: ". $datetime . "\n\r") === false) {
+            fclose($this->log_handler);
+            throw new Exceptions\FileWriteException($this->log_file);
+        }
 
-        if(!$this->is_debug_enabled()) {
-            fwrite($this->log_handler, "Debug logging is disabled!");
+        if ($this->is_debug_enabled() === false) {
+            fwrite($this->log_handler, "Debug logging is disabled!\n\r");
         }
 
         return true;
@@ -73,58 +99,67 @@ class LogManager
      * @param string $message
      * @return boolean
      */
-    public function write_to_log(string $message, string $error_level) : bool
+    public function write_to_log(string $message, string $level) : bool
     {
         $datetime = date("Y/m/d H:i:s");
-        $message = $datetime . " ";
+        $message_write = $datetime . " ";
+        $level = strtolower($level);
 
-        switch($error_level) {
+        switch ($level) {
             case "debug":
-                if($this->is_debug_enabled()) {
-                    $message .= "[Debug]: ";
+                if ($this->is_debug_enabled()) {
+                    $message_write .= "[Debug]: ";
                 } else {
                     exit;
                 }
                 break;
             case "info":
-                $message .= "[Info]: ";
+                $message_write .= "[Info]: ";
                 break;
             case "notice":
-                $message .= "[Notice]";
+                $message_write .= "[Notice]: ";
                 break;
             case "warn":
             case "warning":
-                //placeholder
+                $message_write .= "[Warning]: ";
                 break;
             case "err":
             case "error":
-                //placeholder
+                $message_write .= "[Error]: ";
                 break;
             case "critical":
-                //placeholder
+                $message_write .= "[Critical]: ";
                 break;
             case "alert":
-                //placeholder
+                $message_write .= "[Alert]: ";
                 break;
             case "emergency":
-                //placeholder
+                $message_write .= "[Emergency]: ";
                 break;
             default:
-                //placeholder
+                $message_write .= "[]: ";
         }
         
-        try {
-            fwrite($this->log_handler, $datetime . "[]: " . $message);
-        } catch(Exception $e) {
-
+        if (fwrite($this->log_handler, $message_write . $message . "\r") === false) {
+            $message = ERROR_PREFIX_LOG . ERROR_WRITE . REPORT_ERROR;
+            $this->error_handler->print_error_no_log($message);
+            return false;
         }
+
+        return true;
     }
 
-    private function is_debug_enabled() : bool 
+    private function is_logging_enabled() : bool
     {
-        $properties = $this->configurator->get_module_properties("logger");
+        $properties = $this->configurator->get_main_config("site", false);
+
+        return $properties['log'];
+    }
+
+    private function is_debug_enabled() : bool
+    {
+        $properties = $this->configurator->get_main_config("site", false);
 
         return $properties['debug'];
     }
-
 }
