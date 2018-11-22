@@ -2,8 +2,6 @@
 declare(strict_types=1);
 namespace Core;
 
-error_reporting(-1);
-
 if (defined("ROOT") === false) {
     define("ROOT", $_SERVER['DOCUMENT_ROOT']);
 }
@@ -140,6 +138,17 @@ class JSONManager
 
         return true;
     }
+
+    /************************************/
+    /*      new functions, MUST be done      */
+    /************************************/
+
+
+public function get_data() : array {}
+
+public function set_data() : array {}
+    
+
 
     /**
      * Reads main.json and parses it, if failed echoes "File not found" and redirects to admin.php to reconfigure,

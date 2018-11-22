@@ -1,0 +1,8 @@
+{
+    "default": {
+        "unlocalized_name": "default",
+        "topics": {
+            "creation": true
+        }
+    }
+}

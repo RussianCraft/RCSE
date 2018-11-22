@@ -2,8 +2,6 @@
 declare(strict_types=1);
 namespace Core;
 
-error_reporting(-1);
-
 if (defined("ROOT") === false) {
     define("ROOT", $_SERVER['DOCUMENT_ROOT']);
 }
@@ -27,6 +25,7 @@ class LogManager
     private $error_handler;
     private $log_file;
     private $log_handler;
+    private $debug;
 
     /**
      * Initiates logging to $file, if enabled in config. Returns array with [true, "ready"] if enabled, else returns [false, "disabled"]
@@ -40,9 +39,10 @@ class LogManager
         $this->configurator = $configurator;
         $this->error_handler = new Handlers\ErrorHandler();
         
-        if ($this->is_logging_enabled()) {
+        if ($this->configurator->get_main_config("site", false)['log']) {
             try {
                 $this->init_log($file);
+                $this->debug = $this->configurator->get_main_config("site", false)['debug'];
             } catch (\Exception $e) {
                 $message = ERROR_PREFIX_LOG . "(" . $e->getCode() . ") " . $e->getMessage() . REPORT_ERROR;
                 $this->error_handler->print_error_no_log($message);
@@ -86,7 +86,7 @@ class LogManager
             throw new Exceptions\FileWriteException($this->log_file);
         }
 
-        if ($this->is_debug_enabled() === false) {
+        if ($this->debug === false) {
             fwrite($this->log_handler, "Debug logging is disabled!\n\r");
         }
 
@@ -107,7 +107,7 @@ class LogManager
 
         switch ($level) {
             case "debug":
-                if ($this->is_debug_enabled()) {
+                if ($this->debug) {
                     $message_write .= "[Debug]: ";
                 } else {
                     exit;
@@ -147,19 +147,5 @@ class LogManager
         }
 
         return true;
-    }
-
-    private function is_logging_enabled() : bool
-    {
-        $properties = $this->configurator->get_main_config("site", false);
-
-        return $properties['log'];
-    }
-
-    private function is_debug_enabled() : bool
-    {
-        $properties = $this->configurator->get_main_config("site", false);
-
-        return $properties['debug'];
     }
 }
