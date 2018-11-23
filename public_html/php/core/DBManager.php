@@ -20,7 +20,16 @@ class DBManager
 {
     private $logger;
     private $error_handler;
+    private $config;
     private $debug;
+
+    public function __construct()
+    {
+        $this->config = new JSONManager();
+        $this->logger = new LogManager(get_class($this), $this->config);
+        $this->error_handler = new Handlers\ErrorHandler();
+        $this->debug = $this->config->get_main_config()['debug'];
+    }
 
     
 

@@ -36,8 +36,8 @@ class JSONManager
  
     public function __construct()
     {
-        $this->error_handler = new Handlers\ErrorHandler();
         $this->logger = new LogManager(get_class($this), $this);
+        $this->error_handler = new Handlers\ErrorHandler();
         $this->debug = $this->get_main_config()["debug"];
     }
 
