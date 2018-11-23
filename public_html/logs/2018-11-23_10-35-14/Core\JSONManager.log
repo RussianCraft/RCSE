@@ -1,20 +1,0 @@
-RCSE Log, Module: Core\JSONManager. Date-Time: 2018-11-23_10-35-14
-2018/11/23 10:35:15 [Info]: Acquiring config (site)!
-2018/11/23 10:35:15 [Info]: Config acquired!
-2018/11/23 10:35:15 [Info]: Acquiring config (site)!
-2018/11/23 10:35:15 [Debug]: Reading file: /var/www/RCSE/public_html/configs/main.json!
-2018/11/23 10:35:15 [Debug]: File read!
-2018/11/23 10:35:15 [Info]: Config acquired!
-2018/11/23 10:35:15 [Info]: Acquiring quieries (users)!
-2018/11/23 10:35:15 [Debug]: Reading file: /var/www/RCSE/public_html/configs/queries.json!
-2018/11/23 10:35:15 [Debug]: File read!
-2018/11/23 10:35:15 [Info]: Queries acquired!
-2018/11/23 10:35:15 [Info]: Acquiring locale (errors)!
-2018/11/23 10:35:15 [Debug]: Reading file: /var/www/RCSE/public_html/locale/CMS/common.json!
-2018/11/23 10:35:15 [Debug]: File read!
-2018/11/23 10:35:15 [Info]: Locale acquired!
-2018/11/23 10:35:15 [Info]: Acquiring usergroup (all) data!
-2018/11/23 10:35:15 [Debug]: Reading file: /var/www/RCSE/public_html/configs/usergroups.json!
-2018/11/23 10:35:15 [Debug]: File read!
-2018/11/23 10:35:15 [Info]: Log end.
-
