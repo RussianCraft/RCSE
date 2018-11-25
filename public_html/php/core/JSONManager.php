@@ -173,7 +173,7 @@ public function set_data() : array {}
                 $file = $this->read_file("/configs/main.json", false);
             }
         } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ") " . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
+            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
             return false;
         }

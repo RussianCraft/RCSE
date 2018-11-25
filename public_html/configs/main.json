@@ -13,11 +13,10 @@
         "debug": true
     },
     "database": {
-        "host": "1",
-        "port": "1",
-        "login": "1",
-        "passw": "1",
-        "name": "1",
-        "driver": null
+        "host": "127.0.0.1",
+        "port": "3306",
+        "login": "root",
+        "passw": "",
+        "name": "rcse"
     }
 }

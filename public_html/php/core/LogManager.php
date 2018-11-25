@@ -12,7 +12,7 @@ if (defined("REPORT_ERROR") === false) {
     define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
 }
 define("ERROR_PREFIX_LOG", "LogManager Error: ");
-define("ERROR_INIT", "Failed to initialize logging!\n");
+define("ERROR_INIT_LOG", "Failed to initialize logging!\n");
 define("ERROR_WRITE", "Failed to write to log file!\n");
 
 /**
@@ -69,6 +69,7 @@ class LogManager
     {
         $datetime = date("Y-m-d_H-i-s");
         $dir = ROOT . "/logs/" . $datetime . "/";
+        $file = str_replace('\\', '-', $file);
         $this->log_file =  $dir . $file . ".log";
 
         if (is_dir($dir) === false) {
