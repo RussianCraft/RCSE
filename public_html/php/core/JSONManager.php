@@ -21,6 +21,7 @@ define("ERROR_CONFIG_UPDATE", "Tried to write new config data, but failed!\n");
 define("ERROR_LOCALE_NOT_FOUND", "Selected locale not found or incorrect!\n");
 define("ERROR_LOCALE_LANG", "Selected language not found in file!\n");
 define("ERROR_MODULE_ENTRY", "Selected module not found!\n");
+define("ERROR_QUERY_SELECT", "Selected query not found!\n");
 define("ERROR_USERGROUP_NF", "Selected usergoup not found!\n");
 define("ERROR_USERGROUP_REMOVE", "Failed to remove selected user group! ");
 

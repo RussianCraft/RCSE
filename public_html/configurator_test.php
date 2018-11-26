@@ -54,7 +54,7 @@ echo "<br>";
 echo "<br>";
 var_dump($config->get_main_config("site"));
 echo "<br>";*/
-var_dump($config->get_queries("users"));
+var_dump($config->get_queries("accounts"));
 echo "<br>";
 var_dump($config->get_locale("cms", "common", "en", "errors"));
 echo "<br>";

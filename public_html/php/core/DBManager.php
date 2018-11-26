@@ -53,19 +53,16 @@ class DBManager
         return true;
     }
 
-    public function get_data(string $table, string $type, string $marker="") : array
-    {
-        
-    }
-
-    public function send_data() : bool {}
-
-    public function check_data(string $table, string $type, string $marker="") : bool 
+    public function get_data(string $table, string $type, string $marker="") : array 
     {
         $table = strtolower($table);
         $type = strtolower($type);
 
-        $query = $this->config->get_query($table)[$type];
+        if ($this->check_data($table, $type, $marker) === false) {
+            return false;
+        }
+
+        $query = $this->config->get_queries($table)["select_" . $type];
 
         if($query === false) {
             $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;
@@ -85,6 +82,52 @@ class DBManager
             return false;
         }
 
+        $query_bool = $query->execute($params);
+
+        if($query_bool === false) {
+            return false;
+        }
+
+        return $query->fetch(\PDO::FETCH_ASSOC);
+
+    }
+
+    public function send_data(string $table, string $type, array $contents, string $marker="") : bool 
+    {
+        $table = strtolower($table);
+        $type = strtolower($type);
+
+         
+    }
+
+    public function check_data(string $table, string $type, string $marker="") : bool 
+    {
+        $table = strtolower($table);
+        $type = strtolower($type);
+ 
+        $query = $this->config->get_queries($table)["select_" . $type];
+
+        if($query === false) {
+            $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;
+            $this->error_handler->print_error($this->logger, "critical", $message);
+            return false;
+        }
+
+        $temp = explode(":", $query);
+        $params = [':' . $temp[1] => $marker];
+        unset($temp);
+
+        try {
+            $query = $this->database->prepare($query);
+        } catch(PDOException $e) {
+            $message = ERROR_PREFIX_DB . "(" .$e->getCode() . ")". $e->getMessage() . "!\n" . ERROR_PREPARE . REPORT_ERROR;
+            $this->error_handler->print_error($this->logger, "critical", $message);
+            return false;
+        }
+
+        $query = $query->execute($params);
+
+        return $query;
 
     }
 }
