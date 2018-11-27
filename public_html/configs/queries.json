@@ -1,7 +1,7 @@
 {
     "accounts": {
         "insert": "INSERT INTO `accounts`(`login`, `password`, `email`, `sex`, `brithdate`, `origin`, `regdate`, `settings`) VALUES (:login,:password,:email,:sex,:brithdate,:origin,:regdate,:settings)",
-        "update": "UPDATE `accounts` SET `sex`=:sex, `brithdate`=:brithdate, `origin`=:origin, `regdate`=:regdate, `settings`=:settings WHERE `login`=:login",
+        "update": "UPDATE `accounts` SET `sex`=:sex, `brithdate`=:brithdate, `origin`=:origin, `settings`=:settings WHERE `login`=:login",
         "update_pass": "UPDATE `accounts` SET `password`=:password WHERE `login`=:login",
         "update_email": "UPDATE `accounts` SET `email`=:email WHERE `login`=:login",
         "delete": "DELETE FROM `accounts` WHERE `login`=:login",
@@ -21,7 +21,7 @@
         "insert": "INSERT INTO `posts`(`title`, `date`, `author`, `description`, `tags`, `content`, `settings`) VALUES (:title,:date,:author,:description,:tags,:content,:settings)",
         "update": "UPDATE `posts` SET `title`=:title, `voteups`=:voteups, `votedowns`=:votedowns, `description`=:description, `tags`=:tags, `content`=:content, `settings`=:settings WHERE `post_id`=:post_id",
         "delete": "DELETE FROM `posts` WHERE `post_id`=:post_id",
-        "select_by_id": "SELECT * FROM `posts` WHERE `post_id`=:post_id",
+        "select_by_post_id": "SELECT * FROM `posts` WHERE `post_id`=:post_id",
         "select_by_title": "SELECT * FROM `posts` WHERE `title`=:title",
         "select_by_date": "SELECT * FROM `posts` WHERE `date`=:date",
         "select_by_author": "SELECT * FROM `posts` WHERE `author`=:author",
@@ -32,8 +32,8 @@
         "insert": "INSERT INTO `comments`( `reply_to`, `date`, `author`, `content`, `settings`) VALUES (:reply_to,:date,:author,:contents,:settings)",
         "update": "UPDATE `comments` SET `date`=:data,`voteups`=:voteups,`votedowns`=:votedowns,`content`=:content,`settings`=:settings WHERE `comment_id`=:comment_id",
         "delete": "DELETE FROM `comments` WHERE `comment_id`=:comment_id",
-        "select_by_id": "SELECT * FROM `comments` WHERE `comment_id`=:comment_id",
-        "select_by_reply": "SELECT * FROM `comments` WHERE `reply_to`=:reply_to",
+        "select_by_comment_id": "SELECT * FROM `comments` WHERE `comment_id`=:comment_id",
+        "select_by_reply_to": "SELECT * FROM `comments` WHERE `reply_to`=:reply_to",
         "select_by_date": "SELECT * FROM `comments` WHERE `date`=:date",
         "select_by_author": "SELECT * FROM `comments` WHERE `author`=:author",
         "select_all": "SELECT * FROM `comments`"
@@ -41,7 +41,7 @@
     "topics": {
         "insert": "INSERT INTO `topics`(`title`, `section`, `date`, `author`, `tags`, `content`, `settings`) VALUES (:title,:section,:date,:author,:tags,:contents,:settings)",
         "update": "UPDATE `topics` SET `title`=:title, `section`=:section, `date`=:date, `voteups`=:voteups, `votedowns`=:votedowns, `tags`=:tags, `content`=:content, `settings`=:settings WHERE `topic_id`=:topic_id",
-        "select_by_id": "SELECT * FROM `topics` WHERE `topic_id`=:topic_id",
+        "select_by_topic_id": "SELECT * FROM `topics` WHERE `topic_id`=:topic_id",
         "select_by_title": "SELECT * FROM `topics` WHERE `title`=:title",
         "select_by_section": "SELECT * FROM `topics` WHERE `section`=:section",
         "select_by_date": "SELECT * FROM `topics` WHERE `date`=:date",
@@ -53,8 +53,8 @@
         "insert": "INSERT INTO `replies`( `reply_to`, `date`, `author`, `content`, `settings`) VALUES (:reply_to,:date,:author:content,:settings)",
         "update": "UPDATE `replies` SET `date`=:date,`voteups`=:voteups,`votedowns`=:votedowns,`content`=:content,`settings`=:settings WHERE `reply_id`=:reply_id",
         "delete": "DELETE FROM `replies` WHERE `reply_id`=:reply_id",
-        "select_by_id": "SELECT * FROM `replies` WHERE `reply_id`=:reply_id",
-        "select_by_reply": "SELECT * FROM `replies` WHERE `reply_to`=:reply_to",
+        "select_by_reply_id": "SELECT * FROM `replies` WHERE `reply_id`=:reply_id",
+        "select_by_reply_to": "SELECT * FROM `replies` WHERE `reply_to`=:reply_to",
         "select_by_date": "SELECT * FROM `replies` WHERE `date`=:date",
         "select_by_author": "SELECT * FROM `replies` WHERE `author`=:author",
         "select_all": "SELECT * FROM `replies`"

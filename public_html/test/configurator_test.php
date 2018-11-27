@@ -1,5 +1,5 @@
 <?php
-require "vendor/autoload.php";
+require "../vendor/autoload.php";
 
 $config = new Core\JSONManager();
 
@@ -48,28 +48,41 @@ $configuration = [
 ];
 */
 
+echo "Reading main site config: ";
 var_dump($config->get_main_config());
 echo "<br>";
-/*var_dump($config->set_main_config("site", $config));
+/*echo "Writing main site config: ";
+var_dump($config->set_main_config("site", $config));
 echo "<br>";
+echo "Reading modified main site config: ";
 var_dump($config->get_main_config("site"));
 echo "<br>";*/
+echo "Reading queries for \"accounts\": ";
 var_dump($config->get_queries("accounts"));
 echo "<br>";
+echo "Reading locale: ";
 var_dump($config->get_locale("cms", "common", "en", "errors"));
 echo "<br>";
+echo "Reading \"logger\" module config: ";
 var_dump($config->get_modules_properties("logmanager"));
 echo "<br>";
+echo "Reading usergroups: ";
 var_dump($config->get_usergroups());
 echo "<br>";
-/*var_dump($config->set_modules("logmanager", $logging));
+/*echo "Writing \"logger\" module config: ";
+var_dump($config->set_modules("logmanager", $logging));
 echo "<br>";
+echo "Reading modified \"logger\" module config: ";
 var_dump($config->get_modules_properties("logmanager"));
 echo "<br>";
+echo "Writing new usergroup: ";
 var_dump($config->set_usergroups("user1", $usergroup));
 echo "<br>";
+echo "Reading modified usergroups: ";
 var_dump($config->get_usergroups("user1"));
 echo "<br>";
+echo "Removing usergroup \"user1\": ";
 var_dump($config->remove_usergroup("user1"));
 echo "<br>";
+echo "Reading modified usergroups: ";
 var_dump($config->get_usergroups("user1"));*/

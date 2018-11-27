@@ -145,9 +145,9 @@ class JSONManager
     /************************************/
 
 
-public function get_data() : array {}
+public function get_data_json() : array {}
 
-public function set_data() : array {}
+public function set_data_json() : array {}
     
 
 
@@ -158,7 +158,7 @@ public function set_data() : array {}
      * @param string $type Config type, defalut "site"
      * @return array Array of config properties
      */
-    public function get_main_config(string $type="site", bool $log = true) : array
+    public function get_main_config(string $type="site", bool $log = true)
     {
         $type = strtolower($type);
         
@@ -262,7 +262,7 @@ public function set_data() : array {}
      * @param string $type Query type
      * @return array Array of queries
      */
-    public function get_queries(string $type) : array
+    public function get_queries(string $type)
     {
         $type = strtolower($type);
 
@@ -305,7 +305,7 @@ public function set_data() : array {}
      * @param string $type Needed section (i.e. 'errors')
      * @return array
      */
-    public function get_locale(string $package, string $file, string $lang, string $type) : array
+    public function get_locale(string $package, string $file, string $lang, string $type)
     {
         $type = strtolower($type);
 
@@ -363,7 +363,7 @@ public function set_data() : array {}
      * @param string $type Required module
      * @return array Module's properties
      */
-    public function get_modules_properties(string $type) : array
+    public function get_modules_properties(string $type)
     {
         $type = strtolower($type);
 
@@ -465,7 +465,7 @@ public function set_data() : array {}
      * @param string $type Required usergroup, if "all" selected, outputs every existing group, "all" is default
      * @return array Usergroup data array
      */
-    public function get_usergroups(string $type="all") : array
+    public function get_usergroups(string $type="all")
     {
         $type = strtolower($type);
 
