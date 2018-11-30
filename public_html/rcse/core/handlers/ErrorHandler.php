@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Core\Handlers;
+namespace RCSE\Core\Handlers;
 
 class ErrorHandler
 {
@@ -14,7 +14,7 @@ class ErrorHandler
      * @param string $redirect
      * @return void
      */
-    public function print_error_and_redirect(\Core\LogManager $logger, string $severity, string $message, string $redirect="home") : void
+    public function print_error_and_redirect(\RCSE\Core\LogManager $logger, string $severity, string $message, string $redirect="home") : void
     {
         switch ($redirect) {
             case "home":

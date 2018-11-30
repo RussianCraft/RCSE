@@ -1,7 +1,7 @@
 <?php
 require "../vendor/autoload.php";
 
-$db = new Core\DBManager();
+$db = new RCSE\Core\DBManager();
 
 $data = [
     "login" => "Test1",

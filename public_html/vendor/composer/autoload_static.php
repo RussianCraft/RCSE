@@ -7,31 +7,36 @@ namespace Composer\Autoload;
 class ComposerStaticInite57377d4a79edb5faec2080c3e15e31d
 {
     public static $prefixLengthsPsr4 = array (
-        'C' => 
+        'R' => 
         array (
-            'Core\\Tools\\' => 11,
-            'Core\\Handlers\\' => 14,
-            'Core\\Exceptions\\' => 16,
-            'Core\\' => 5,
+            'RCSE\\Interaction\\' => 17,
+            'RCSE\\Core\\Tools\\' => 16,
+            'RCSE\\Core\\Handlers\\' => 19,
+            'RCSE\\Core\\Exceptions\\' => 21,
+            'RCSE\\Core\\' => 10,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Core\\Tools\\' => 
+        'RCSE\\Interaction\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/php/core/tools',
+            0 => __DIR__ . '/../..' . '/rcse/core',
         ),
-        'Core\\Handlers\\' => 
+        'RCSE\\Core\\Tools\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/php/core/handlers',
+            0 => __DIR__ . '/../..' . '/rcse/core/tools',
         ),
-        'Core\\Exceptions\\' => 
+        'RCSE\\Core\\Handlers\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/php/core/exceptions',
+            0 => __DIR__ . '/../..' . '/rcse/core/handlers',
         ),
-        'Core\\' => 
+        'RCSE\\Core\\Exceptions\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/php/core',
+            0 => __DIR__ . '/../..' . '/rcse/core/exceptions',
+        ),
+        'RCSE\\Core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/rcse/core',
         ),
     );
 

@@ -1,7 +1,7 @@
 <?php
 require "../vendor/autoload.php";
 
-$config = new Core\JSONManager();
+$config = new RCSE\Core\JSONManager();
 
 /*
 $usergroup = [

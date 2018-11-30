@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Core\Exceptions;
+namespace RCSE\Core\Exceptions;
 
 class FileLockException extends \Exception
 {

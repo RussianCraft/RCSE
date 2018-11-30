@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Core;
+namespace RCSE\Core;
 
 if (defined("ROOT") === false) {
     define("ROOT", $_SERVER['DOCUMENT_ROOT']);
