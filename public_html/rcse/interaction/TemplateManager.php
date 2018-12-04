@@ -41,10 +41,6 @@ class TemplateManager
         $file_contents;
         $file_path = ROOT . $file;
 
-        if ($this->debug) {
-            $this->logger->write_to_log("Reading file: $file_path!\n", "debug");
-        }
-
         if (is_readable($file_path) === false) {
             if ($this->debug) {
                 $this->logger->write_to_log("FIle is not readable! Trying chmod(0766)!\n", "notice");
@@ -66,10 +62,6 @@ class TemplateManager
     
         flock($file_handler, LOCK_UN);
         fclose($file_handler);
-
-        if ($this->debug) {
-            $this->logger->write_to_log("File read!\n", "debug");
-        }
 
         return $file_contents;
     }
