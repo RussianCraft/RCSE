@@ -51,7 +51,7 @@ class TemplateManager
             }
             chmod($file_path, 0766);
             if (is_readable($file_path) === false) {
-                throw new Exceptions\FileNotFoundException($file_path);
+                throw new \RCSE\Core\Exceptions\FileNotFoundException($file_path);
             }
         }
 
@@ -59,7 +59,7 @@ class TemplateManager
 
         if (flock($file_handler, LOCK_SH, $eWouldBlock) === false || $eWouldBlock) {
             fclose($file_handler);
-            throw new Exceptions\FileLockException($file_path);
+            throw new \RCSE\Core\Exceptions\FileLockException($file_path);
         }
         
         $file_contents = fread($file_handler, filesize($file_path));
@@ -76,7 +76,7 @@ class TemplateManager
 
     private function get_page(string $name)
     {
-        $path = ROOT . "themes/" . $this->config->get_main_config()['theme'] . "/pages/" . $name . ".html";
+        $path = "/themes/" . $this->config->get_main_config()['theme'] . "/pages/" . $name . ".html";
         
         try {
             $file = $this->read_file($path);
@@ -108,7 +108,7 @@ class TemplateManager
         foreach($this->data as $key => $content) {
             $key = strtoupper($key);
 
-            $page = str_replace("{$key}", $content, $page);
+            $page = str_replace("\{$key\}", $content, $page);
         }
 
         print($page);

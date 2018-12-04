@@ -15,7 +15,7 @@
             "RCSE\\Core\\Exceptions\\": "./rcse/core/exceptions",
             "RCSE\\Core\\Tools\\":  "./rcse/core/tools",
             "RCSE\\Core\\Handlers\\": "./rcse/core/handlers",
-            "RCSE\\Interaction\\": "./rcse/core"
+            "RCSE\\Interaction\\": "./rcse/interaction"
         }
     }
 }

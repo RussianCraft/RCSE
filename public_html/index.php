@@ -1,6 +1,10 @@
 <?php
 
-require "/vendor/autoload.php";
+if (defined("ROOT") === false) {
+    define("ROOT", $_SERVER['DOCUMENT_ROOT']);
+}
+
+require ROOT . "/vendor/autoload.php";
 
 $template = new RCSE\Interaction\TemplateManager();
 

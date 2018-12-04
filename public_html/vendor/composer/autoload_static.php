@@ -20,7 +20,7 @@ class ComposerStaticInite57377d4a79edb5faec2080c3e15e31d
     public static $prefixDirsPsr4 = array (
         'RCSE\\Interaction\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/rcse/core',
+            0 => __DIR__ . '/../..' . '/rcse/interaction',
         ),
         'RCSE\\Core\\Tools\\' => 
         array (

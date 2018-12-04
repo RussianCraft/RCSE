@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'RCSE\\Interaction\\' => array($baseDir . '/rcse/core'),
+    'RCSE\\Interaction\\' => array($baseDir . '/rcse/interaction'),
     'RCSE\\Core\\Tools\\' => array($baseDir . '/rcse/core/tools'),
     'RCSE\\Core\\Handlers\\' => array($baseDir . '/rcse/core/handlers'),
     'RCSE\\Core\\Exceptions\\' => array($baseDir . '/rcse/core/exceptions'),
