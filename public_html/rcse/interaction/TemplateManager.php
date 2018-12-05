@@ -41,10 +41,14 @@ class TemplateManager
         $file_contents;
         $file_path = ROOT . $file;
 
+       /* if ($this->debug) {
+            $this->logger->write_to_log("Reading file: $file_path!\n", "debug");
+        }*/
+
         if (is_readable($file_path) === false) {
-            if ($this->debug) {
+           /* if ($this->debug) {
                 $this->logger->write_to_log("FIle is not readable! Trying chmod(0766)!\n", "notice");
-            }
+            }*/
             chmod($file_path, 0766);
             if (is_readable($file_path) === false) {
                 throw new \RCSE\Core\Exceptions\FileNotFoundException($file_path);
@@ -62,6 +66,10 @@ class TemplateManager
     
         flock($file_handler, LOCK_UN);
         fclose($file_handler);
+
+        /*if ($this->debug) {
+            $this->logger->write_to_log("File read!\n", "debug");
+        }*/
 
         return $file_contents;
     }
