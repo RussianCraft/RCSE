@@ -1,0 +1,190 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+   align-items: center;
+}
+
+header {
+    display: flex;
+    justify-content:  center;
+    align-items: center;
+    width: 100%;
+    height: 64px;
+    background-color: #C7B299;
+}
+
+header > #head {
+    display: flex;
+    justify-content: space-between;
+    width: 876px;
+    color: #0071BC;
+    padding: 0 10px;
+}
+
+header > #head > #logo {
+    font-size: 35pt;
+    font-weight: bold;
+}
+
+header > #head > #account {
+    display: flex;
+    align-items: center;
+}
+
+header > #head > #account > a {
+    display: flex;
+    color: inherit;
+    text-decoration: none;
+}
+
+header > #head > #account > a > #name {
+    font-size: 23pt;
+    font-weight: semibold;
+    padding-right: 10px;
+}
+
+header > #head > #account > a > div {
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    background-color: #0071BC;
+}
+
+
+#body {
+    display: flex;
+    flex-direction: column;
+    width: 896px;
+}
+
+#body > div {
+    display: flex;
+}
+
+#body > div > nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    background-color: #E6E6E6;
+    padding: 10px;
+    width: 106px;
+}
+
+#body > div > nav > ul {
+    list-style-type: none;
+    text-align: center;
+}
+
+#body > div > nav > ul > li { 
+    padding-bottom: 10px;
+}
+
+#body > div > nav > ul > li > a {
+    font-size: 16pt;
+    font-weight: semibold;
+    text-decoration: none;
+    color: #0071BC;
+}
+
+#body > div > #main_column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 747px;
+    border: 1px solid #ccc;
+    background-color: #e6e6e6;
+    padding: 10px;
+}
+
+#body > div > #main_column > .category {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:  space-between;
+    margin-bottom: 20px;
+}
+
+#body > div > #main_column > .category > .head {
+    display: flex;
+    width: 748px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    background-color: #0071BC;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#body > div > #main_column > .category > .head > a {
+    color: #fff;
+    font-size: 15pt;
+}
+
+#body > div > #main_column > .category > .block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 234px;
+    height: 312px;
+    border: 1px solid #0071BC;
+    background-color: #f2f2f2;
+    font-size: 15pt;
+    font-weight: semibold;
+}
+
+#body > div > #main_column > .category > .block > .img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 214px;
+}
+
+#body > div > #main_column > .category > .block > .info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color:  #e6e6e6;
+    height: 100px;
+    width: 100%;
+}
+
+#body > div > #main_column > .category > .block > .info > a {
+    color: #000;
+}
+
+#body > div > #main_column > .category > .block > .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: calc(calc(312px - 162px) / 2) 0;
+    background-color: #0071BC;
+    width: 162px;
+    height: 162px;
+    border-radius: 81px;
+}
+
+#body > div > #main_column > .category > .block > .button > a {
+    color: #fff;
+    word-wrap: normal;
+}
+
+#body > footer {
+    display: flex;
+    justify-content: space-between;
+    height: 28px;
+    padding: 10px;
+    font-size: 13pt;
+    font-weight: semibold;
+    background-color: #0071BC;
+}
+
+#body > footer > span > a{
+    color: #fff;
+}

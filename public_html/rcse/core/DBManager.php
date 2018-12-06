@@ -42,7 +42,7 @@ class DBManager
      *
      * @return boolean
      */
-    public function init_db() : bool
+    private function init_db() : bool
     {
         $props = $this->config->get_main_config("database");
         $dsn = 'mysql:host=' . $props['host'] . ';port=' . $props['port'] . ';dbname=' . $props['name'];
@@ -184,7 +184,7 @@ class DBManager
 
         $this->logger->write_to_log("Successfully obtained the data!", "info");
 
-        return $query;
+        return $query_bool;
     }
 
     public function check_data_db(string $table, string $type, string $marker="") : bool
@@ -228,7 +228,7 @@ class DBManager
 
         $this->logger->write_to_log("Successfully obtained the data!", "info");
 
-        return $query;
+        return $query_bool;
     }
 
     public function delete_data_db(string $table, string $marker="") : bool
@@ -269,6 +269,6 @@ class DBManager
 
         $this->logger->write_to_log("Successfully obtained the data!", "info");
 
-        return $query;
+        return $query_bool;
     }
 }

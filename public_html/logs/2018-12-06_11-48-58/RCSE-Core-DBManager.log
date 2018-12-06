@@ -1,0 +1,3 @@
+RCSE Log, Module: RCSE-Core-DBManager. Date-Time: 2018-12-06_11-48-58
+2018/12/06 11:48:58 [Info]: Initializing the DB connection.
+2018/12/06 11:48:58 [Info]: DB connection initialized successfully!2018/12/06 11:48:58 [Info]: Checking data for Test to DB.2018/12/06 11:48:58 [Info]: Setting up the query.2018/12/06 11:48:58 [Info]: Preparing the query.2018/12/06 11:48:58 [Info]: Executing the query2018/12/06 11:48:58 [Info]: Successfully obtained the data!
