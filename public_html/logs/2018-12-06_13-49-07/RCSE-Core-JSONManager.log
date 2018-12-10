@@ -1,20 +1,0 @@
-RCSE Log, Module: RCSE-Core-JSONManager. Date-Time: 2018-12-06_13-49-07
-2018/12/06 13:49:07 [Info]: Acquiring config (site)!
-2018/12/06 13:49:07 [Info]: Config acquired!
-2018/12/06 13:49:07 [Info]: Acquiring config (site)!
-2018/12/06 13:49:07 [Debug]: Reading file: C:/OSPanel/domains/RCSE/public_html/configs/main.json!
-2018/12/06 13:49:07 [Debug]: File read!
-2018/12/06 13:49:07 [Info]: Config acquired!
-2018/12/06 13:49:07 [Info]: Acquiring config (database)!
-2018/12/06 13:49:07 [Debug]: Reading file: C:/OSPanel/domains/RCSE/public_html/configs/main.json!
-2018/12/06 13:49:07 [Debug]: File read!
-2018/12/06 13:49:07 [Info]: Config acquired!
-2018/12/06 13:49:07 [Info]: Acquiring quieries (posts)!
-2018/12/06 13:49:07 [Debug]: Reading file: C:/OSPanel/domains/RCSE/public_html/configs/queries.json!
-2018/12/06 13:49:07 [Debug]: File read!
-2018/12/06 13:49:07 [Info]: Queries acquired!
-2018/12/06 13:49:07 [Info]: Acquiring quieries (posts)!
-2018/12/06 13:49:07 [Debug]: Reading file: C:/OSPanel/domains/RCSE/public_html/configs/queries.json!
-2018/12/06 13:49:07 [Debug]: File read!
-2018/12/06 13:49:07 [Info]: Queries acquired!
-
