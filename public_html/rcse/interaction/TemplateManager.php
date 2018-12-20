@@ -101,6 +101,11 @@ class TemplateManager
         }
     }
 
+    private function set_page_locale(string $lang, string $page)
+    {
+        
+    }
+
     public function print_page(string $name)
     {
         $page = $this->get_page($name);
