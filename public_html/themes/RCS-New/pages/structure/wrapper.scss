@@ -1,0 +1,162 @@
+@import "base";
+
+/*========Wrapper=========*/
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#body {
+    display: flex;
+    min-height: 512px;
+    margin-top: 60px;
+    position: relative;
+    right: 32px;
+
+    #main {
+        display: flex;
+        width: $main_width;
+        background: $bright_gray;    
+    }
+
+    #menu {
+        display: flex;
+        flex-direction: row;
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            width: 64px;
+            background-color: $light_black;
+            padding-top: 68px;
+    
+            .expand {
+                height: 64px;
+                background-image: url("../../images/expand.png");
+                background-position: center;
+                background-size: 48px;
+                background-repeat: no-repeat;
+            }
+    
+            .expand:hover {
+                cursor: pointer;
+                background-color: $lighter_black;
+            }
+    
+            ul {
+                margin-top: 16px;
+                list-style-type: none;
+    
+                .icon {
+                    display: block;
+                    height: 64px;
+                    width: 64px;
+                    background-position: center;
+                    background-size: 48px;
+                    background-repeat: no-repeat;
+                }
+    
+                .icon:hover {
+                    background-color: $lighter_black;
+                }
+                
+                .search {
+                    background-image: url("../../images/search.png");
+                }
+    
+                .home {
+                    background-image: url("../../images/home.png");
+                }
+    
+                .forum {
+                    background-image: url("../../images/forum.png");}
+            
+                .faq {
+                    background-image: url("../../images/info.png");
+                }
+            }
+        }
+    
+        #menu_ex {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            left: 64px;
+            width: 256px;
+            height: 100%;
+            background-color: $light_black;
+            z-index: 1000;
+            
+            .expand {
+                display: flex;
+                align-items: center;
+                height: 64px;
+                margin-top: 68px;
+                padding-left: 8px;
+                color: $bright_gray;
+                font-weight: bold;
+                font-size: 28pt;
+            }
+    
+            .expand:hover {
+                cursor: pointer;
+                background-color: $lighter_black;
+            }
+    
+            ul {
+                margin-top: 16px;
+                list-style-type: none;
+    
+                li {
+                    height: 64px;
+                    padding-left: 8px;
+
+                    a {
+                        display: flex;
+                        align-items: center;
+                        height: 100%;
+                        width: 100%;
+                        text-decoration: none;
+                        color: $bright_gray;
+                        font-weight: bold;
+                        font-size: 24pt;
+                    }
+                }
+    
+                li:hover {
+                    background-color: $lighter_black;
+                }
+            }
+    
+        }
+    }
+
+}
+
+
+
+/*========Footer=========*/
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    height: 32px;
+    z-index: 10000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 8px;
+    background: $black;
+    color: $mid_gray;
+    font-weight: bold;
+    a {
+        text-decoration: none;
+        color: inherit;}
+}

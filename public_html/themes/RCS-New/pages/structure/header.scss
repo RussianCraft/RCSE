@@ -1,0 +1,54 @@
+@import "base";
+
+/*========Header=========*/
+
+header {
+    width: 100%;
+    height: $header_height;
+    display: flex;
+    flex-basis: 60%;
+    justify-content: center;
+    background: $black;
+    z-index: 10000;
+    position: fixed;
+    box-shadow: $main_shadow;
+    
+    div {
+        display: flex;
+        flex-direction: row;
+        width: 896px;
+        justify-content: space-between;
+        padding: 0 32px;
+        
+        .logo {
+            padding: 0;
+            width: 138px;
+            height: 128px;
+        }
+
+        .account {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0;
+            margin: 0 8px;
+            width: auto;
+
+            .name {
+                margin-right: 8px;
+                font-weight: bold;
+                font-size: 24pt;
+                text-align: right;
+                color: $bright_gray;
+            }
+
+            div {
+                padding: 0;
+                width: 64px;
+                height: 64px;
+                background-color: $bright_gray;
+                border-radius: 32px;
+            }
+        }
+    }
+}
