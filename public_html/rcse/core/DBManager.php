@@ -11,6 +11,9 @@ if (defined("RECONFIG_REQUIRED") === false) {
 if (defined("REPORT_ERROR") === false) {
     define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
 }
+if(defined("DEBUG") === false) {
+    define("DEBUG", false);
+}
 define("ERROR_PREFIX_DB", "DBManager Error: ");
 define("ERROR_INIT_DB", "Failed to initialize DBManager!\n");
 define("ERROR_QUERY_NF", "Requested query does not exist!\n");
@@ -25,7 +28,6 @@ class DBManager
     private $logger;
     private $error_handler;
     private $config;
-    private $debug;
     private $database;
 
     public function __construct()
@@ -33,7 +35,6 @@ class DBManager
         $this->config = new JSONManager();
         $this->logger = new LogManager(get_class($this), $this->config);
         $this->error_handler = new Handlers\ErrorHandler();
-        $this->debug = $this->config->get_main_config()['debug'];
         $this->init_db();
     }
 
@@ -128,7 +129,7 @@ class DBManager
             return false;
         }
         
-        $this->logger->write_to_log("Cleaning the query parameters.", "debug");
+        if(DEBUG) $this->logger->write_to_log("Cleaning the query parameters.", "debug");
 
         $temp = explode(":", $query);
         array_shift($temp);

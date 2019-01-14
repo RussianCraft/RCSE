@@ -6,24 +6,14 @@ if (defined("ROOT") === false) {
     define("ROOT", $_SERVER['DOCUMENT_ROOT']);
 }
 if (defined("RECONFIG_REQUIRED") === false) {
-    define("RECONFIG_REQUIRED", "Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n");
+    define("RECONFIG_REQUIRED", "Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n\r");
 }
 if (defined("REPORT_ERROR") === false) {
-    define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
+    define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n\r");
 }
-define("ERROR_PREFIX_JSON", "JSONManager Error: ");
-define("ERROR_JSON_DECODING", "Tried to decode parameters from JSON fomat, but failed!\n");
-define("ERROR_JSON_ENCODING", "Tried to encode parameters to JSON fomat, but failed!\n");
-define("ERROR_ENTRY_DOENT_EXIST", "Selected entry may not exist!\n");
-define("ERROR_INCORRECT_CONFIG_TYPE", "Incorrect config type or not selected!\n");
-define("ERROR_CONFIG_STRUCTURE", "Tried to write config, but structure does not match!\n");
-define("ERROR_CONFIG_UPDATE", "Tried to write new config data, but failed!\n");
-define("ERROR_LOCALE_NOT_FOUND", "Selected locale not found or incorrect!\n");
-define("ERROR_LOCALE_LANG", "Selected language not found in file!\n");
-define("ERROR_MODULE_ENTRY", "Selected module not found!\n");
-define("ERROR_QUERY_SELECT", "Selected query not found!\n");
-define("ERROR_USERGROUP_NF", "Selected usergoup not found!\n");
-define("ERROR_USERGROUP_REMOVE", "Failed to remove selected user group! ");
+if(defined("DEBUG") === false) {
+    define("DEBUG", false);
+}
 
 /**
  * JSONManager
@@ -33,13 +23,31 @@ class JSONManager
 {
     private $logger;
     private $error_handler;
-    private $debug;
+    private $file_handler;
+    private $error_prefix = "JSONManager Error: ";
+    private $error_msg = [
+        "JSON_Decoding" => "Tried to decode parameters from JSON fomat, but failed!\n\r",
+        "JSON_Encoding" => "Tried to encode parameters to JSON fomat, but failed!\n\r",
+        "Entry_dont_exist" => "Selected entry does not exist!\n\r",
+        "Incorrect_config_type" => "Incorrect config type or not selected!\n\r",
+        "Wrong_config_structure" => "Tried to write config, but structure does not match!\n\r",
+        "Config_update_failed" => "Tried to write new config data, but failed!\n\r",
+        "Locale_not_found" => "Selected locale not found or incorrect!\n\r",
+        "Lang_not_found" => "Selected language not found in file!\n\r",
+        "Module_props_not_found" => "Properties for selected module not found!\n\r",
+        "Module_props_update_failed" => "Tried to write new module properties, but failed!\n\r",
+        "Query_not_found" => "Selected query not found!\n\r",
+        "Query_group_not_found" => "Selected query group not found!\n\r",
+        "Usergroup_not_found" => "Selected usergoup not found!\n\r",
+        "Usergroup_remove_failed" => "Tried to remove usergroup, but failed!\n\r",
+        "Usergroup_update_failed" => "Tried to update usergroup, but failed!\n\r"
+    ];
  
     public function __construct()
     {
+        $this->file_handler = new Handlers\FileHandler();
         $this->logger = new LogManager(get_class($this), $this);
         $this->error_handler = new Handlers\ErrorHandler();
-        $this->debug = $this->get_main_config()["debug"];
     }
 
     /**
@@ -57,12 +65,12 @@ class JSONManager
         $file_contents;
         $file_path = ROOT . $file;
 
-        if ($log && $this->debug) {
+        if ($log && DEBUG) {
             $this->logger->write_to_log("Reading file: $file_path!\n", "debug");
         }
 
         if (is_readable($file_path) === false) {
-            if ($log && $this->debug) {
+            if ($log && DEBUG) {
                 $this->logger->write_to_log("FIle is not readable! Trying chmod(0766)!\n", "notice");
             }
             chmod($file_path, 0766);
@@ -83,7 +91,7 @@ class JSONManager
         flock($file_handler, LOCK_UN);
         fclose($file_handler);
 
-        if ($log && $this->debug) {
+        if ($log && DEBUG) {
             $this->logger->write_to_log("File read!\n", "debug");
         }
 
@@ -105,12 +113,12 @@ class JSONManager
         $file_handler;
         $file_path = ROOT . $file;
 
-        if ($this->debug) {
+        if (DEBUG) {
             $this->logger->write_to_log("Writing to file: $file_path!\n", "debug");
         }
 
         if (is_writeable($file_path) === false) {
-            if ($this->debug) {
+            if (DEBUG) {
                 $this->logger->write_to_log("FIle is not writeable! Trying chmod(0766)!\n", "notice");
             }
 
@@ -133,7 +141,7 @@ class JSONManager
         flock($file_handler, LOCK_UN);
         fclose($log_handler);
 
-        if ($this->debug) {
+        if (DEBUG) {
             $this->logger->write_to_log("File written!\n", "debug");
         }
 
@@ -145,9 +153,83 @@ class JSONManager
     /************************************/
 
 
-public function get_data_json() : array {}
+    public function get_data_json(string $type, array $params = null, bool $log = true)
+    {
+        $type = strtolower($type);
 
-public function set_data_json() : array {}
+        switch($type) {
+            case "main":
+                $path = "/configs/main.json";
+                $message = "Obtaining main config.\n\r";
+                $error = $error_msg['Incorrect_config_type'];
+                break;
+            case "query":
+                $path = "/configs/queries.json";
+                $message = "Obtaining queries.\n\r";
+                $error = $error_msg['Query_group_not_found'];
+                break;
+            case "module":
+                $path = "/configs/modules.json";
+                $message = "Obtaining \'$type\' module data.\n\r";
+                $error = $error_msg['Module_props_not_found'];
+                break;
+            case "locale":
+                $path;
+                $message;
+                $error;
+                break;
+            case "usergroup":
+                $path = "/configs/usergroups.json";
+                $message;
+                $error;
+                break;
+            case "words":
+                $path;
+                $message;
+                $error;
+                break;
+            case "sections":
+                $path;
+                $message;
+                $error;
+                break;
+            case "bans":
+                $path;
+                $message;
+                $error;
+                break;
+        }
+
+        if($log) {
+            $this->logger->write_to_log($message, "info");
+        }
+
+        try {
+            $file = $this->file_handler->read_file($path, $log);
+        } catch (\Exception $e) {
+            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
+            $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
+            return false;
+        }
+
+        $json = json_decode($file, true);
+
+        if ($json == false) {
+            $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
+            $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
+            return false;
+        }
+
+        switch($type) {
+            case "main":
+            case "query":
+
+        }
+
+    }
+
+    public function set_data_json() : bool
+    {}
     
 
 
@@ -168,11 +250,7 @@ public function set_data_json() : array {}
         }
 
         try {
-            if ($log) {
-                $file = $this->read_file("/configs/main.json");
-            } else {
-                $file = $this->read_file("/configs/main.json", false);
-            }
+            $file = $this->file_handler->read_file("/configs/main.json", $log);
         } catch (\Exception $e) {
             $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");

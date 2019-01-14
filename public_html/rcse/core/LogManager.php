@@ -28,11 +28,10 @@ class LogManager
     private $debug;
 
     /**
-     * Initiates logging to $file, if enabled in config. Returns array with [true, "ready"] if enabled, else returns [false, "disabled"]
+     * Initiates logging to $file, if enabled in config.
      *
      * @param string $file Filename
      * @param Core\JSONManager $configurator
-     * @return array
      */
     public function __construct(string $file, JSONManager $configurator)
     {
