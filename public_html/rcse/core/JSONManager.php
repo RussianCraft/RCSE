@@ -184,17 +184,17 @@ class JSONManager
                 $error;
                 break;
             case "words":
-                $path;
+                $path = "/configs/forbidden_words.json";
                 $message;
                 $error;
                 break;
             case "sections":
-                $path;
+                $path = "/configs/forum_sections.json";
                 $message;
                 $error;
                 break;
             case "bans":
-                $path;
+                $path = "/configs/ban_types.json";
                 $message;
                 $error;
                 break;
