@@ -32,7 +32,7 @@ class JSONManager
         "Incorrect_config_type" => "Incorrect config type or not selected!\n\r",
         "Wrong_config_structure" => "Tried to write config, but structure does not match!\n\r",
         "Config_update_failed" => "Tried to write new config data, but failed!\n\r",
-        "Locale_not_found" => "Selected locale not found or incorrect!\n\r",
+        "Locale_file_not_found" => "Selected locale file not found!\n\r",
         "Lang_not_found" => "Selected language not found in file!\n\r",
         "Module_props_not_found" => "Properties for selected module not found!\n\r",
         "Module_props_update_failed" => "Tried to write new module properties, but failed!\n\r",
@@ -40,7 +40,18 @@ class JSONManager
         "Query_group_not_found" => "Selected query group not found!\n\r",
         "Usergroup_not_found" => "Selected usergoup not found!\n\r",
         "Usergroup_remove_failed" => "Tried to remove usergroup, but failed!\n\r",
-        "Usergroup_update_failed" => "Tried to update usergroup, but failed!\n\r"
+        "Usergroup_update_failed" => "Tried to update usergroup, but failed!\n\r",
+        "Forbidden_words_not_found" => "Word section not found!\n\r"
+    ];
+    
+    private $log_msg = [
+        "Obtaining_config" => "Obtaining main config.\n\r",
+        "Obtaining_query_group" => "Obtaining query group ",
+        "Obtaining_query" => "Obtaining query ",
+        "Obtaining_module" => "Obtaining data for module",
+        "Obtaining_locale" => "Obtaining locale data for ",
+        "Obtaining_usergroup" => "Obtaining usergroup ",
+        "Obtaining_words" => "Obtainings forbidden words "
     ];
  
     public function __construct()
@@ -160,43 +171,43 @@ class JSONManager
         switch($type) {
             case "main":
                 $path = "/configs/main.json";
-                $message = "Obtaining main config.\n\r";
-                $error = $error_msg['Incorrect_config_type'];
+                $message = $log_msg['Obtaining_config'];
+                $error_not_found = $error_msg['Incorrect_config_type'];
                 break;
             case "query":
                 $path = "/configs/queries.json";
-                $message = "Obtaining queries.\n\r";
-                $error = $error_msg['Query_group_not_found'];
+                $message = $log_msg['Obtaining_query'] ."\'".$params['entry']."\'.\n\r";
+                $error_not_found = $error_msg['Query_group_not_found'];
                 break;
             case "module":
                 $path = "/configs/modules.json";
-                $message = "Obtaining \'$type\' module data.\n\r";
-                $error = $error_msg['Module_props_not_found'];
+                $message = $log_msg['Obtaining_module'] ."\'".$params['entry']."\'.\n\r";
+                $error_not_found = $error_msg['Module_props_not_found'];
                 break;
             case "locale":
-                $path;
-                $message;
-                $error;
+                $path = "/resources/locale/". $params['source'] ."/lang.json";
+                $message = $log_msg['Obtaining_locale'] ."\'".$params['entry']."\'.\n\r";
+                $error_not_found = $error_msg['Locale_file_not_found'];
                 break;
             case "usergroup":
                 $path = "/configs/usergroups.json";
-                $message;
-                $error;
+                $message = $log_msg['Obtaining_usergroup'] ."\'".$params['entry']."\'.\n\r";
+                $error_not_found = $error_msg['Usergroup_not_found'];
                 break;
             case "words":
                 $path = "/configs/forbidden_words.json";
-                $message;
-                $error;
+                $message = $log_msg['Obtaining_forbidden_words'] ."(".$params['entry'].").\n\r";
+                $error_not_found = $error_msg['Forbidden_words_not_found'];
                 break;
             case "sections":
                 $path = "/configs/forum_sections.json";
                 $message;
-                $error;
+                $error_not_found;
                 break;
             case "bans":
                 $path = "/configs/ban_types.json";
                 $message;
-                $error;
+                $error_not_found;
                 break;
         }
 

@@ -1,0 +1,23 @@
+{
+    "en": {
+        "errors": {
+            "test_error": "Test error",
+            "test_error_1": "Another test"
+        },
+        "info": {},
+        "user": {},
+        "panel": {
+            "title": "Admin Panel"
+        }
+    },
+    "ru": {
+        "errors": {
+            "test_error": "Тестовая ошибка"
+        },
+        "info": {},
+        "user": {},
+        "panel": {
+            "title": "Панель Управления"
+        }
+    }
+}
