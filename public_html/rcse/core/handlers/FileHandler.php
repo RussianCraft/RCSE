@@ -24,7 +24,7 @@ class FileHandler
      * @throws \RCSE\Core\Exception\FileLockException
      * @return string Contents of the file
      */
-    public function read_file(string $file, bool $log = true, bool $debug = false) : string
+    public function read_file(string $file, bool $log = false, bool $debug = false) : string
     {
         $file_handler;
         $file_contents;

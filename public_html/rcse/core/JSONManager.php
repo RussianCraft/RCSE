@@ -51,7 +51,9 @@ class JSONManager
         "Obtaining_module" => "Obtaining data for module",
         "Obtaining_locale" => "Obtaining locale data for ",
         "Obtaining_usergroup" => "Obtaining usergroup ",
-        "Obtaining_words" => "Obtainings forbidden words "
+        "Obtaining_words" => "Obtaining forbidden words ",
+        "Obtaining_section" => "Obtaining forum section ",
+        "Success" => "Data obtained successfully!\n\r"
     ];
  
     public function __construct()
@@ -164,55 +166,63 @@ class JSONManager
     /************************************/
 
 
-    public function get_data_json(string $type, array $params = null, bool $log = true)
+    public function get_data_json(string $type, array $params, bool $log = true)
     {
         $type = strtolower($type);
 
         switch($type) {
             case "main":
                 $path = "/configs/main.json";
-                $message = $log_msg['Obtaining_config'];
-                $error_not_found = $error_msg['Incorrect_config_type'];
+                $message = $this->log_msg['Obtaining_config'];
+                $error_not_found = $this->error_msg['Incorrect_config_type'];
                 break;
             case "query":
                 $path = "/configs/queries.json";
-                $message = $log_msg['Obtaining_query'] ."\'".$params['entry']."\'.\n\r";
-                $error_not_found = $error_msg['Query_group_not_found'];
+                $message = $this->log_msg['Obtaining_query'] ."(".$params['entry'].").\n\r";
+                $error_not_found = $this->error_msg['Query_group_not_found'];
                 break;
             case "module":
                 $path = "/configs/modules.json";
-                $message = $log_msg['Obtaining_module'] ."\'".$params['entry']."\'.\n\r";
-                $error_not_found = $error_msg['Module_props_not_found'];
+                $message = $this->log_msg['Obtaining_module'] ."(".$params['entry'].").\n\r";
+                $error_not_found = $this->error_msg['Module_props_not_found'];
                 break;
             case "locale":
                 $path = "/resources/locale/". $params['source'] ."/lang.json";
-                $message = $log_msg['Obtaining_locale'] ."\'".$params['entry']."\'.\n\r";
-                $error_not_found = $error_msg['Locale_file_not_found'];
+                $message = $this->log_msg['Obtaining_locale'] ."(".$params['entry'].").\n\r";
+                $error_not_found = $this->error_msg['Locale_file_not_found'];
                 break;
             case "usergroup":
                 $path = "/configs/usergroups.json";
-                $message = $log_msg['Obtaining_usergroup'] ."\'".$params['entry']."\'.\n\r";
-                $error_not_found = $error_msg['Usergroup_not_found'];
+                $message = $this->log_msg['Obtaining_usergroup'] ."(".$params['entry'].").\n\r";
+                $error_not_found = $this->error_msg['Usergroup_not_found'];
                 break;
             case "words":
                 $path = "/configs/forbidden_words.json";
-                $message = $log_msg['Obtaining_forbidden_words'] ."(".$params['entry'].").\n\r";
-                $error_not_found = $error_msg['Forbidden_words_not_found'];
+                $message = $this->log_msg['Obtaining_words'] ."(".$params['entry'].").\n\r";
+                $error_not_found = $this->error_msg['Forbidden_words_not_found'];
                 break;
             case "sections":
                 $path = "/configs/forum_sections.json";
-                $message;
-                $error_not_found;
+                $message = $this->log_msg['Obtaining_section'] . "(" .$params['entry']. ").\n\r";
+                $error_not_found = $this->error_msg['Forum_section_not_found'];
                 break;
             case "bans":
                 $path = "/configs/ban_types.json";
-                $message;
-                $error_not_found;
+                $message = $this->log_msg['Obtaining_ban'] . "(" .$params['entry']. ").\n\r";
+                $error_not_found = $this->error_msg['Ban_type_not_found'];
                 break;
+            default:
+                $message = $this->error_msg['Not_defined_datatype'] . $type . "!\n\r";
+                $error = true;
         }
 
-        if($log) {
+        if($log === true) {
             $this->logger->write_to_log($message, "info");
+        }
+
+        if($error === true) {
+            $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
+            return false;
         }
 
         try {
@@ -225,7 +235,7 @@ class JSONManager
 
         $json = json_decode($file, true);
 
-        if ($json == false) {
+        if ($json === false) {
             $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
             return false;
@@ -234,8 +244,53 @@ class JSONManager
         switch($type) {
             case "main":
             case "query":
-
+            case "module":
+                if (array_key_exists($params['entry'], $json) === false) {
+                    $message = ERROR_PREFIX_JSON . ERROR_INCORRECT_CONFIG_TYPE . REPORT_ERROR . RECONFIG_REQUIRED;
+                    $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
+                    return false;
+                } else {
+                    $result = $json[$params['entry']];
+                }
+            case "locale":
+                if (array_key_exists($params['lang'], $json) === false) {
+                    $message = ERROR_PREFIX_JSON . ERROR_LOCALE_LANG . REPORT_ERROR . RECONFIG_REQUIRED;
+                    $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
+                    return false;
+                } else {    
+                    $json = $json[$params['lang']];
+    
+                    if (array_key_exists($params['entry'], $json) === false) {
+                        $message = ERROR_PREFIX_JSON . ERROR_LOCALE_NOT_FOUND . REPORT_ERROR . RECONFIG_REQUIRED;
+                        $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
+                        return false;
+                    } else {
+                        $result = $json[$params['entry']];
+                    }
+                }
+            
+            case "usergroup":
+            case "words":
+            case "sections":
+            case "bans":
+                if($params['all'] === true) {
+                    return $json;
+                } else {
+                    if (array_key_exists($params['entry'], $json) === false) {
+                        $message = ERROR_PREFIX_JSON . ERROR_INCORRECT_CONFIG_TYPE . REPORT_ERROR . RECONFIG_REQUIRED;
+                        $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
+                        return false;
+                    } else {
+                        $result = $json[$params['entry']];
+                    }
+                }
         }
+
+        if ($log === true) {
+            $this->logger->write_to_log($log_msg['Success'], "info");
+        }
+
+        return $json[$type];
 
     }
 

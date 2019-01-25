@@ -49,7 +49,7 @@ $configuration = [
 */
 
 echo "Reading main site config: ";
-var_dump($config->get_main_config());
+var_dump($config->get_data_json('main',['entry' => 'site']));
 echo "<br>";
 /*echo "Writing main site config: ";
 var_dump($config->set_main_config("site", $config));
@@ -58,16 +58,16 @@ echo "Reading modified main site config: ";
 var_dump($config->get_main_config("site"));
 echo "<br>";*/
 echo "Reading queries for \"accounts\": ";
-var_dump($config->get_queries("accounts"));
+var_dump($config->get_data_json('query',['entry' => 'accounts']));
 echo "<br>";
 echo "Reading locale: ";
-var_dump($config->get_locale("cms", "common", "en", "errors"));
+var_dump($config->get_data_json('locale', ['source' => 'engine', 'lang' => 'en', 'entry' => 'errors']));
 echo "<br>";
 echo "Reading \"logger\" module config: ";
-var_dump($config->get_modules_properties("logmanager"));
+var_dump($config->get_data_json('module', ['entry' => 'logmanager']));
 echo "<br>";
 echo "Reading usergroups: ";
-var_dump($config->get_usergroups());
+var_dump($config->get_data_json('usergroup', ['all' => true]));
 echo "<br>";
 /*echo "Writing \"logger\" module config: ";
 var_dump($config->set_modules("logmanager", $logging));
