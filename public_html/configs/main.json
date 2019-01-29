@@ -5,7 +5,7 @@
         "keywords": "hello, test, aperture",
         "installed": false,
         "offline": false,
-        "theme": "Students",
+        "theme": "RCS-New",
         "lang": "ru",
         "start_page": "1",
         "plugins": false,
@@ -13,10 +13,10 @@
         "debug": true
     },
     "db":{        
-        "dbhost": "127.0.0.1",
-        "dbport": "3306",
-        "dblogin": "root",
-        "dbpassw": "",
-        "dbname": "rcse"
+        "host": "127.0.0.1",
+        "port": "3306",
+        "login": "root",
+        "passw": "",
+        "name": "rcse"
     }
 }

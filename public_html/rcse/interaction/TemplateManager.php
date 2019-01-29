@@ -76,7 +76,7 @@ class TemplateManager
 
     private function get_page(string $name)
     {
-        $path = "/themes/" . $this->config->get_main_config()['theme'] . "/pages/" . $name . ".html";
+        $path = "/resources/themes/" . $this->config->get_data_json("main", ["entry" => "site"])['theme'] . "/pages/" . $name . ".html";
         
         try {
             $file = $this->read_file($path);

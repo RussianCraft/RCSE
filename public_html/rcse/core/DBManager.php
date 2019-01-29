@@ -45,7 +45,7 @@ class DBManager
      */
     private function init_db() : bool
     {
-        $props = $this->config->get_main_config("database");
+        $props = $this->config->get_data_json('main',['entry' => 'db']);
         $dsn = 'mysql:host=' . $props['host'] . ';port=' . $props['port'] . ';dbname=' . $props['name'];
 
         $this->logger->write_to_log("Initializing the DB connection.\n", "info");
@@ -77,7 +77,7 @@ class DBManager
 
         $this->logger->write_to_log("Setting up the query.", "info");
 
-        $query = $this->config->get_queries($table)["select_" . $type];
+        $query = $this->config->get_data_json('query',['entry' => $table])["select_" . $type];
 
         if ($query === false) {
             $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;

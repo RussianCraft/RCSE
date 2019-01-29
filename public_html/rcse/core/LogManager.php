@@ -35,13 +35,13 @@ class LogManager
      */
     public function __construct(string $file, JSONManager $configurator)
     {
-        $this->configurator = $configurator;
+        $this->config = $configurator;
         $this->error_handler = new Handlers\ErrorHandler();
         
-        if ($this->configurator->get_main_config("site", false)['log']) {
+        if ($this->config->get_data_json('main',['entry' => 'site'],false)['log'] === true) {
             try {
                 $this->init_log($file);
-                $this->debug = $this->configurator->get_main_config("site", false)['debug'];
+                $this->debug = $this->config->get_data_json('main',['entry' => 'site'],false)['debug'];
             } catch (\Exception $e) {
                 $message = ERROR_PREFIX_LOG . "(" . $e->getCode() . ") " . $e->getMessage() . REPORT_ERROR;
                 $this->error_handler->print_error_no_log($message);
