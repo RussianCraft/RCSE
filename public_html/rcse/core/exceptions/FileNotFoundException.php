@@ -9,7 +9,7 @@ class FileNotFoundException extends \Exception
 
     public function __construct(string $file_path) 
     {
-        \Exception::__construct("File not found (or not read-\write- able): " . $file_path, 01);
+        parent::__construct("File not found (or not read-\write- able): " . $file_path, 01);
         $this->file_path = $file_path;
     }
 }

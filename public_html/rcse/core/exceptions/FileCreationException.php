@@ -9,7 +9,7 @@ class FileCreationException extends \Exception
 
     public function __construct(string $file_path) 
     {
-        \Exception::__construct("Failed to create file: " . $file_path, 04);
+        parent::__construct("Failed to create file: " . $file_path, 04);
         $this->file_path = $file_path;
     }
 }

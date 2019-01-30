@@ -122,7 +122,7 @@ class JSONManager
             $this->logger->write_to_log($message, "info");
         }
         
-        $json = $this->decode_data_json($path, $log);
+        $json = $this->read_data_json($path);
 
         if($json === false) {
             return false;
@@ -187,7 +187,7 @@ class JSONManager
     public function set_data_json() : bool
     {}
 
-    protected function decode_data_json(string $path, bool $log = true)
+    protected function read_data_json(string $path)
     {
         try {
             $file = $this->file_handler->read_file($path, $log);
@@ -206,6 +206,27 @@ class JSONManager
         }
 
         return $json;
+    }
+
+    protected function write_data_json(string $path, string $json) : bool
+    {
+        $json_result = json_encode($json);
+
+        if ($json_result === false) {
+            $message = ERROR_PREFIX_JSON . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
+            $this->error_handler->print_error($this->logger, $message);
+            return false;
+        }
+
+        try {
+            $this->file_handler->write_file($path, $json_result);
+        } catch (\Exception $e) {
+            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR . RECONFIG_REQUIRED;
+            $this->error_handler->print_error($this->logger, $message);
+            return false;
+        }
+
+        return true;
     }
         
     /**

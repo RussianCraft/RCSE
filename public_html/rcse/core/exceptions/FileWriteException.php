@@ -9,7 +9,7 @@ class FileWriteException extends \Exception
 
     public function __construct(string $file_path) 
     {
-        \Exception::__construct("Failed to write to file: " . $file_path, 03);
+        parent::__construct("Failed to write to file: " . $file_path, 03);
         $this->file_path = $file_path;
     }
 }

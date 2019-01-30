@@ -9,7 +9,7 @@ class FileLockException extends \Exception
 
     public function __construct(string $file_path) 
     {
-        \Exception::__construct("Failed to lock file: " . $file_path, 02);
+        parent::__construct("Failed to lock file: " . $file_path, 02);
         $this->file_path = $file_path;
     }
 }
