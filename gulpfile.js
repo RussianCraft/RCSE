@@ -10,6 +10,6 @@ gulp.task("sass", function(){
     .pipe(gulp.dest(finalDir))
 });
 
-gulp.task("default", ["sass"], function() {
+gulp.task("default", ["sass"], function () {
     gulp.watch(source_dir + "*.scss", ["sass"])
-})
+});
