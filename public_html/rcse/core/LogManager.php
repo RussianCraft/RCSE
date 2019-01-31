@@ -11,9 +11,9 @@ if (defined("RECONFIG_REQUIRED") === false) {
 if (defined("REPORT_ERROR") === false) {
     define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
 }
-define("ERROR_PREFIX_LOG", "LogManager Error: ");
-define("ERROR_INIT_LOG", "Failed to initialize logging!\n");
-define("ERROR_WRITE", "Failed to write to log file!\n");
+if(defined("DEBUG") === false) {
+    define("DEBUG", false);
+}
 
 /**
  * class Logger
@@ -25,7 +25,11 @@ class LogManager
     private $error_handler;
     private $log_file;
     private $log_handler;
-    private $debug;
+    private $error_prefix = "LogManager Error: ";
+    private $error_msg = [
+        "Initialize_error" => "Failed to initialize logging!\n\r",
+        "Write_error" => "Failed to write to log file!\n\r"
+    ];
 
     /**
      * Initiates logging to $file, if enabled in config.
@@ -41,9 +45,8 @@ class LogManager
         if ($this->config->get_data_json('main',['entry' => 'site'],false)['log'] === true) {
             try {
                 $this->init_log($file);
-                $this->debug = $this->config->get_data_json('main',['entry' => 'site'],false)['debug'];
             } catch (\Exception $e) {
-                $message = ERROR_PREFIX_LOG . "(" . $e->getCode() . ") " . $e->getMessage() . REPORT_ERROR;
+                $message = $this->error_prefix . "(" . $e->getCode() . ") " . $e->getMessage() . $this->error_msg['Initialize_error'] . REPORT_ERROR;
                 $this->error_handler->print_error_no_log($message);
             }
         }
@@ -51,7 +54,7 @@ class LogManager
 
     public function __destruct()
     {
-        $this->write_to_log("Log end.\n", "info");
+        $this->write_to_log("Log end.\n\r", "info");
 
         if ($this->log_file != null && empty($this->log_file) === false) {
             fclose($this->log_handler);
@@ -86,7 +89,7 @@ class LogManager
             throw new Exceptions\FileWriteException($this->log_file);
         }
 
-        if ($this->debug === false) {
+        if (DEBUG === false) {
             fwrite($this->log_handler, "Debug logging is disabled!\n\r");
         }
 
@@ -107,7 +110,7 @@ class LogManager
 
         switch ($level) {
             case "debug":
-                if ($this->debug) {
+                if (DEBUG) {
                     $message_write .= "[Debug]: ";
                 } else {
                     exit;
@@ -119,11 +122,9 @@ class LogManager
             case "notice":
                 $message_write .= "[Notice]: ";
                 break;
-            case "warn":
             case "warning":
                 $message_write .= "[Warning]: ";
                 break;
-            case "err":
             case "error":
                 $message_write .= "[Error]: ";
                 break;
@@ -140,8 +141,8 @@ class LogManager
                 $message_write .= "[]: ";
         }
         
-        if (fwrite($this->log_handler, $message_write . $message . "\r") === false) {
-            $message = ERROR_PREFIX_LOG . ERROR_WRITE . REPORT_ERROR;
+        if (fwrite($this->log_handler, $message_write . $message) === false) {
+            $message = $this->error_prefix . $this->error_msg['Write_error'] . REPORT_ERROR;
             $this->error_handler->print_error_no_log($message);
             return false;
         }

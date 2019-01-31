@@ -5,15 +5,8 @@ namespace RCSE\Core\Handlers;
 
 class FileHandler
 {
-    private $logger;
-    private $error_handler;
-    private $debug;
-
     public function __construct()
-    {
-        //$this->logger = new \RCSE\Core\LogManager(get_class($this), $this);
-        //$this->error_handler = new ErrorHandler();
-    }
+    {}
 
     /**
      * Reads contents of /$file(i.e. /configs/main.json), if file not present or not readable throws FileNotFoundException,
@@ -24,20 +17,14 @@ class FileHandler
      * @throws \RCSE\Core\Exception\FileLockException
      * @return string Contents of the file
      */
-    public function read_file(string $file, bool $log = false, bool $debug = false) : string
+    public function read_file(string $file) : string
     {
         $file_handler;
         $file_contents;
         $file_path = ROOT . $file;
 
-        if ($log && $debug) {
-            $this->logger->write_to_log("Reading file: $file_path!\n", "debug");
-        }
-
         if (is_readable($file_path) === false) {
-            if ($log) {
-                $this->logger->write_to_log("FIle is not readable! Trying chmod(0766)!\n", "notice");
-            }
+            
             chmod($file_path, 0766);
             if (is_readable($file_path) === false) {
                 throw new \RCSE\Core\Exceptions\FileNotFoundException($file_path);
@@ -56,10 +43,6 @@ class FileHandler
         flock($file_handler, LOCK_UN);
         fclose($file_handler);
 
-        if ($log && $debug) {
-            $this->logger->write_to_log("File read!\n", "debug");
-        }
-
         return $file_contents;
     }
 
@@ -73,19 +56,12 @@ class FileHandler
      * @throws \RCSE\Core\Exceptions\FileWriteException
      * @return boolean True in case of success
      */
-    public function write_file(string $file, string $contents, bool $debug = false) : bool
+    public function write_file(string $file, string $contents) : bool
     {
         $file_handler;
         $file_path = ROOT . $file;
 
-        if ($debug) {
-            $this->logger->write_to_log("Writing to file: $file_path!\n", "debug");
-        }
-
         if (is_writeable($file_path) === false) {
-            if ($debug) {
-                $this->logger->write_to_log("FIle is not writeable! Trying chmod(0766)!\n", "notice");
-            }
 
             chmod($file_path, 0766);
             if (is_writeable($file_path) === false) {
@@ -105,10 +81,6 @@ class FileHandler
 
         flock($file_handler, LOCK_UN);
         fclose($log_handler);
-
-        if ($debug) {
-            $this->logger->write_to_log("File written!\n", "debug");
-        }
 
         return true;
     }

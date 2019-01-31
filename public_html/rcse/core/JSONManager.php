@@ -11,7 +11,7 @@ if (defined("RECONFIG_REQUIRED") === false) {
 if (defined("REPORT_ERROR") === false) {
     define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n\r");
 }
-if(defined("DEBUG") === false) {
+if (defined("DEBUG") === false) {
     define("DEBUG", false);
 }
 
@@ -72,7 +72,7 @@ class JSONManager
     {
         $type = strtolower($type);
 
-        switch($type) {
+        switch ($type) {
             case "main":
                 $path = "/configs/main.json";
                 $message = $this->log_msg['Obtaining_config'];
@@ -118,17 +118,17 @@ class JSONManager
                 return false;
         }
 
-        if($log === true) {
+        if ($log === true) {
             $this->logger->write_to_log($message, "info");
         }
         
         $json = $this->read_data_json($path);
 
-        if($json === false) {
+        if ($json === false) {
             return false;
         }
         
-        switch($type) {
+        switch ($type) {
             case "main":
             case "query":
             case "module":
@@ -138,14 +138,14 @@ class JSONManager
                     return false;
                 } else {
                     $result = $json[$params['entry']];
-                    break;
                 }
+                break;
             case "locale":
                 if (array_key_exists($params['lang'], $json) === false) {
                     $message = $this->error_prefix . $error_msg['Lang_not_found'] . REPORT_ERROR . RECONFIG_REQUIRED;
                     $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
                     return false;
-                } else {    
+                } else {
                     $json = $json[$params['lang']];
     
                     if (array_key_exists($params['entry'], $json) === false) {
@@ -154,15 +154,14 @@ class JSONManager
                         return false;
                     } else {
                         $result = $json[$params['entry']];
-                        break;
                     }
                 }
-            
+                break;
             case "usergroup":
             case "words":
             case "sections":
             case "bans":
-                if($params['all'] === true) {
+                if ($params['all'] === true) {
                     return $json;
                 } else {
                     if (array_key_exists($params['entry'], $json) === false) {
@@ -171,9 +170,10 @@ class JSONManager
                         return false;
                     } else {
                         $result = $json[$params['entry']];
-                        break;
                     }
                 }
+                break;
+            default:
         }
 
         if ($log === true) {
@@ -181,11 +181,11 @@ class JSONManager
         }
 
         return $result;
-
     }
 
     public function set_data_json() : bool
-    {}
+    {
+    }
 
     protected function read_data_json(string $path)
     {
@@ -237,7 +237,7 @@ class JSONManager
      * @param array $contents Data to write
      * @return bool In case of success returns true
      */
-    public function set_main_config(string $type, array $contents) : bool
+    /*public function set_main_config(string $type, array $contents) : bool
     {
         $type = strtolower($type);
 
@@ -283,7 +283,7 @@ class JSONManager
         $this->logger->write_to_log("Config written!\n", "info");
 
         return true;
-    }
+    }*/
 
     /**
      * Writes $contents of selected $type to modules.json, also checks $key values of $contents to correspond to previous module.json content,
@@ -293,7 +293,7 @@ class JSONManager
      * @param array $contents Data to write
      * @return bool In case of success returns true
      */
-    public function set_modules(string $type, array $contents) : bool
+    /*public function set_modules(string $type, array $contents) : bool
     {
         $type = strtolower($type);
 
@@ -339,7 +339,7 @@ class JSONManager
         $this->logger->write_to_log("Module properties written!\n", "info");
 
         return true;
-    }
+    }*/
     
     /**
      * Writes $contents of selected $type to usergroups.json, also checks $key values of $contents to correspond to previous usergroups.json content,
@@ -349,7 +349,7 @@ class JSONManager
      * @param array $contents Data to write
      * @return bool In case of success returns true
      */
-    public function set_usergroups(string $type, array $contents) : bool
+    /*public function set_usergroups(string $type, array $contents) : bool
     {
         $type = strtolower($type);
 
@@ -398,7 +398,7 @@ class JSONManager
         $this->logger->write_to_log("Usergroup data written!\n", "info");
 
         return true;
-    }
+    }*/
 
     /**
      * Undocumented function
@@ -406,7 +406,7 @@ class JSONManager
      * @param string $group Usergroup to remove
      * @return boolean  If succeeds, true
      */
-    public function remove_usergroup(string $group) : bool
+    /*public function remove_usergroup(string $group) : bool
     {
         $type = strtolower($group);
 
@@ -454,5 +454,5 @@ class JSONManager
         $this->logger->write_to_log("Usergroup data removed!\n", "info");
 
         return true;
-    }
+    }*/
 }
