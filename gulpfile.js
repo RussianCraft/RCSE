@@ -6,10 +6,10 @@ var finalDir = "public_html/themes/RCS-New/pages/";
 
 gulp.task("sass", function(){
     gulp.src(sourceDir + "structure.scss")
-    .pipe(sass({outputStyle: "expanded"}))
-    .pipe(gulp.dest(finalDir))
+        .pipe(sass({ outputStyle: "expanded" }))
+        .pipe(gulp.dest(finalDir));
 });
 
 gulp.task("default", ["sass"], function () {
-    gulp.watch(source_dir + "*.scss", ["sass"])
+    gulp.watch(sourceDir + "*.scss", ["sass"]);
 });

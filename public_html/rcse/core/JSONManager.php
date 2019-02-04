@@ -63,11 +63,6 @@ class JSONManager
         $this->error_handler = new Handlers\ErrorHandler();
     }
 
-    /************************************/
-    /*    new functions, MUST be done   */
-    /************************************/
-
-
     public function get_data_json(string $type, array $params, bool $log = true)
     {
         $type = strtolower($type);
@@ -118,43 +113,30 @@ class JSONManager
                 return false;
         }
 
-        if ($log === true) {
-            $this->logger->write_to_log($message, "info");
-        }
+        $this->logger->write_to_log($message, "info");
         
-        $json = $this->read_data_json($path);
-
-        if ($json === false) {
-            return false;
-        }
         
         switch ($type) {
             case "main":
             case "query":
             case "module":
-                if (array_key_exists($params['entry'], $json) === false) {
-                    $message = ERROR_PREFIX_JSON . ERROR_INCORRECT_CONFIG_TYPE . REPORT_ERROR . RECONFIG_REQUIRED;
-                    $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
-                    return false;
-                } else {
+                if (check_data_json($json, $params['entry'])) {
                     $result = $json[$params['entry']];
+                } else {
+                    return false;
                 }
                 break;
             case "locale":
-                if (array_key_exists($params['lang'], $json) === false) {
-                    $message = $this->error_prefix . $error_msg['Lang_not_found'] . REPORT_ERROR . RECONFIG_REQUIRED;
-                    $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
-                    return false;
-                } else {
+                if (check_data_json($json, $params['lang'])) {
                     $json = $json[$params['lang']];
     
-                    if (array_key_exists($params['entry'], $json) === false) {
-                        $message = ERROR_PREFIX_JSON . ERROR_LOCALE_NOT_FOUND . REPORT_ERROR . RECONFIG_REQUIRED;
-                        $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
-                        return false;
-                    } else {
+                    if (check_data_json($json, $params['entry'])) {
                         $result = $json[$params['entry']];
+                    } else {
+                        return false;
                     }
+                } else {
+                    return false;
                 }
                 break;
             case "usergroup":
@@ -163,14 +145,10 @@ class JSONManager
             case "bans":
                 if ($params['all'] === true) {
                     return $json;
+                } elseif (check_data_json($json, $params['entry'])) {
+                    $result = $json[$params['entry']];
                 } else {
-                    if (array_key_exists($params['entry'], $json) === false) {
-                        $message = ERROR_PREFIX_JSON . ERROR_INCORRECT_CONFIG_TYPE . REPORT_ERROR . RECONFIG_REQUIRED;
-                        $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
-                        return false;
-                    } else {
-                        $result = $json[$params['entry']];
-                    }
+                    return false;
                 }
                 break;
             default:
@@ -183,38 +161,39 @@ class JSONManager
         return $result;
     }
 
-    public function set_data_json() : bool
+    public function jsonSetData() : bool
     {
+        $type = strtolower($type);
     }
 
-    protected function read_data_json(string $path)
+    protected function jsonReadData(string $path) : array
     {
         try {
             $file = $this->file_handler->read_file($path, $log);
         } catch (\Exception $e) {
             $message = $this->error_prefix . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
-            return false;
+            $this->error_handler->print_error($this->logger, "critical", $message);
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
         $json = json_decode($file, true);
 
         if ($json === false) {
             $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
-            return false;
+            $this->error_handler->print_error($this->logger, "critical", $message);
+            throw new \Exception("Failed to decode json!\n\r", 05);
         }
 
         return $json;
     }
 
-    protected function write_data_json(string $path, string $json) : bool
+    protected function jsonWriteData(string $path, string $json) : bool
     {
         $json_result = json_encode($json);
 
         if ($json_result === false) {
             $message = ERROR_PREFIX_JSON . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
+            $this->error_handler->print_error($this->logger, "critical", $message);
             return false;
         }
 
@@ -222,11 +201,36 @@ class JSONManager
             $this->file_handler->write_file($path, $json_result);
         } catch (\Exception $e) {
             $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
+            $this->error_handler->print_error($this->logger, "critical", $message);
             return false;
         }
 
         return true;
+    }
+
+    protected function jsonCheckData(string $json, string $data) : bool
+    {
+        if (array_key_exists($data, $json) === false) {
+            $message = ERROR_PREFIX_JSON . ERROR_INCORRECT_CONFIG_TYPE . REPORT_ERROR . RECONFIG_REQUIRED;
+            $this->error_handler->print_error($this->logger, $message);
+            return false;
+        }
+        return true;
+    }
+
+    protected function jsonObtainDataSimple(string $path, array $params)
+    {
+        try {
+            $json = $this->jsonReadData($path);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+
+        if (jsonCheckData($json, $params['entry'])) {
+            return $json[$params['entry']];
+        } else {
+            throw new \Exception("Failed to obtain data for ". $params['entry'] ."!\n\r", 06);
+        }
     }
         
     /**
@@ -252,14 +256,14 @@ class JSONManager
         }
 
         $json_orig = json_decode($file, true);
-        
+
         if ($json_orig === false) {
             $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error($this->logger, $message);
             return false;
         }
-        
-        
+
+
         foreach ($json_orig[$type] as $key => $value) {
             $json_orig[$type][$key] = $contents[$key];
         }
@@ -308,14 +312,14 @@ class JSONManager
         }
 
         $json_orig = json_decode($file, true);
-        
+
         if ($json_orig === false) {
             $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error($this->logger, $message);
             return false;
         }
-        
-        
+
+
         foreach ($json_orig[$type] as $key => $value) {
             $json_orig[$type][$key] = $contents[$key];
         }
@@ -364,13 +368,13 @@ class JSONManager
         }
 
         $json_orig = json_decode($file, true);
-        
+
         if ($json_orig === false) {
             $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error($this->logger, $message);
             return false;
         }
-        
+
         if (array_key_exists($type, $json_orig) === false) {
             $json_orig[$type] = $contents;
         } else {
@@ -421,7 +425,7 @@ class JSONManager
         }
 
         $json_orig = json_decode($file, true);
-        
+
         if ($json_orig === false) {
             $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR;
             $this->error_handler->print_error($this->logger, $message);
@@ -433,7 +437,7 @@ class JSONManager
             $this->error_handler->print_error($this->logger, $error);
             return false;
         }
-        
+
         unset($json_orig[$type]);
         $json = json_encode($json_orig);
 
