@@ -15,6 +15,7 @@ if (defined("DEBUG") === false) {
     define("DEBUG", false);
 }
 
+
 /**
  * JSONManager
  * Parses from and to JSON config files
@@ -63,7 +64,7 @@ class JSONManager
         $this->error_handler = new Handlers\ErrorHandler();
     }
 
-    public function get_data_json(string $type, array $params, bool $log = true)
+    public function jsonGetData(string $type, array $params, bool $log = true)
     {
         $type = strtolower($type);
 
@@ -72,6 +73,7 @@ class JSONManager
                 $path = "/configs/main.json";
                 $message = $this->log_msg['Obtaining_config'];
                 $error_not_found = $this->error_msg['Incorrect_config_type'];
+                
                 break;
             case "query":
                 $path = "/configs/queries.json";
@@ -161,12 +163,129 @@ class JSONManager
         return $result;
     }
 
-    public function jsonSetData() : bool
+    public function jsonObtainMainConfig(string $type)
     {
-        $type = strtolower($type);
+        $path = "/config/main.json";
+        $types = ["site", "database"];
+
+        return $this->jsonObtainDataSimple($type, $path, $types);
     }
 
-    protected function jsonReadData(string $path) : array
+    public function jsonUpdateMainConfig(string $type, array $contents) : bool
+    {
+        $path = "/config/main.json";
+        $types = ["site", "database"];
+
+        return $this->jsonUpdateDataSimple($type, $path, $types, $contents);
+    }
+
+    public function jsonObtainQueries(string $table)
+    {
+        $path = "/config/queries.json";
+        $types = ["accounts", "punishments", "posts", "comments", "topics", "replies"];
+
+        return $this->jsonObtainDataSimple($table, $path, $types);
+    }
+
+    public function jsonUpdateQueries(string $table, array $contents) : bool
+    {
+        $path = "/config/queries.json";
+        $types = ["accounts", "punishments", "posts", "comments", "topics", "replies"];
+
+        return $this->jsonUpdateDataSimple($table, $path, $types, $contents);
+    }
+
+    public function jsonObtainModuleProps(string $module)
+    {
+        $path = "/config/modules.json";
+        $types = ["dbmanager", "logmanager", "thememanager", "newsletter", "users", "forum", "search", "adminpanel", "papi"];
+
+        return $this->jsonObtainDataSimple($module, $path, $types);
+    }
+
+    public function jsonUpdateModuleProps(string $module, array $contents) : bool
+    {
+        $path = "/config/modules.json";
+        $types = ["dbmanager", "logmanager", "thememanager", "newsletter", "users", "forum", "search", "adminpanel", "papi"];
+        
+        return $this->jsonUpdateDataSimple($module, $path, $types, $contents);
+    }
+
+    public function jsonObtainDataSimple(string $type, string $path, array $types)
+    {
+        $type = strtolower($type);
+
+        if (defined("LOG")) {
+            $this->logger->write_to_log("Obtaining data from "+ $path +".\n\r", "info");
+        }
+
+        if ($this->compareType($type, $types) === false) {
+            $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
+            return false;
+        }
+
+        try {
+            $result = $this->jsonObtainAndCheckData($path, $type);
+        } catch (\Exception $e) {
+            $this->error_handler->print_error($this->logger, "fatal", $e->getMessage());
+            return false;
+        }
+
+        if (defined("LOG")) {
+            $this->logger->write_to_log("Data successfully obtained.\n\r", "info");
+        }
+
+        return $result;
+    }
+
+    protected function jsonUpdateDataSimple(string $type, string $path, array $types, array $contents) : bool
+    {
+        $type = strtolower($type);
+
+        $this->logger->write_to_log("Updating config for "+ $type +".\n\r", "info");
+
+        if ($this->compareType($type, $types) === false) {
+            $this->error_handler->print_error($this->logger, "fatal", "Selected config type doesn't exist!\n\r");
+            return false;
+        }
+
+        $json = $this->jsonReadAndParseData($path);
+
+        foreach ($json[$type] as $key => $value) {
+            $json[$type][$key] = $contents[$key];
+        }
+
+        if ($this->jsonParseAndWriteData($path, $json)) {
+            $this->error_handler->print_error($this->logger, "fatal", "Failed to parse or write the data!\n\r");
+            return false;
+        }
+
+        $this->logger->write("Config update successful!\n\r", "info");
+
+        return true;
+    }
+
+    protected function jsonObtainAndCheckData(string $path, string $entry)
+    {
+        
+        if (defined("LOG")) {
+            $this->logger->write_to_log("Tying to obtain data from file ". $path .".\n\r", "info");
+        }
+
+        try {
+            $json = $this->jsonReadAndParseData($path);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+
+        if ($this->jsonCheckData($json, $entry)) {
+            return $json[$entry];
+        } else {
+            throw new \Exception("Failed to obtain data for ". $entry ."!\n\r", 06);
+        }
+    }
+
+    protected function jsonReadAndParseData(string $path) : array
     {
         try {
             $file = $this->file_handler->read_file($path, $log);
@@ -187,7 +306,7 @@ class JSONManager
         return $json;
     }
 
-    protected function jsonWriteData(string $path, string $json) : bool
+    protected function jsonParseAndWriteData(string $path, string $json) : bool
     {
         $json_result = json_encode($json);
 
@@ -218,76 +337,21 @@ class JSONManager
         return true;
     }
 
-    protected function jsonObtainDataSimple(string $path, array $params)
-    {
-        try {
-            $json = $this->jsonReadData($path);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode());
-        }
-
-        if (jsonCheckData($json, $params['entry'])) {
-            return $json[$params['entry']];
-        } else {
-            throw new \Exception("Failed to obtain data for ". $params['entry'] ."!\n\r", 06);
-        }
-    }
-        
-    /**
-     * Writes $contents of selected $type to main.json, also checks $key values of $contents to correspond to previous main.json content,
-     * if does not match prints error and redirects to admin panel.
-     *
-     * @param string $type Config type
-     * @param array $contents Data to write
-     * @return bool In case of success returns true
-     */
-    /*public function set_main_config(string $type, array $contents) : bool
+    protected function compareType(string $type, array $variants) : bool
     {
         $type = strtolower($type);
 
-        $this->logger->write_to_log("Writing new config ($type)!\n", "info");
+        foreach ($variants as $value) {
+            $value = strtolower($value);
+        }
+        unset($value);
 
-        try {
-            $file = $this->read_file("/configs/main.json");
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
+        if (array_search($type, $variants) === false) {
             return false;
+        } else {
+            return true;
         }
-
-        $json_orig = json_decode($file, true);
-
-        if ($json_orig === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-
-        foreach ($json_orig[$type] as $key => $value) {
-            $json_orig[$type][$key] = $contents[$key];
-        }
-
-        $json = json_encode($json_orig);
-
-        if ($json === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        try {
-            $this->write_file("/configs/main.json", $json);
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        $this->logger->write_to_log("Config written!\n", "info");
-
-        return true;
-    }*/
+    }
 
     /**
      * Writes $contents of selected $type to modules.json, also checks $key values of $contents to correspond to previous module.json content,

@@ -42,7 +42,7 @@ class LogManager
         $this->config = $configurator;
         $this->error_handler = new Handlers\ErrorHandler();
         
-        if ($this->config->get_data_json('main',['entry' => 'site'],false)['log'] === true) {
+        if ($this->config->jsonObtainMainConfig('site')['log'] === true) {
             try {
                 $this->init_log($file);
             } catch (\Exception $e) {

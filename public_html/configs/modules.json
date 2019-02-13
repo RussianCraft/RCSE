@@ -3,11 +3,11 @@
     "logmanager": {
         "debug": false
     },
+    "thememanager": [],
     "newsletter": [],
     "users": [],
     "forum": [],
     "search": [],
     "adminpanel": [],
-    "papi": [],
-    "thememanager": []
+    "papi": []
 }
