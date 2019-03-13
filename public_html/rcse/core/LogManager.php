@@ -49,13 +49,12 @@ class LogManager
                 $message = $this->error_prefix . "(" . $e->getCode() . ") " . $e->getMessage() . $this->error_msg['Initialize_error'] . REPORT_ERROR;
                 $this->error_handler->print_error_no_log($message);
             }
+        } else {
         }
     }
 
     public function __destruct()
     {
-        $this->write_to_log("Log end.\n\r", "info");
-
         if ($this->log_file != null && empty($this->log_file) === false) {
             fclose($this->log_handler);
         }
@@ -109,13 +108,6 @@ class LogManager
         $level = strtolower($level);
 
         switch ($level) {
-            case "debug":
-                if (DEBUG) {
-                    $message_write .= "[Debug]: ";
-                } else {
-                    exit;
-                }
-                break;
             case "info":
                 $message_write .= "[Info]: ";
                 break;

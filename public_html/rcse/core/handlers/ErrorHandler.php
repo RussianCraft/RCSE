@@ -49,9 +49,12 @@ class ErrorHandler
         print($message);
     }
 
-    public function print_error(\Core\LogManager $logger, string $severity, string $message) : void
+    public function print_error(\RCSE\Core\LogManager $logger, string $severity, string $message) : void
     {
-        $logger->write_to_log($message, $severity);
+        
+        if (defined("LOG")) {
+            $logger->write_to_log($message, $severity);
+        }
 
         $message = str_replace("\n", '<br>', $message);
         print($message);

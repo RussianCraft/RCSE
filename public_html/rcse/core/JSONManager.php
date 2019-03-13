@@ -57,6 +57,17 @@ class JSONManager
         "Success" => "Data obtained successfully!\n\r"
     ];
 
+    private $config_path = [
+        "main" => "/config/main.json",
+        "modules" => "/config/modules.json",
+        "queries" => "/config/queries.json",
+        "forum_sections" => "/config/forum_sections.json",
+        "ban_types" => "/config/ban_types.json",
+        "forbidden_words" => "/config/forbidden_words.json",
+        "usergroups" => "/config/usergroups.json",
+        "menu" => "/config/menu.json"
+    ];
+
     public function __construct()
     {
         $this->file_handler = new Handlers\FileHandler();
@@ -64,164 +75,169 @@ class JSONManager
         $this->error_handler = new Handlers\ErrorHandler();
     }
 
-    public function jsonGetData(string $type, array $params, bool $log = true)
-    {
-        $type = strtolower($type);
-
-        switch ($type) {
-            case "main":
-                $path = "/configs/main.json";
-                $message = $this->log_msg['Obtaining_config'];
-                $error_not_found = $this->error_msg['Incorrect_config_type'];
-                
-                break;
-            case "query":
-                $path = "/configs/queries.json";
-                $message = $this->log_msg['Obtaining_query'] ."(".$params['entry'].").\n\r";
-                $error_not_found = $this->error_msg['Query_group_not_found'];
-                break;
-            case "module":
-                $path = "/configs/modules.json";
-                $message = $this->log_msg['Obtaining_module'] ."(".$params['entry'].").\n\r";
-                $error_not_found = $this->error_msg['Module_props_not_found'];
-                break;
-            case "locale":
-                $path = "/resources/locale/". $params['source'] ."/lang.json";
-                $message = $this->log_msg['Obtaining_locale'] ."(".$params['entry'].").\n\r";
-                $error_not_found = $this->error_msg['Locale_file_not_found'];
-                break;
-            case "usergroup":
-                $path = "/configs/usergroups.json";
-                $message = $this->log_msg['Obtaining_usergroup'] ."(".$params['entry'].").\n\r";
-                $error_not_found = $this->error_msg['Usergroup_not_found'];
-                break;
-            case "words":
-                $path = "/configs/forbidden_words.json";
-                $message = $this->log_msg['Obtaining_words'] ."(".$params['entry'].").\n\r";
-                $error_not_found = $this->error_msg['Forbidden_words_not_found'];
-                break;
-            case "sections":
-                $path = "/configs/forum_sections.json";
-                $message = $this->log_msg['Obtaining_section'] . "(" .$params['entry']. ").\n\r";
-                $error_not_found = $this->error_msg['Forum_section_not_found'];
-                break;
-            case "bans":
-                $path = "/configs/ban_types.json";
-                $message = $this->log_msg['Obtaining_ban'] . "(" .$params['entry']. ").\n\r";
-                $error_not_found = $this->error_msg['Ban_type_not_found'];
-                break;
-            default:
-                $this->error_handler->print_error_and_redirect($this->logger, "critical", $this->error_msg['Not_defined_datatype'] . $type . "!\n\r", "admin");
-                return false;
-        }
-
-        $this->logger->write_to_log($message, "info");
-        
-        
-        switch ($type) {
-            case "main":
-            case "query":
-            case "module":
-                if (check_data_json($json, $params['entry'])) {
-                    $result = $json[$params['entry']];
-                } else {
-                    return false;
-                }
-                break;
-            case "locale":
-                if (check_data_json($json, $params['lang'])) {
-                    $json = $json[$params['lang']];
-    
-                    if (check_data_json($json, $params['entry'])) {
-                        $result = $json[$params['entry']];
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-                break;
-            case "usergroup":
-            case "words":
-            case "sections":
-            case "bans":
-                if ($params['all'] === true) {
-                    return $json;
-                } elseif (check_data_json($json, $params['entry'])) {
-                    $result = $json[$params['entry']];
-                } else {
-                    return false;
-                }
-                break;
-            default:
-        }
-
-        if ($log === true) {
-            $this->logger->write_to_log($this->log_msg['Success'], "info");
-        }
-
-        return $result;
-    }
-
     public function jsonObtainMainConfig(string $type)
     {
-        $path = "/config/main.json";
         $types = ["site", "database"];
 
-        return $this->jsonObtainDataSimple($type, $path, $types);
+        return $this->jsonObtainDataSimple($type, $this->config_path["main"], $types);
     }
 
     public function jsonUpdateMainConfig(string $type, array $contents) : bool
     {
-        $path = "/config/main.json";
         $types = ["site", "database"];
 
-        return $this->jsonUpdateDataSimple($type, $path, $types, $contents);
+        return $this->jsonUpdateDataSimple($type, $this->config_path["main"], $types, $contents);
     }
 
     public function jsonObtainQueries(string $table)
     {
-        $path = "/config/queries.json";
         $types = ["accounts", "punishments", "posts", "comments", "topics", "replies"];
 
-        return $this->jsonObtainDataSimple($table, $path, $types);
-    }
-
-    public function jsonUpdateQueries(string $table, array $contents) : bool
-    {
-        $path = "/config/queries.json";
-        $types = ["accounts", "punishments", "posts", "comments", "topics", "replies"];
-
-        return $this->jsonUpdateDataSimple($table, $path, $types, $contents);
+        return $this->jsonObtainDataSimple($table, $this->config_path["queries"], $types);
     }
 
     public function jsonObtainModuleProps(string $module)
     {
-        $path = "/config/modules.json";
         $types = ["dbmanager", "logmanager", "thememanager", "newsletter", "users", "forum", "search", "adminpanel", "papi"];
 
-        return $this->jsonObtainDataSimple($module, $path, $types);
+        return $this->jsonObtainDataSimple($module, $this->config_path["modules"], $types);
     }
 
     public function jsonUpdateModuleProps(string $module, array $contents) : bool
     {
-        $path = "/config/modules.json";
         $types = ["dbmanager", "logmanager", "thememanager", "newsletter", "users", "forum", "search", "adminpanel", "papi"];
         
-        return $this->jsonUpdateDataSimple($module, $path, $types, $contents);
+        return $this->jsonUpdateDataSimple($module, $this->config_path["modules"], $types, $contents);
     }
 
-    public function jsonObtainDataSimple(string $type, string $path, array $types)
+    public function jsonObtainLocale(string $lang, string $element, string $source)
+    {
+        $path = "/resources/locale/". $source ."/lang.json";
+        $types = ["errors", "info", "panel", "user"];
+
+        return $this->jsonObtainDataDouble($lang, $element, $path, $types);
+    }
+
+    public function jsonObtainUsergroup(string $group)
+    {
+        return $this->jsonObtainDataAllNSmall($group, $this->config_path["usergroups"], []);
+    }
+
+    public function jsonUpdateUsergroup(string $group, array $contents)
+    {
+        return $this->jsonUpdateDataSimple($group, $this->config_path["usergroups"], [], $contents);
+    }
+
+    public function jsonRemoveUsergroup(string $group)
+    {
+        return $this->jsonRemoveDataSimple($group, $this->config_path["usergroups"]);
+    }
+
+    public function jsonObtainWords(string $type)
+    {
+        $types = ["login", "swears"];
+
+        return $this->jsonObtainDataAllNSmall($type, $this->config_path["forbidden_words"], $types);
+    }
+
+    public function jsonUpdateWords(string $type, array $contents)
+    {
+        $types = ["login", "swears"];
+
+        return $this->jsonUpdateDataSimple($type, $this->config_path["forbidden_words"], $types, $contents);
+    }
+
+    public function jsonObtainSection(string $type)
+    {
+        return $this->jsonObtainDataAllNSmall($type, $this->config_path["forum_sections"], []);
+    }
+
+    public function jsonUpdateSection(string $type, array $contents)
+    {
+        return $this->jsonUpdateDataSimple($type, $this->config_path["forum_sections"], [], $contents);
+    }
+
+    public function jsonRemoveSection(string $type)
+    {
+        return $this->jsonRemoveDataSimple($type, $this->config_path["forum_sections"]);
+    }
+
+    public function jsonObtainBan(string $type)
+    {
+        return $this->jsonObtainDataAllNSmall($type, $this->config_path["ban_types"], []);
+    }
+
+    public function jsonUpdateBan(string $type, array $contents)
+    {
+        return $this->jsonUpdateDataSimple($type, $this->config_path["ban_types"], [], $contents);
+    }
+
+    public function jsonRemoveBan(string $type)
+    {
+        return $this->jsonRemoveDataSimple($type, $this->config_path["ban_types"]);
+    }
+    
+    public function jsonObtainMenu(string $type)
+    {
+        return $this->jsonObtainDataAllNSmall($type, $this->config_path["menu"], []);
+    }
+
+    public function jsonUpdateMenu(string $type, array $contents)
+    {
+        return $this->jsonUpdateDataSimple($type, $this->config_path["menu"], [], $contents);
+    }
+
+    public function jsonRemoveFromMenu(string $type)
+    {
+        return $this->jsonRemoveDataSimple($type, $this->config_path["menu"]);
+    }
+
+
+    protected function jsonObtainDataAllNSmall(string $type, string $path, array $types)
+    {
+        if ($type === "all") {
+            try {
+                return $this->jsonReadAndParseData($path);
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage(), $e->getCode());
+            }
+        } else {
+            return $this->jsonObtainDataSimple($type, $path, $types);
+        }
+    }
+
+    protected function jsonObtainDataDouble(string $type1, string $type2, string $path, array $types)
+    {
+        $type2 = strtolower($type2);
+
+        $json = $this->jsonObtainDataSimple($type1, $path, []);
+
+        if ($json === false) {
+            $this->error_handler->print_error($this->logger, "fatal", "Failed to obtain data from ". $path ."!\n\r");
+            return false;
+        }
+
+        if ($this->compareType($type2, $types) === false) {
+            $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
+            return false;
+        }
+
+        return $json[$type2];
+    }
+
+    protected function jsonObtainDataSimple(string $type, string $path, array $types)
     {
         $type = strtolower($type);
 
-        if (defined("LOG")) {
+        if (defined("DEBUG")) {
             $this->logger->write_to_log("Obtaining data from "+ $path +".\n\r", "info");
         }
 
-        if ($this->compareType($type, $types) === false) {
-            $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
-            return false;
+        if (empty($types) === false) {
+            if ($this->compareType($type, $types) === false) {
+                $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
+                return false;
+            }
         }
 
         try {
@@ -231,7 +247,7 @@ class JSONManager
             return false;
         }
 
-        if (defined("LOG")) {
+        if (defined("DEBUG")) {
             $this->logger->write_to_log("Data successfully obtained.\n\r", "info");
         }
 
@@ -242,33 +258,74 @@ class JSONManager
     {
         $type = strtolower($type);
 
-        $this->logger->write_to_log("Updating config for "+ $type +".\n\r", "info");
+        
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Updating config for ". $type .".\n\r", "info");
+        }
 
-        if ($this->compareType($type, $types) === false) {
-            $this->error_handler->print_error($this->logger, "fatal", "Selected config type doesn't exist!\n\r");
-            return false;
+        if (empty($types) === false) {
+            if ($this->compareType($type, $types) === false) {
+                $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
+                return false;
+            }
         }
 
         $json = $this->jsonReadAndParseData($path);
 
-        foreach ($json[$type] as $key => $value) {
-            $json[$type][$key] = $contents[$key];
+        if(empty($json[$type]) === false) {
+            foreach ($json[$type] as $key => $value) {
+                $json[$type][$key] = $contents[$key];
+            }
+        } else {
+            $json[$type] = $contents;
         }
 
-        if ($this->jsonParseAndWriteData($path, $json)) {
+
+        if ($this->jsonParseAndWriteData($path, $json) === false) {
             $this->error_handler->print_error($this->logger, "fatal", "Failed to parse or write the data!\n\r");
             return false;
         }
 
-        $this->logger->write("Config update successful!\n\r", "info");
+        
+        if (defined("DEBUG")) {
+            $this->logger->write("Config update successful!\n\r", "info");
+        }
+
+        return true;
+    }
+
+    protected function jsonRemoveDataSimple(string $type, string $path) : bool
+    {
+        $type = strtolower($type);
+
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Removing data " . $type . ".\n\r", "info");
+        }
+
+        $json = $this->jsonReadAndParseData($path);
+
+        if (array_key_exists($type, $json) === false) {
+            $this->error_handler->print_error($this->logger, "error", "Failed to remove ". $type ."!\n\r");
+            return false;
+        }
+
+        unset($json[$type]);
+
+        if ($this->jsonParseAndWriteData($path, $json) === false) {
+            $this->error_handler->print_error($this->logger, "fatal", "Failed to parse or write the data!\n\r");
+            return false;
+        }
+
+        if (defined("DEBUG")) {
+            $this->logger->write("Data removed successfuly.\n\r", "info");
+        }
 
         return true;
     }
 
     protected function jsonObtainAndCheckData(string $path, string $entry)
     {
-        
-        if (defined("LOG")) {
+        if (defined("DEBUG")) {
             $this->logger->write_to_log("Tying to obtain data from file ". $path .".\n\r", "info");
         }
 
@@ -288,7 +345,7 @@ class JSONManager
     protected function jsonReadAndParseData(string $path) : array
     {
         try {
-            $file = $this->file_handler->read_file($path, $log);
+            $file = $this->file_handler->read_file($path);
         } catch (\Exception $e) {
             $message = $this->error_prefix . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error($this->logger, "critical", $message);
@@ -297,8 +354,8 @@ class JSONManager
 
         $json = json_decode($file, true);
 
-        if ($json === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
+        if ($json === false || $json === null) {
+            $message = $this->error_prefix . $this->error_msg["JSON_Decoding"] . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error($this->logger, "critical", $message);
             throw new \Exception("Failed to decode json!\n\r", 05);
         }
@@ -306,12 +363,12 @@ class JSONManager
         return $json;
     }
 
-    protected function jsonParseAndWriteData(string $path, string $json) : bool
+    protected function jsonParseAndWriteData(string $path, array $json) : bool
     {
         $json_result = json_encode($json);
 
         if ($json_result === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
+            $message = $this->error_prefix . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error($this->logger, "critical", $message);
             return false;
         }
@@ -319,7 +376,7 @@ class JSONManager
         try {
             $this->file_handler->write_file($path, $json_result);
         } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR . RECONFIG_REQUIRED;
+            $message = $this->error_prefix . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR . RECONFIG_REQUIRED;
             $this->error_handler->print_error($this->logger, "critical", $message);
             return false;
         }
@@ -327,11 +384,11 @@ class JSONManager
         return true;
     }
 
-    protected function jsonCheckData(string $json, string $data) : bool
+    protected function jsonCheckData(array $json, string $data) : bool
     {
         if (array_key_exists($data, $json) === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_INCORRECT_CONFIG_TYPE . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
+            $message = $this->error_prefix . $this->error_msg["Incorrect_config_type"] . REPORT_ERROR . RECONFIG_REQUIRED;
+            $this->error_handler->print_error($this->logger, "fatal", $message);
             return false;
         }
         return true;
@@ -352,175 +409,4 @@ class JSONManager
             return true;
         }
     }
-
-    /**
-     * Writes $contents of selected $type to modules.json, also checks $key values of $contents to correspond to previous module.json content,
-     * if does not match prints error and redirects to admin panel.
-     *
-     * @param string $type Module
-     * @param array $contents Data to write
-     * @return bool In case of success returns true
-     */
-    /*public function set_modules(string $type, array $contents) : bool
-    {
-        $type = strtolower($type);
-
-        $this->logger->write_to_log("Writing module ($type) properties!\n", "info");
-
-        try {
-            $file = $this->read_file("/configs/modules.json");
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
-            return false;
-        }
-
-        $json_orig = json_decode($file, true);
-
-        if ($json_orig === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-
-        foreach ($json_orig[$type] as $key => $value) {
-            $json_orig[$type][$key] = $contents[$key];
-        }
-
-        $json = json_encode($json_orig);
-
-        if ($json === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        try {
-            $this->write_file("/configs/modules.json", $json);
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        $this->logger->write_to_log("Module properties written!\n", "info");
-
-        return true;
-    }*/
-    
-    /**
-     * Writes $contents of selected $type to usergroups.json, also checks $key values of $contents to correspond to previous usergroups.json content,
-     * if does not match prints error and redirects to admin panel.
-     *
-     * @param string $type Usergoup
-     * @param array $contents Data to write
-     * @return bool In case of success returns true
-     */
-    /*public function set_usergroups(string $type, array $contents) : bool
-    {
-        $type = strtolower($type);
-
-        $this->logger->write_to_log("Writing usergroup ($type) data!\n", "info");
-
-        try {
-            $file = $this->read_file("/configs/usergroups.json");
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error_and_redirect($this->logger, $message, "admin");
-            return false;
-        }
-
-        $json_orig = json_decode($file, true);
-
-        if ($json_orig === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        if (array_key_exists($type, $json_orig) === false) {
-            $json_orig[$type] = $contents;
-        } else {
-            foreach ($json_orig[$type] as $key => $value) {
-                $json_orig[$type][$key] = $contents[$key];
-            }
-        }
-
-        $json = json_encode($json_orig);
-
-        if ($json === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        try {
-            $this->write_file("/configs/usergroups.json", $json);
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        $this->logger->write_to_log("Usergroup data written!\n", "info");
-
-        return true;
-    }*/
-
-    /**
-     * Undocumented function
-     *
-     * @param string $group Usergroup to remove
-     * @return boolean  If succeeds, true
-     */
-    /*public function remove_usergroup(string $group) : bool
-    {
-        $type = strtolower($group);
-
-        $this->logger->write_to_log("Removing usergroup ($type) data!\n", "info");
-
-        try {
-            $file = $this->read_file("/configs/usergroups.json");
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error_and_redirect($this->logger, "", $message, "admin");
-            return false;
-        }
-
-        $json_orig = json_decode($file, true);
-
-        if ($json_orig === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_DECODING . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        if (array_key_exists($type, $json_orig) === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_USERGROUP_REMOVE . ERROR_USERGROUP_NF . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, $error);
-            return false;
-        }
-
-        unset($json_orig[$type]);
-        $json = json_encode($json_orig);
-
-        if ($json === false) {
-            $message = ERROR_PREFIX_JSON . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        try {
-            $this->write_file("/configs/usergroups.json", $json);
-        } catch (\Exception $e) {
-            $message = ERROR_PREFIX_JSON . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, $message);
-            return false;
-        }
-
-        $this->logger->write_to_log("Usergroup data removed!\n", "info");
-
-        return true;
-    }*/
 }

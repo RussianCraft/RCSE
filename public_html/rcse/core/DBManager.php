@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 namespace RCSE\Core;
 
@@ -11,7 +11,7 @@ if (defined("RECONFIG_REQUIRED") === false) {
 if (defined("REPORT_ERROR") === false) {
     define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
 }
-if(defined("DEBUG") === false) {
+if (defined("DEBUG") === false) {
     define("DEBUG", false);
 }
 define("ERROR_PREFIX_DB", "DBManager Error: ");
@@ -45,20 +45,24 @@ class DBManager
      */
     private function init_db() : bool
     {
-        $props = $this->config->get_data_json('main',['entry' => 'db']);
+        $props = $this->config->jsonObtainMainConfig('database');
         $dsn = 'mysql:host=' . $props['host'] . ';port=' . $props['port'] . ';dbname=' . $props['name'];
 
-        $this->logger->write_to_log("Initializing the DB connection.\n", "info");
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Initializing the DB connection.\n\r", "info");
+        }
 
         try {
             $this->database = new \PDO($dsn, $props['login'], $props['passw']);
         } catch (\PDOException $e) {
             $message = ERROR_PREFIX_DB . "(" .$e->getCode() . ")". $e->getMessage() . "!\n" . ERROR_INIT_DB . REPORT_ERROR;
-            $this->error_handler->print_error_and_redirect($this->logger, "critical", $message, "admin");
+            $this->error_handler->print_error($this->logger, "critical", $message);
             return false;
         }
 
-        $this->logger->write_to_log("DB connection initialized successfully!", "info");
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("DB connection initialized successfully!", "info");
+        }
 
         return true;
     }
@@ -68,16 +72,23 @@ class DBManager
         $table = strtolower($table);
         $type = strtolower($type);
 
-        $this->logger->write_to_log("Obtaining data for $marker from DB.", "info");
-
-        if ($this->check_data_db($table, $type, $marker) === false) {
-            $this->logger->write_to_log("Data for $marker was not found!", "warning");
-            return false;
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Obtaining data for $marker from DB.", "info");
         }
 
-        $this->logger->write_to_log("Setting up the query.", "info");
+        if ($this->check_data_db($table, $type, $marker) === false) {
+            if (defined("DEBUG")) {
+                $this->logger->write_to_log("Data for $marker was not found!", "warning");
+            }
+            return false;
+        }
+        
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Setting up the query.", "info");
+        }
 
-        $query = $this->config->get_data_json('query',['entry' => $table])["select_" . $type];
+
+        $query = $this->config->jsonObtainQueries($table)["select_" . $type];
 
         if ($query === false) {
             $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;
@@ -89,8 +100,10 @@ class DBManager
         $params = [':' . $temp[1] => $marker];
         unset($temp);
         
-        $this->logger->write_to_log("Preparing the query.", "info");
-
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Preparing the query.", "info");
+        }
+        
         try {
             $query = $this->database->prepare($query);
         } catch (PDOException $e) {
@@ -99,16 +112,22 @@ class DBManager
             return false;
         }
         
-        $this->logger->write_to_log("Executing the query", "info");
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Executing the query", "info");
+        }
 
         $query_bool = $query->execute($params);
 
         if ($query_bool === false) {
-            $this->logger->write_to_log("Query execution failed!", "error");
+            if (defined("DEBUG")) {
+                $this->logger->write_to_log("Query execution failed!", "error");
+            }
             return false;
         }
 
-        $this->logger->write_to_log("Successfully obtained the data!", "info");
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Successfully obtained the data!", "info");
+        }
 
         return $query->fetch(\PDO::FETCH_ASSOC);
     }
@@ -129,7 +148,9 @@ class DBManager
             return false;
         }
         
-        if(DEBUG) $this->logger->write_to_log("Cleaning the query parameters.", "debug");
+        if (defined("DEBUG")) {
+            $this->logger->write_to_log("Cleaning the query parameters.", "debug");
+        }
 
         $temp = explode(":", $query);
         array_shift($temp);

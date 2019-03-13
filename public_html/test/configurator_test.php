@@ -3,36 +3,36 @@ require "../vendor/autoload.php";
 
 $config = new RCSE\Core\JSONManager();
 
-/*
+
 $usergroup = [
     "level" => 1,
-    "rate" => true,
-    "news" => [
-        "add_new" => false,
-        "edit_own" => false,
-        "edit_all" => false,
-        "rem_own" => false,
-        "rem_others" => false
-    ],
-    "comments" => [
-        "add_new" => true,
-        "edit_own" => true,
-        "edit_all" => false,
-        "rem_own" => true,
-        "rem_others" => false
-    ],
-    "accounts" => [
-        "edit_own" => true,
-        "edit_others" => false,
-        "banhammer" => false,
-        "rem_own" => true,
-        "rem_others" => false,
-        "full_view" => false
-    ],
-    "admin" => false
+        "rate" => true,
+        "news" => [
+            "add_new" => false,
+            "edit_own" => false,
+            "edit_all" => false,
+            "rem_own" => false,
+            "rem_others" => false
+        ],
+        "comments" => [
+            "add_new" => true,
+            "edit_own" => true,
+            "edit_all" => false,
+            "rem_own" => true,
+            "rem_others" => false
+        ],
+        "accounts" => [
+            "edit_own" => true,
+            "edit_others" => false,
+            "banhammer" => false,
+            "rem_own" => true,
+            "rem_others" => false,
+            "full_view" => false
+        ],
+        "admin" => false
 ];
 
-$logging = ["debug" => false];
+$logging = ["debug" => true];
 
 $configuration = [
     "name" => "RCSE",
@@ -46,43 +46,43 @@ $configuration = [
     "plugins" => false,
     "log" => false
 ];
-*/
 
-echo "Reading main site config: ";
+
+echo "Reading main site config: <br>";
 var_dump($config->jsonObtainMainConfig('site'));
 echo "<br>";
-/*echo "Writing main site config: ";
-var_dump($config->set_main_config("site", $config));
+echo "Writing main site config: <br>";
+var_dump($config->jsonUpdateMainConfig("site", $configuration));
 echo "<br>";
-echo "Reading modified main site config: ";
-var_dump($config->get_main_config("site"));
-echo "<br>";*/
+echo "Reading modified main site config: <br>";
+var_dump($config->jsonObtainMainConfig('site'));
+echo "<br>";
 echo "Reading queries for \"accounts\": ";
 var_dump($config->jsonObtainQueries('accounts'));
 echo "<br>";
-/*echo "Reading locale: ";
-var_dump($config->get_data_json('locale', ['source' => 'engine', 'lang' => 'en', 'entry' => 'errors']));
-echo "<br>";*/
-echo "Reading \"logger\" module config: ";
+echo "Reading locale: <br>";
+var_dump($config->jsonObtainLocale('ru', 'errors', 'RCS'));
+echo "<br>";
+echo "Reading \"logger\" module config: <br>";
 var_dump($config->jsonObtainModuleProps('logmanager'));
 echo "<br>";
-/*echo "Reading usergroups: ";
-var_dump($config->get_data_json('usergroup', ['all' => true]));
-echo "<br>";*/
-/*echo "Writing \"logger\" module config: ";
-var_dump($config->set_modules("logmanager", $logging));
+echo "Writing \"logger\" module config: <br>";
+var_dump($config->jsonUpdateModuleProps("logmanager", $logging));
 echo "<br>";
-echo "Reading modified \"logger\" module config: ";
-var_dump($config->get_modules_properties("logmanager"));
+echo "Reading modified \"logger\" module config: <br>";
+var_dump($config->jsonObtainModuleProps('logmanager'));
 echo "<br>";
-echo "Writing new usergroup: ";
-var_dump($config->set_usergroups("user1", $usergroup));
+echo "Reading usergroups: <br>";
+var_dump($config->jsonObtainUsergroup("all"));
 echo "<br>";
-echo "Reading modified usergroups: ";
-var_dump($config->get_usergroups("user1"));
+echo "Writing new usergroup: <br>";
+var_dump($config->jsonUpdateUsergroup("user1", $usergroup));
 echo "<br>";
-echo "Removing usergroup \"user1\": ";
-var_dump($config->remove_usergroup("user1"));
+echo "Reading modified usergroups: <br>";
+var_dump($config->jsonObtainUsergroup("user1"));
 echo "<br>";
-echo "Reading modified usergroups: ";
-var_dump($config->get_usergroups("user1"));*/
+echo "Removing usergroup \"user1\": <br>";
+var_dump($config->jsonRemoveUsergroup("user1"));
+echo "<br>";
+echo "Reading modified usergroups: <br>";
+var_dump($config->jsonObtainUsergroup("user1"));

@@ -40,6 +40,7 @@ class FileHandler
         
         $file_contents = fread($file_handler, filesize($file_path));
     
+        clearstatcache();
         flock($file_handler, LOCK_UN);
         fclose($file_handler);
 
@@ -80,7 +81,7 @@ class FileHandler
         }
 
         flock($file_handler, LOCK_UN);
-        fclose($log_handler);
+        fclose($file_handler);
 
         return true;
     }
