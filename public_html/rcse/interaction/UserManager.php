@@ -11,6 +11,9 @@ if (defined("RECONFIG_REQUIRED") === false) {
 if (defined("REPORT_ERROR") === false) {
     define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
 }
+if(defined("DEBUG") === false) {
+    define("DEBUG", false);
+}
 
 class UserManager
 {

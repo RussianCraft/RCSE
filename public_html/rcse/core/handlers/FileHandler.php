@@ -2,88 +2,126 @@
 declare(strict_types=1);
 namespace RCSE\Core\Handlers;
 
+if(defined("ROOT") === false) {
+    define("ROOT", $_SERVER['DOCUMENT_ROOT']);
+}
 
 class FileHandler
 {
-    public function __construct()
-    {}
+    private $file_stream;
+    private $file_path;
+    private $file_dir;
+    private $file_perms = 0777;
+    private $line_count = 0;
+    private $flush_freq = false;
 
-    /**
-     * Reads contents of /$file(i.e. /configs/main.json), if file not present or not readable throws FileNotFoundException,
-     * if present, but locked throws FileLockException
-     *
-     * @param string $file Filename, must end with .json (i.e. "main.json)
-     * @throws \RCSE\Core\Exceptions\FileNotFoundException
-     * @throws \RCSE\Core\Exception\FileLockException
-     * @return string Contents of the file
-     */
-    public function read_file(string $file) : string
+    public function __construct(string $file_dir = null)
     {
-        $file_handler;
-        $file_contents;
-        $file_path = ROOT . $file;
+        $this->file_dir = $file_dir;
+    }
 
-        if (is_readable($file_path) === false) {
-            
-            chmod($file_path, 0766);
-            if (is_readable($file_path) === false) {
-                throw new \RCSE\Core\Exceptions\FileNotFoundException($file_path);
+    public function __destruct()
+    {
+        if($this->file_steram !== null) {
+            $this->fileClose();
+        }
+    }
+
+    private function fileOpen(string $mode)
+    {
+        $lock;
+
+        if(file_exists($this->file_path) === false) {
+            if(file_exists($this->file_dir) === false) {
+                $this->fileCreateDir();
+            }
+
+        } else {
+            $this-fileSetPermissions();
+
+            switch($mode) {
+                case "r":
+                    $lock = LOCK_SH;
+                    break;
+                case "w":
+                    $lock = LOCK_EX;
+                    break;
             }
         }
-
-        $file_handler = fopen($file_path, "rb");
-
-        if (flock($file_handler, LOCK_SH, $eWouldBlock) === false || $eWouldBlock) {
-            fclose($file_handler);
-            throw new \RCSE\Core\Exceptions\FileLockException($file_path);
-        }
         
-        $file_contents = fread($file_handler, filesize($file_path));
-    
+        $this->file_stream = fopen($this->file_path, $mode."b");
+
+        if(flock($this->file_stream, $lock, $eWouldBlock) === false) {
+            throw new \Exception("Failed to lock the file: {$this->file_path}!", 1000);
+        }
+    }
+
+    private function fileCreateDir()
+    {
+        mkdir($this->file_dir, $this->file_perms, true);
+    }
+
+    private function fileSetPermissions()
+    {
+        if(is_readable($this->file_path) === false || is_writeable($file_path) === false) {
+
+            if(chmod($this->file_path, $this->file_perms) === false) {
+                throw new \Exception("Failed to set file write-\\read- able: {$this->file_path}!", 1001);
+            }
+        }
+    }
+
+    private function fileClose()
+    {
         clearstatcache();
-        flock($file_handler, LOCK_UN);
-        fclose($file_handler);
+        flock($this->file_stream, LOCK_UN);
+        fclose($this->file_stream);
+    }
+
+    public function fileRead(string $file_path)
+    {
+        $file_contents;
+
+        $this->file_path = $file_path;
+
+        $this->fileOpen("r");
+
+        $file_contents = file_get_contents($this->file_stream);
+
+        if($file_contents === false) {
+            throw new \Exception("Failed to read from file: {$this->file_path}!", 1002);
+        }
+
+        $this->fileClose();
 
         return $file_contents;
     }
 
-    /**
-     * Writes $contents to /$file (i.e. /configs/main.json), if file not present or not writeable throws FileNotFoundException,
-     *  if writing failed throws FileWriteException, if succeeds returns true
-     *
-     * @param string $file Filename, must end with .json (i.e. "main.json")
-     * @param string $contents Data to write
-     * @throws \RCSE\Core\Exceptions\FileNotFoundException
-     * @throws \RCSE\Core\Exceptions\FileWriteException
-     * @return boolean True in case of success
-     */
-    public function write_file(string $file, string $contents) : bool
+    public function fileWrite(string $file_path, string $contents)
     {
-        $file_handler;
-        $file_path = ROOT . $file;
+        $this->file_path = $file_path;
+        $this->fileOpen("w");
 
-        if (is_writeable($file_path) === false) {
-
-            chmod($file_path, 0766);
-            if (is_writeable($file_path) === false) {
-                throw new \RCSE\Core\Exceptions\FileNotFoundException($file_path);
-            }
+        if(fwrite($this->file_stream, $contents) === false) {
+            throw new \Exception("Failed to write to file: {$this->file_path}!", 1003);
         }
 
-        $file_handler = fopen($file_path, "wb");
-
-        while (flock($file_handler, LOCK_EX, $eWouldBlock) === false) {
-        }
-
-        if (fwrite($file_handler, $contents) === false) {
-            fclose($file_handler);
-            throw new \RCSE\Core\Exceptions\FileWriteException($file_path);
-        }
-
-        flock($file_handler, LOCK_UN);
-        fclose($file_handler);
-
-        return true;
+        $this->fileClose();
     }
 
+    public function fileWriteLine(string $file_path, string $contents)
+    {
+        $this->file_path = $file_path;
+        $this->fileOpen("w");
+
+        if(fwrite($this->file_stream, $contents) === false) {
+            throw new \Exception("Failed to write to file: {$this->file_path}!", 1003);
+        } else {
+            $this->line_count++;
+
+            if($this->flush_freq && $this->line_count % $this->flush_freq === 0) {
+                fflush($this->file_stream);
+            }
+        }
+    }
 }

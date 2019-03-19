@@ -23,7 +23,7 @@ define("ERROR_PREPARE", "Failed to prepare query!\n");
  * class DBManager
  * Database Manager, provides access to database
  */
-class DBManager
+class Database
 {
     private $logger;
     private $error_handler;

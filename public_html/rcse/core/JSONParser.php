@@ -20,178 +20,18 @@ if (defined("DEBUG") === false) {
  * JSONManager
  * Parses from and to JSON config files
  */
-class JSONManager
+class JSONParser
 {
     private $logger;
     private $error_handler;
     private $file_handler;
-    private $error_prefix = "JSONManager Error: ";
-    private $error_msg = [
-        "JSON_Decoding" => "Tried to decode parameters from JSON fomat, but failed!\n\r",
-        "JSON_Encoding" => "Tried to encode parameters to JSON fomat, but failed!\n\r",
-        "Entry_dont_exist" => "Selected entry does not exist!\n\r",
-        "Incorrect_config_type" => "Incorrect config type or not selected!\n\r",
-        "Wrong_config_structure" => "Tried to write config, but structure does not match!\n\r",
-        "Config_update_failed" => "Tried to write new config data, but failed!\n\r",
-        "Locale_file_not_found" => "Selected locale file not found!\n\r",
-        "Lang_not_found" => "Selected language not found in file!\n\r",
-        "Module_props_not_found" => "Properties for selected module not found!\n\r",
-        "Module_props_update_failed" => "Tried to write new module properties, but failed!\n\r",
-        "Query_not_found" => "Selected query not found!\n\r",
-        "Query_group_not_found" => "Selected query group not found!\n\r",
-        "Usergroup_not_found" => "Selected usergoup not found!\n\r",
-        "Usergroup_remove_failed" => "Tried to remove usergroup, but failed!\n\r",
-        "Usergroup_update_failed" => "Tried to update usergroup, but failed!\n\r",
-        "Forbidden_words_not_found" => "Word section not found!\n\r"
-    ];
-    
-    private $log_msg = [
-        "Obtaining_config" => "Obtaining main config.\n\r",
-        "Obtaining_query_group" => "Obtaining query group ",
-        "Obtaining_query" => "Obtaining query ",
-        "Obtaining_module" => "Obtaining data for module",
-        "Obtaining_locale" => "Obtaining locale data for ",
-        "Obtaining_usergroup" => "Obtaining usergroup ",
-        "Obtaining_words" => "Obtaining forbidden words ",
-        "Obtaining_section" => "Obtaining forum section ",
-        "Success" => "Data obtained successfully!\n\r"
-    ];
-
-    private $config_path = [
-        "main" => "/config/main.json",
-        "modules" => "/config/modules.json",
-        "queries" => "/config/queries.json",
-        "forum_sections" => "/config/forum_sections.json",
-        "ban_types" => "/config/ban_types.json",
-        "forbidden_words" => "/config/forbidden_words.json",
-        "usergroups" => "/config/usergroups.json",
-        "menu" => "/config/menu.json"
-    ];
 
     public function __construct()
     {
         $this->file_handler = new Handlers\FileHandler();
-        $this->logger = new LogManager(get_class($this), $this);
+        $this->logger = new Logger();
         $this->error_handler = new Handlers\ErrorHandler();
     }
-
-    public function jsonObtainMainConfig(string $type)
-    {
-        $types = ["site", "database"];
-
-        return $this->jsonObtainDataSimple($type, $this->config_path["main"], $types);
-    }
-
-    public function jsonUpdateMainConfig(string $type, array $contents) : bool
-    {
-        $types = ["site", "database"];
-
-        return $this->jsonUpdateDataSimple($type, $this->config_path["main"], $types, $contents);
-    }
-
-    public function jsonObtainQueries(string $table)
-    {
-        $types = ["accounts", "punishments", "posts", "comments", "topics", "replies"];
-
-        return $this->jsonObtainDataSimple($table, $this->config_path["queries"], $types);
-    }
-
-    public function jsonObtainModuleProps(string $module)
-    {
-        $types = ["dbmanager", "logmanager", "thememanager", "newsletter", "users", "forum", "search", "adminpanel", "papi"];
-
-        return $this->jsonObtainDataSimple($module, $this->config_path["modules"], $types);
-    }
-
-    public function jsonUpdateModuleProps(string $module, array $contents) : bool
-    {
-        $types = ["dbmanager", "logmanager", "thememanager", "newsletter", "users", "forum", "search", "adminpanel", "papi"];
-        
-        return $this->jsonUpdateDataSimple($module, $this->config_path["modules"], $types, $contents);
-    }
-
-    public function jsonObtainLocale(string $lang, string $element, string $source)
-    {
-        $path = "/resources/locale/". $source ."/lang.json";
-        $types = ["errors", "info", "panel", "user"];
-
-        return $this->jsonObtainDataDouble($lang, $element, $path, $types);
-    }
-
-    public function jsonObtainUsergroup(string $group)
-    {
-        return $this->jsonObtainDataAllNSmall($group, $this->config_path["usergroups"], []);
-    }
-
-    public function jsonUpdateUsergroup(string $group, array $contents)
-    {
-        return $this->jsonUpdateDataSimple($group, $this->config_path["usergroups"], [], $contents);
-    }
-
-    public function jsonRemoveUsergroup(string $group)
-    {
-        return $this->jsonRemoveDataSimple($group, $this->config_path["usergroups"]);
-    }
-
-    public function jsonObtainWords(string $type)
-    {
-        $types = ["login", "swears"];
-
-        return $this->jsonObtainDataAllNSmall($type, $this->config_path["forbidden_words"], $types);
-    }
-
-    public function jsonUpdateWords(string $type, array $contents)
-    {
-        $types = ["login", "swears"];
-
-        return $this->jsonUpdateDataSimple($type, $this->config_path["forbidden_words"], $types, $contents);
-    }
-
-    public function jsonObtainSection(string $type)
-    {
-        return $this->jsonObtainDataAllNSmall($type, $this->config_path["forum_sections"], []);
-    }
-
-    public function jsonUpdateSection(string $type, array $contents)
-    {
-        return $this->jsonUpdateDataSimple($type, $this->config_path["forum_sections"], [], $contents);
-    }
-
-    public function jsonRemoveSection(string $type)
-    {
-        return $this->jsonRemoveDataSimple($type, $this->config_path["forum_sections"]);
-    }
-
-    public function jsonObtainBan(string $type)
-    {
-        return $this->jsonObtainDataAllNSmall($type, $this->config_path["ban_types"], []);
-    }
-
-    public function jsonUpdateBan(string $type, array $contents)
-    {
-        return $this->jsonUpdateDataSimple($type, $this->config_path["ban_types"], [], $contents);
-    }
-
-    public function jsonRemoveBan(string $type)
-    {
-        return $this->jsonRemoveDataSimple($type, $this->config_path["ban_types"]);
-    }
-    
-    public function jsonObtainMenu(string $type)
-    {
-        return $this->jsonObtainDataAllNSmall($type, $this->config_path["menu"], []);
-    }
-
-    public function jsonUpdateMenu(string $type, array $contents)
-    {
-        return $this->jsonUpdateDataSimple($type, $this->config_path["menu"], [], $contents);
-    }
-
-    public function jsonRemoveFromMenu(string $type)
-    {
-        return $this->jsonRemoveDataSimple($type, $this->config_path["menu"]);
-    }
-
 
     protected function jsonObtainDataAllNSmall(string $type, string $path, array $types)
     {
