@@ -9,16 +9,11 @@ if(defined("ROOT") === false) {
 class FileHandler
 {
     private $file_stream;
-    private $file_path;
+    private $file;
     private $file_dir;
     private $file_perms = 0777;
     private $line_count = 0;
     private $flush_freq = false;
-
-    public function __construct(string $file_dir = null)
-    {
-        $this->file_dir = $file_dir;
-    }
 
     public function __destruct()
     {
@@ -31,28 +26,29 @@ class FileHandler
     {
         $lock;
 
-        if(file_exists($this->file_path) === false) {
-            if(file_exists($this->file_dir) === false) {
-                $this->fileCreateDir();
-            }
-
+        var_dump($this->file_dir);
+        
+        if(is_dir($this->file_dir) === false) {
+            $this->fileCreateDir();
         } else {
-            $this-fileSetPermissions();
+            $this->fileSetPermissions();
 
             switch($mode) {
                 case "r":
                     $lock = LOCK_SH;
                     break;
-                case "w":
+                case "c":
                     $lock = LOCK_EX;
                     break;
             }
         }
-        
-        $this->file_stream = fopen($this->file_path, $mode."b");
+        $this->file_stream = fopen($this->file_dir . $this->file, $mode."b");
+        if($this->file_stream === false) {
+            throw new \Exception("Failed to create file: {$this->file}!", 1000);
+        }
 
         if(flock($this->file_stream, $lock, $eWouldBlock) === false) {
-            throw new \Exception("Failed to lock the file: {$this->file_path}!", 1000);
+            throw new \Exception("Failed to lock the file: {$this->file_path}!", 1001);
         }
     }
 
@@ -63,10 +59,12 @@ class FileHandler
 
     private function fileSetPermissions()
     {
-        if(is_readable($this->file_path) === false || is_writeable($file_path) === false) {
+        if(is_readable($this->file_dir) === false || is_writeable($this->file_dir) === false) {
 
-            if(chmod($this->file_path, $this->file_perms) === false) {
-                throw new \Exception("Failed to set file write-\\read- able: {$this->file_path}!", 1001);
+            if(chmod($this->file_dir, 0777) === false) {
+                throw new \Exception("Failed to set file write-\\read- able: {$this->file_path}!", 1002);
+            } elseif(is_readable($this->file_dir) === false || is_writeable($this->file_dir) === false) {
+                throw new \Exception("Failed to set file write-\\read- able: {$this->file_path}!", 1002);
             }
         }
     }
@@ -78,18 +76,17 @@ class FileHandler
         fclose($this->file_stream);
     }
 
-    public function fileRead(string $file_path)
+    public function fileRead(string $file_dir, string $file)
     {
         $file_contents;
-
-        $this->file_path = $file_path;
-
+        $this->file_dir = $file_dir;
+        $this->file = $file;
         $this->fileOpen("r");
 
         $file_contents = file_get_contents($this->file_stream);
 
         if($file_contents === false) {
-            throw new \Exception("Failed to read from file: {$this->file_path}!", 1002);
+            throw new \Exception("Failed to read from file: {$this->file_path}!", 1003);
         }
 
         $this->fileClose();
@@ -97,25 +94,27 @@ class FileHandler
         return $file_contents;
     }
 
-    public function fileWrite(string $file_path, string $contents)
+    public function fileWrite(string $file_dir, string $file, string $contents)
     {
-        $this->file_path = $file_path;
-        $this->fileOpen("w");
+        $this->file_dir = $file_dir;
+        $this->file = $file;
+        $this->fileOpen("c");
 
         if(fwrite($this->file_stream, $contents) === false) {
-            throw new \Exception("Failed to write to file: {$this->file_path}!", 1003);
+            throw new \Exception("Failed to write to file: {$this->file_path}!", 1004);
         }
 
         $this->fileClose();
     }
 
-    public function fileWriteLine(string $file_path, string $contents)
+    public function fileWriteLine(string $file_dir, string $file, string $contents)
     {
-        $this->file_path = $file_path;
-        $this->fileOpen("w");
+        $this->file_dir = $file_dir;
+        $this->file = $file;
+        $this->fileOpen("c");
 
         if(fwrite($this->file_stream, $contents) === false) {
-            throw new \Exception("Failed to write to file: {$this->file_path}!", 1003);
+            throw new \Exception("Failed to write to file: {$this->file_path}!", 1005);
         } else {
             $this->line_count++;
 

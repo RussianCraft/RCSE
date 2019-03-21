@@ -1,7 +1,8 @@
 <?php
-require "../vendor/autoload.php";
+require("../vendor/autoload.php");
 
-$config = new RCSE\Core\JSONManager();
+define("ROOT", "/");
 
-echo "Causing JSON error to log: ";
-$config->get_main_config("syte");
+$logger = new \RCSE\Core\Logger();
+
+$logger->log($logger::INFO, "System online");
