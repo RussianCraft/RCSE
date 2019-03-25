@@ -12,7 +12,7 @@ if (defined("REPORT_ERROR") === false) {
     define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
 }
 if(defined("DEBUG") === false) {
-    define("DEBUG", false);
+    define("DEBUG", true);
 }
 
 /**
@@ -37,12 +37,12 @@ class LogManager
      * @param string $file Filename
      * @param Core\JSONManager $configurator
      */
-    public function __construct(string $file, JSONManager $configurator)
+    public function __construct(string $file/*, JSONManager $configurator*/)
     {
-        $this->config = $configurator;
+        /*$this->config = $configurator;*/
         $this->error_handler = new Handlers\ErrorHandler();
         
-        if ($this->config->jsonObtainMainConfig('site')['log'] === true) {
+        if (/*$this->config->jsonObtainMainConfig('site')['log'] ===*/ true) {
             try {
                 $this->init_log($file);
             } catch (\Exception $e) {

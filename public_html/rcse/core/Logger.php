@@ -35,26 +35,30 @@ class Logger
         $this->logSetLevelThreshold($level_threshold);
         $this->logSetFilePath();
 
-        $this->file_handler = new \RCSE\Core\Handlers\FileHandler();
+        $this->file_handler = new \RCSE\Core\Handlers\FileHandler($this->log_dir, $this->log_file);
+        $this->file_handler->fileOpen("c");
 
     }
 
     public function __destruct()
-    {}
+    {
+        $this->file_handler->__destruct();
+    }
 
     private function logSetFilePath()
     {
-        $datetime = $this->logGetTimestamp(false)->format('Y-m-d_H:i:s');
+        $datetime = $this->logGetTimestamp(false)->format('Y-m-d_H-i-s');
         $path = "/logs/{$this->logGetClientIP()}/";
 
-        if(is_dir($path) === false) {
-            mkdir($path, 0777, true);
+        if(is_dir(ROOT . $path) === false) {
+            mkdir(ROOT . $path, $this->file_perms);
         }
 
         $file = "{$datetime}.log";
 
         $this->log_dir = $path;
         $this->log_file = $file;
+        var_dump($this->log_file);
     }
 
     public function logSetLevelThreshold($level_threshold)
@@ -81,17 +85,18 @@ class Logger
 
     public function log($level, string $message, array $context = array())
     {
-        if($this->message_levels[$this->level_threshold] < $this->message_levels[$level]) {
+        if($this->message_levels[$this->level_threshold] <= $this->message_levels[$level]) {
             return;
         }
 
         $message_formatted = $this->logFormatMessage($level, $message);
 
-        $this->file_handler->fileWriteLine($this->log_dir, $this->log_file, $message_formatted);
+        $this->file_handler->fileWriteLine($message_formatted);
     }
 
     private function logFormatMessage(string $level, string $message)
     {
+        $level = strtoupper($level);
         $message_formatted = "[{$this->logGetTimestamp()}][{$level}] {$message}";
         return $message_formatted.PHP_EOL;
     }
@@ -110,6 +115,7 @@ class Logger
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
+
         return $ip;
     }
 }

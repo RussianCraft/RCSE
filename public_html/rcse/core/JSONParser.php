@@ -2,115 +2,97 @@
 declare(strict_types=1);
 namespace RCSE\Core;
 
-if (defined("ROOT") === false) {
-    define("ROOT", $_SERVER['DOCUMENT_ROOT']);
-}
-if (defined("RECONFIG_REQUIRED") === false) {
-    define("RECONFIG_REQUIRED", "Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n\r");
-}
-if (defined("REPORT_ERROR") === false) {
-    define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n\r");
-}
-if (defined("DEBUG") === false) {
-    define("DEBUG", false);
-}
-
-
 /**
- * JSONManager
+ * JSONParser
  * Parses from and to JSON config files
  */
 class JSONParser
 {
     private $logger;
-    private $error_handler;
     private $file_handler;
 
     public function __construct()
     {
         $this->file_handler = new Handlers\FileHandler();
         $this->logger = new Logger();
-        $this->error_handler = new Handlers\ErrorHandler();
     }
 
-    protected function jsonObtainDataAllNSmall(string $type, string $path, array $types)
+    protected function jsonObtainDataAllNSmall(string $type, string $file_dir, string $file_name, array $types)
     {
+        $type = strtolower($type);
+
         if ($type === "all") {
             try {
-                return $this->jsonReadAndParseData($path);
+                return $this->jsonReadAndParseData($file_dir, $file_name);
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage(), $e->getCode());
             }
         } else {
-            return $this->jsonObtainDataSimple($type, $path, $types);
+            try {
+                return $this->jsonObtainDataSimple($type, $file_dir, $file_name, $types);
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage(), $e->getCode());
+            }
         }
     }
 
-    protected function jsonObtainDataDouble(string $type1, string $type2, string $path, array $types)
+    protected function jsonObtainDataDouble(string $type1, string $type2, string $file_dir, string $file_name, array $types)
     {
+        $type1 = strtolower($type1);
         $type2 = strtolower($type2);
 
-        $json = $this->jsonObtainDataSimple($type1, $path, []);
-
-        if ($json === false) {
-            $this->error_handler->print_error($this->logger, "fatal", "Failed to obtain data from ". $path ."!\n\r");
-            return false;
+        try {
+            $json = $this->jsonObtainDataSimple($type1, $file_dir, $file_name, []);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        if ($this->compareType($type2, $types) === false) {
-            $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
-            return false;
+        if (empty($types) === false) {
+            if ($this->compareType($type2, $types) === false) {
+                throw new \Exception("Chosen key ({$type}) doesn't exist in file {$file_name}.", 1014);
+            }
         }
 
         return $json[$type2];
     }
 
-    protected function jsonObtainDataSimple(string $type, string $path, array $types)
+    protected function jsonObtainDataSimple(string $type, string $file_dir, string $file_name, array $types)
     {
         $type = strtolower($type);
 
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Obtaining data from "+ $path +".\n\r", "info");
-        }
-
         if (empty($types) === false) {
             if ($this->compareType($type, $types) === false) {
-                $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
-                return false;
+                throw new \Exception("Chosen key ({$type}) doesn't exist in file {$file_name}.", 1014);
             }
         }
 
         try {
-            $result = $this->jsonObtainAndCheckData($path, $type);
+            $result = $this->jsonObtainAndCheckData($file_dir, $file_name, $type);
         } catch (\Exception $e) {
-            $this->error_handler->print_error($this->logger, "fatal", $e->getMessage());
-            return false;
-        }
-
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Data successfully obtained.\n\r", "info");
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
         return $result;
     }
 
-    protected function jsonUpdateDataSimple(string $type, string $path, array $types, array $contents) : bool
+    protected function jsonUpdateDataSimple(string $type, string $file_dir, string $file_name, array $types, array $contents) : bool
     {
         $type = strtolower($type);
 
         
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Updating config for ". $type .".\n\r", "info");
-        }
+        $this->logger->log($this->logger::INFO, "Updating data ({$type}) in file {$file_name}.");
 
         if (empty($types) === false) {
             if ($this->compareType($type, $types) === false) {
-                $this->error_handler->print_error($this->logger, "fatal", "Selected data type doesn't exist!\n\r");
-                return false;
+                throw new \Exception("Chosen key ({$type}) doesn't exist in file {$file_name}.", 1014);
             }
         }
 
-        $json = $this->jsonReadAndParseData($path);
+        try {
+            $json = $this->jsonReadAndParseData($file_dir, $file_name);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
 
         if(empty($json[$type]) === false) {
             foreach ($json[$type] as $key => $value) {
@@ -121,104 +103,92 @@ class JSONParser
         }
 
 
-        if ($this->jsonParseAndWriteData($path, $json) === false) {
-            $this->error_handler->print_error($this->logger, "fatal", "Failed to parse or write the data!\n\r");
-            return false;
+        try {
+            $this->jsonParseAndWriteData($file_dir, $file_name, $json);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        
-        if (defined("DEBUG")) {
-            $this->logger->write("Config update successful!\n\r", "info");
-        }
-
+        $this->logger->log($this->logger::INFO, "Data updated successfully.");
         return true;
     }
 
-    protected function jsonRemoveDataSimple(string $type, string $path) : bool
+    protected function jsonRemoveDataSimple(string $type, string $file_dir, string $file_name) : bool
     {
         $type = strtolower($type);
 
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Removing data " . $type . ".\n\r", "info");
+        $this->logger->log($this->logger::INFO, "Trying to remove data ({$type}) from {$file_name}.");
+
+        try {
+            $json = $this->jsonReadAndParseData($file_dir, $file_name);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        $json = $this->jsonReadAndParseData($path);
-
         if (array_key_exists($type, $json) === false) {
-            $this->error_handler->print_error($this->logger, "error", "Failed to remove ". $type ."!\n\r");
+            $this->logger->log($this->logger::WARNING, "Failed to remove data ({$type}): data key not found.");
             return false;
         }
 
         unset($json[$type]);
 
-        if ($this->jsonParseAndWriteData($path, $json) === false) {
-            $this->error_handler->print_error($this->logger, "fatal", "Failed to parse or write the data!\n\r");
-            return false;
+        try {
+            $this->jsonParseAndWriteData($file_dir, $file_name, $json);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        if (defined("DEBUG")) {
-            $this->logger->write("Data removed successfuly.\n\r", "info");
-        }
-
+        $this->logger->log($this->logger::INFO, "Data removed successfuly.");
         return true;
     }
 
-    protected function jsonObtainAndCheckData(string $path, string $entry)
+    protected function jsonObtainAndCheckData(string $file_dir, string $file_name, string $entry)
     {
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Tying to obtain data from file ". $path .".\n\r", "info");
-        }
+        $this->logger->log($this->logger::INFO, "Trying to obtain data from {$file_name}.");
 
         try {
-            $json = $this->jsonReadAndParseData($path);
+            $json = $this->jsonReadAndParseData($file_dir, $file_name);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
 
         if ($this->jsonCheckData($json, $entry)) {
+            $this->logger->log($this->logger::INFO, "Data obtained successfuly.");
             return $json[$entry];
         } else {
-            throw new \Exception("Failed to obtain data for ". $entry ."!\n\r", 06);
+            throw new \Exception("Failed to obtain data for {$entry}!", 1012);
         }
     }
 
-    protected function jsonReadAndParseData(string $path) : array
+    protected function jsonReadAndParseData(string $file_dir, string $file_name) : array
     {
         try {
-            $file = $this->file_handler->read_file($path);
+            $file = $this->file_handler->fileRead($file_dir, $file_name);
         } catch (\Exception $e) {
-            $message = $this->error_prefix . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, "critical", $message);
             throw new \Exception($e->getMessage(), $e->getCode());
         }
 
         $json = json_decode($file, true);
 
         if ($json === false || $json === null) {
-            $message = $this->error_prefix . $this->error_msg["JSON_Decoding"] . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            throw new \Exception("Failed to decode json!\n\r", 05);
+            throw new \Exception("Failed to decode json!", 1010);
         }
 
         return $json;
     }
 
-    protected function jsonParseAndWriteData(string $path, array $json) : bool
+    protected function jsonParseAndWriteData(string $file_dir, string $file_name, array $json) : bool
     {
         $json_result = json_encode($json);
 
         if ($json_result === false) {
-            $message = $this->error_prefix . ERROR_JSON_ENCODING . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
+            throw new \Exception("Failed to encode json!", 1011);
         }
 
         try {
-            $this->file_handler->write_file($path, $json_result);
+            $this->file_handler->fileWrite($file_dir, $file_name, $json_result);
         } catch (\Exception $e) {
-            $message = $this->error_prefix . "(" . $e->getCode() . ")" . $e->getMessage() . "!\n" . ERROR_CONFIG_UPDATE . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
         return true;
@@ -227,8 +197,6 @@ class JSONParser
     protected function jsonCheckData(array $json, string $data) : bool
     {
         if (array_key_exists($data, $json) === false) {
-            $message = $this->error_prefix . $this->error_msg["Incorrect_config_type"] . REPORT_ERROR . RECONFIG_REQUIRED;
-            $this->error_handler->print_error($this->logger, "fatal", $message);
             return false;
         }
         return true;
@@ -238,8 +206,8 @@ class JSONParser
     {
         $type = strtolower($type);
 
-        foreach ($variants as $value) {
-            $value = strtolower($value);
+        foreach ($variants as $key => $value) {
+            $variants[$key] = strtolower($value);
         }
         unset($value);
 
