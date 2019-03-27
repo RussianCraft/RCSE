@@ -26,26 +26,24 @@ define("ERROR_PREPARE", "Failed to prepare query!\n");
 class Database
 {
     private $logger;
-    private $error_handler;
     private $config;
     private $database;
 
     public function __construct()
     {
-        $this->config = new JSONManager();
-        $this->logger = new LogManager(get_class($this), $this->config);
-        $this->error_handler = new Handlers\ErrorHandler();
-        $this->init_db();
+        $this->config = new Configurator();
+        $this->logger = new Logger();
+        $this->databaseInit();
     }
 
     /**
-     * Surprisingly, initializes the DB Manager: obtains DB creditans from config, creates MySQL connection via PDO, if succeeds returns true, else - false + error
+     * Surprisingly, initializes the DB Manager: obtains DB creditans from config, creates MySQL connection via PDO, if succeeds returns true, else - throws an exception
      *
      * @return boolean
      */
-    private function init_db() : bool
+    private function databaseInit() : bool
     {
-        $props = $this->config->jsonObtainMainConfig('database');
+        $props = $this->config->configObtainMain('database');
         $dsn = 'mysql:host=' . $props['host'] . ';port=' . $props['port'] . ';dbname=' . $props['name'];
 
         if (defined("DEBUG")) {
@@ -292,5 +290,10 @@ class Database
         $this->logger->write_to_log("Successfully obtained the data!", "info");
 
         return $query_bool;
+    }
+
+    protected function databaseClearQueryParams(string $query, string $type)
+    {
+        
     }
 }

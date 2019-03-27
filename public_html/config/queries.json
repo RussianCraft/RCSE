@@ -1,7 +1,13 @@
 {
     "accounts": {
-        "insert": "INSERT INTO `accounts`(`login`, `password`, `email`, `sex`, `brithdate`, `origin`, `regdate`, `settings`) VALUES (:login,:password,:email,:sex,:brithdate,:origin,:regdate,:settings)",
-        "update": "UPDATE `accounts` SET `sex`=:sex, `brithdate`=:brithdate, `origin`=:origin, `settings`=:settings WHERE `login`=:login",
+        "insert": {
+            "query": "INSERT INTO `accounts`(`login`, `password`, `email`, `sex`, `birthdate`, `origin`, `regdate`, `settings`) VALUES (:login,:password,:email,:sex,:brithdate,:origin,:regdate,:settings)",
+            "params": [":login", ":password", ":email", ":sex", ":birthdate", ":origin", ":regdate", ":settings"]
+        },
+        "update": {
+            "query": "UPDATE `accounts` SET `sex`=:sex, `brithdate`=:brithdate, `origin`=:origin, `settings`=:settings WHERE `login`=:login",
+            "params": []
+        },
         "update_pass": "UPDATE `accounts` SET `password`=:password WHERE `login`=:login",
         "update_email": "UPDATE `accounts` SET `email`=:email WHERE `login`=:login",
         "delete": "DELETE FROM `accounts` WHERE `login`=:login",
