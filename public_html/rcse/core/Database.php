@@ -31,7 +31,7 @@ class Database
      * Surprisingly, initializes database connection, via PDO
      *
      * @return void Doesn't return anything, but fills $database variable of class with exemplar of PDO
-     * @throws \PDOException In case of PDO connection to database failure
+     * @throws \Exception In case of PDO connection to database failure
      */
     private function databaseInit()
     {
@@ -41,10 +41,10 @@ class Database
         $this->logger->log($this->logger::INFO, "Initializing Database connection (host: {$props['host']}:{$props['port']}, name: {$props['name']}).", get_class($this));
 
         try {
-            $this->database = new \PDO($dsn, $props['login'], $props['passw'], [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"]);
+            $this->database = new \PDO($dsn, $props['login'], $props['passw'], [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"]);
         } catch (\PDOException $e) {
             $this->logger->log($this->logger::CRITICAL, "Failed to connect to database - {$e->getCode()}: {$e->getMessage()}.", get_class($this));
-            throw new \PDOException($e->getMessage(), $e->getCode());
+            throw new \Exception($e->getMessage(), (int)$e->getCode());
         }
 
         $this->logger->log($this->logger::INFO, "Database connected successfully.", get_class($this));
@@ -68,7 +68,7 @@ class Database
 
         $query_statement = $this->config->configObtainQueries($table)["select_" . $type];
 
-        if($query_statement['params'][':marker'] !== null) {
+        if ($query_statement['params'][':marker'] !== null) {
             $params[":marker"] = $marker;
         }
 
@@ -110,17 +110,21 @@ class Database
 
         $query_statement = $this->config->configObtainQueries($table)[$type];
 
-        if($type === "insert") {
-            foreach($contents as $key => $value) {
-                $params[$query_statement['params'][':'.$key]] = $value;
+        if ($type === "insert") {
+            foreach ($query_statement['params'] as $key => $value) {
+                    $params[$key] = $contents[$key];
             }
         } else {
-            foreach($contents as $key => $value) {
-                $params[$query_statement['params'][':'.$key]] = $value;
-            }
+            foreach ($query_statement['params'] as $key => $value) {
+                if ($key !== ":marker") {
+                    $params[$key] = $contents[$key];
+                }
 
+            }
             $params[':marker'] = $marker;
         }
+        unset($key);
+        unset($value);
 
         try {
             $query = $this->databasePrepareAndExecute($query_statement['query'], $params);
@@ -151,7 +155,7 @@ class Database
         $table = strtolower($table);
         $type = strtolower($type);
 
-        $this->logger->write_to_log("Checking {$table} for data existence.", "info");
+        $this->logger->log($this->logger::INFO, "Checking {$table} for data existence.", get_class($this));
 
         $query_statement = $this->config->configObtainQueries($table)["check_" . $type];
 
@@ -163,7 +167,7 @@ class Database
             throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        $this->logger->write_to_log("Successfully obtained the data!", "info");
+        $this->logger->log($this->logger::INFO, "Successfully obtained the data!", get_class($this));
 
         return (bool)$query->fetchColumn();
     }
@@ -215,7 +219,7 @@ class Database
         $this->logger->log($this->logger::INFO, "Trying to prepare query.", get_class($this));
 
         try {
-            $query = $this->database->prepare($query['query']);
+            $query = $this->database->prepare($query);
         } catch (\PDOException $e) {
             $this->logger->log($this->logger::ERROR, "Failed to preapre query - ({$e->getCode()}): {$e->getMessage()}!", get_class($this));
             throw new \Exception($e->getMessage(), (int)$e->getCode());

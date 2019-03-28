@@ -32,7 +32,7 @@ class FileHandler
 
     public function fileOpen(string $mode)
     {
-        $lock;
+        $lock = "";
         
         if (is_dir($this->file_dir) === false) {
             $this->fileCreateDir();
@@ -85,7 +85,7 @@ class FileHandler
 
     public function fileRead(string $file_dir, string $file_name)
     {
-        $file_contents;
+        $file_contents = "";
         $this->file_dir = ROOT . $file_dir;
         $this->file = $file_name;
         $this->fileOpen("r");

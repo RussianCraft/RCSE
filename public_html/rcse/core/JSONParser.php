@@ -11,10 +11,10 @@ class JSONParser
     private $logger;
     private $file_handler;
 
-    public function __construct()
+    public function __construct(Logger $logger)
     {
         $this->file_handler = new Handlers\FileHandler();
-        $this->logger = new Logger();
+        $this->logger = $logger;
     }
 
     protected function jsonObtainDataAllNSmall(string $type, string $file_dir, string $file_name, array $types)
