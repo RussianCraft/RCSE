@@ -5,295 +5,231 @@ namespace RCSE\Core;
 if (defined("ROOT") === false) {
     define("ROOT", $_SERVER['DOCUMENT_ROOT']);
 }
-if (defined("RECONFIG_REQUIRED") === false) {
-    define("RECONFIG_REQUIRED", "Site should be reconfigured! Redirecting to AdminPanel in 5 seconds!\n");
-}
-if (defined("REPORT_ERROR") === false) {
-    define("REPORT_ERROR", "Check your source code or send this message (with error) to Issues at GitHub!\n");
-}
-if (defined("DEBUG") === false) {
-    define("DEBUG", false);
-}
-define("ERROR_PREFIX_DB", "DBManager Error: ");
-define("ERROR_INIT_DB", "Failed to initialize DBManager!\n");
-define("ERROR_QUERY_NF", "Requested query does not exist!\n");
-define("ERROR_PREPARE", "Failed to prepare query!\n");
 
 /**
- * class DBManager
- * Database Manager, provides access to database
+ * Database Manager, provides access to database operations
  */
 class Database
 {
+    /** @var Logger */
     private $logger;
+
+    /** @var Configurator */
     private $config;
+
+    /** @var \PDO */
     private $database;
 
-    public function __construct()
+    public function __construct(Logger $logger, Configurator $configurator)
     {
-        $this->config = new Configurator();
-        $this->logger = new Logger();
+        $this->config = $configurator;
+        $this->logger = $logger;
         $this->databaseInit();
     }
 
     /**
-     * Surprisingly, initializes the DB Manager: obtains DB creditans from config, creates MySQL connection via PDO, if succeeds returns true, else - throws an exception
+     * Surprisingly, initializes database connection, via PDO
      *
-     * @return boolean
+     * @return void Doesn't return anything, but fills $database variable of class with exemplar of PDO
+     * @throws \PDOException In case of PDO connection to database failure
      */
-    private function databaseInit() : bool
+    private function databaseInit()
     {
         $props = $this->config->configObtainMain('database');
         $dsn = 'mysql:host=' . $props['host'] . ';port=' . $props['port'] . ';dbname=' . $props['name'];
 
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Initializing the DB connection.\n\r", "info");
-        }
+        $this->logger->log($this->logger::INFO, "Initializing Database connection (host: {$props['host']}:{$props['port']}, name: {$props['name']}).", get_class($this));
 
         try {
-            $this->database = new \PDO($dsn, $props['login'], $props['passw']);
+            $this->database = new \PDO($dsn, $props['login'], $props['passw'], [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"]);
         } catch (\PDOException $e) {
-            $message = ERROR_PREFIX_DB . "(" .$e->getCode() . ")". $e->getMessage() . "!\n" . ERROR_INIT_DB . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
+            $this->logger->log($this->logger::CRITICAL, "Failed to connect to database - {$e->getCode()}: {$e->getMessage()}.", get_class($this));
+            throw new \PDOException($e->getMessage(), $e->getCode());
         }
 
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("DB connection initialized successfully!", "info");
-        }
-
-        return true;
+        $this->logger->log($this->logger::INFO, "Database connected successfully.", get_class($this));
     }
 
-    public function get_data_db(string $table, string $type, string $marker="")
+    /**
+     * Obtains data from DB
+     *
+     * @param string $table Table containing data
+     * @param string $type  Type of marker (e.g. "by_login", "all", "by_type", etc.), described in queries.json file
+     * @param string $marker Data to be used as marker (user login, post author, or null for type "all" query)
+     * @return array Associative array of data
+     * @throws \Exception In case of prepare or execution failure
+     */
+    public function databaseGetData(string $table, string $type, string $marker="") : array
     {
         $table = strtolower($table);
         $type = strtolower($type);
 
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Obtaining data for $marker from DB.", "info");
+        $this->logger->log($this->logger::INFO, "Trying to obtain data from {$table}.", get_class($this));
+
+        $query_statement = $this->config->configObtainQueries($table)["select_" . $type];
+
+        if($query_statement['params'][':marker'] !== null) {
+            $params[":marker"] = $marker;
         }
 
-        if ($this->check_data_db($table, $type, $marker) === false) {
-            if (defined("DEBUG")) {
-                $this->logger->write_to_log("Data for $marker was not found!", "warning");
-            }
-            return false;
-        }
-        
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Setting up the query.", "info");
-        }
-
-
-        $query = $this->config->jsonObtainQueries($table)["select_" . $type];
-
-        if ($query === false) {
-            $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
-        }
-
-        $temp = explode(":", $query);
-        $params = [':' . $temp[1] => $marker];
-        unset($temp);
-        
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Preparing the query.", "info");
-        }
-        
         try {
-            $query = $this->database->prepare($query);
-        } catch (PDOException $e) {
-            $message = ERROR_PREFIX_DB . "(" .$e->getCode() . ")". $e->getMessage() . "!\n" . ERROR_PREPARE . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
-        }
-        
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Executing the query", "info");
+            $query = $this->databasePrepareAndExecute($query_statement['query'], $params);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        $query_bool = $query->execute($params);
-
-        if ($query_bool === false) {
-            if (defined("DEBUG")) {
-                $this->logger->write_to_log("Query execution failed!", "error");
-            }
-            return false;
-        }
-
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Successfully obtained the data!", "info");
-        }
+        $this->logger->log($this->logger::INFO, "Data obtained successfully.", get_class($this));
 
         return $query->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function send_data_db(string $table, string $type, array $contents, string $marker="") : bool
+    /**
+     * Sends $contents to $table
+     *
+     * @param string $table Table to send data to
+     * @param string $type Type of query (e.g. "insert", "update", etc), described in queries.json
+     * @param array $contents Array of data to send
+     * @param string $marker Data to be used as marker (user login, comment id, or null in case of "insert" query)
+     * @return boolean True if succeeds, false if fails (duh)
+     * @throws \Exception In case of prepare or execution failure
+     */
+    public function databaseSendData(string $table, string $type, array $contents, string $marker="") : bool
     {
         $table = strtolower($table);
         $type = strtolower($type);
 
-        $this->logger->write_to_log("Sending data for $marker to DB.", "info");
-        $this->logger->write_to_log("Setting up the query.", "info");
+        $this->logger->log($this->logger::INFO, "Trying to send data ({$type}) from {$table}.", get_class($this));
 
-        $query = $this->config->get_queries($table)[$type];
-
-        if ($query === false) {
-            $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
+        if (strpos($type, 'select') > 0) {
+            $this->logger->log($this->logger::ERROR, "For 'select_*' queries use 'databaseGetData'.", get_class($this));
+            return false;
+        } elseif (strpos($type, 'delete') > 0) {
+            $this->logger->log($this->logger::ERROR, "For 'delete' queries use 'databaseDeleteData'.", get_class($this));
             return false;
         }
-        
-        if (defined("DEBUG")) {
-            $this->logger->write_to_log("Cleaning the query parameters.", "debug");
-        }
 
-        $temp = explode(":", $query);
-        array_shift($temp);
+        $query_statement = $this->config->configObtainQueries($table)[$type];
 
-        if ($type === "insert") {
-            for ($i = 0; $i < count($temp); $i++) {
-                $temp[$i] = str_replace(array(',', ')'), "", $temp[$i]);
+        if($type === "insert") {
+            foreach($contents as $key => $value) {
+                $params[$query_statement['params'][':'.$key]] = $value;
             }
         } else {
-            for ($i = 0; $i < count($temp); $i++) {
-                $temp[$i] = explode(' ', $temp[$i]);
+            foreach($contents as $key => $value) {
+                $params[$query_statement['params'][':'.$key]] = $value;
             }
-            for ($i = 0; $i < count($temp); $i++) {
-                $temp[$i] = $temp[$i][0];
-            }
-            for ($i = 0; $i < count($temp); $i++) {
-                $temp[$i] = str_replace(',', "", $temp[$i]);
-            }
+
+            $params[':marker'] = $marker;
         }
-
-        if ($type === "insert") {
-            for ($i  = 0; $i < count($temp); $i++) {
-                $params[':' . $temp[$i]] = $contents[$temp[$i]];
-            }
-        } else {
-            for ($i  = 0; $i < count($temp); $i++) {
-                $params[':' . $temp[$i]] = $contents[$temp[$i]];
-            }
-
-            $params[':' . end($temp)] = $marker;
-        }
-
-        unset($temp);
-
-        $this->logger->write_to_log("Preparing the query.", "info");
 
         try {
-            $query = $this->database->prepare($query);
-        } catch (PDOException $e) {
-            $message = ERROR_PREFIX_DB . "(" .$e->getCode() . ")". $e->getMessage() . "!\n" . ERROR_PREPARE . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
+            $query = $this->databasePrepareAndExecute($query_statement['query'], $params);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+
+        if ($query->rowCount() <= 0) {
+            $this->logger->log($this->logger::ERROR, "Failed to send data.", get_class($this));
             return false;
         }
 
-        $this->logger->write_to_log("Executing the query", "info");
-
-        $query_bool = $query->execute($params);
-
-        if ($query_bool === false) {
-            $this->logger->write_to_log("Query execution failed!", "error");
-            return false;
-        }
-
-        $this->logger->write_to_log("Successfully obtained the data!", "info");
-
-        return $query_bool;
+        $this->logger->log($this->logger::INFO, "Data sent successfully.", get_class($this));
+        return true;
     }
 
-    public function check_data_db(string $table, string $type, string $marker="") : bool
+    /**
+     * Checks, whether data for $marker present in $table
+     *
+     * @param string $table  Table containing data
+     * @param string $type   Type of marker (e.g. "by_login", "by_type", etc.), described in queries.json file
+     * @param string $marker Data to be used as marker (user login, post author, or null for type "all" query)
+     * @return boolean True, if data present, and false if not
+     * @throws \Exception In case of prepare or execution failure
+     */
+    public function databaseCheckData(string $table, string $type, string $marker="") : bool
     {
         $table = strtolower($table);
         $type = strtolower($type);
 
-        $this->logger->write_to_log("Checking data for $marker to DB.", "info");
-        $this->logger->write_to_log("Setting up the query.", "info");
- 
-        $query = $this->config->get_queries($table)["select_" . $type];
+        $this->logger->write_to_log("Checking {$table} for data existence.", "info");
 
-        if ($query === false) {
-            $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
-        }
+        $query_statement = $this->config->configObtainQueries($table)["check_" . $type];
 
-        $temp = explode(":", $query);
-        $params = [':' . $temp[1] => $marker];
-        unset($temp);
-
-        $this->logger->write_to_log("Preparing the query.", "info");
+        $params[":marker"] = $marker;
 
         try {
-            $query = $this->database->prepare($query);
-        } catch (PDOException $e) {
-            $message = ERROR_PREFIX_DB . "(" .$e->getCode() . ")". $e->getMessage() . "!\n" . ERROR_PREPARE . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
-        }
-
-        $this->logger->write_to_log("Executing the query", "info");
-        
-        $query_bool = $query->execute($params);
-
-        if ($query_bool === false) {
-            $this->logger->write_to_log("Query execution failed!", "error");
-            return false;
+            $query = $this->databasePrepareAndExecute($query_statement['query'], $params);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
         $this->logger->write_to_log("Successfully obtained the data!", "info");
 
-        return $query_bool;
+        return (bool)$query->fetchColumn();
     }
 
-    public function delete_data_db(string $table, string $marker="") : bool
+    /**
+     * Deletes data for $marker from $table
+     *
+     * @param string $table Table containing data
+     * @param string $marker Data to be used as marker (usually, unique ID of database entry)
+     * @return boolean True if succeeds, false if fails
+     * @throws \Exception In case of prepare or execution failure
+     */
+    public function databaseDeleteData(string $table, string $marker) : bool
     {
         $table = strtolower($table);
 
-        $this->logger->write_to_log("Checking data for $marker to DB.", "info");
-        $this->logger->write_to_log("Setting up the query.", "info");
+        $this->logger->log($this->logger::INFO, "Trying to delete (marker: {$marker}) data from {$table}.", get_class($this));
 
-        $query = $this->config->get_queries($table)["delete"];
+        $query_statement = $this->config->configObtainQueries($table)["delete"];
 
-        if ($query === false) {
-            $message = ERROR_PREFIX_DB . ERROR_QUERY_NF . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
-            return false;
-        }
-
-        $temp = explode(":", $query);
-        $params = [':' . $temp[1] => $marker];
-        unset($temp);
+        $params[":marker"] = $marker;
 
         try {
-            $query = $this->database->prepare($query);
-        } catch (PDOException $e) {
-            $message = ERROR_PREFIX_DB . "(" .$e->getCode() . ")". $e->getMessage() . "!\n" . ERROR_PREPARE . REPORT_ERROR;
-            $this->error_handler->print_error($this->logger, "critical", $message);
+            $query = $this->databasePrepareAndExecute($query_statement['query'], $params);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+
+        if ($query->rowCount() <= 0) {
+            $this->logger->log($this->logger::ERROR, "Failed to delete data.", get_class($this));
             return false;
         }
-        
-        $this->logger->write_to_log("Preparing the query.", "info");
 
+        $this->logger->log($this->logger::INFO, "Data deleted successfully.", get_class($this));
+        return true;
+    }
+
+    /**
+     * Prepares provided $query and executes it with $params
+     *
+     * @param string $query Query to prepare and execute
+     * @param array $params Query params
+     * @return \PDOStatement Returns result of query execution
+     * @throws \Exception In case of PDO query preparation failure
+     * @throws \Exception In case of PDO query execution failure
+     */
+    private function databasePrepareAndExecute(string $query, array $params) : \PDOStatement
+    {
+        $this->logger->log($this->logger::INFO, "Trying to prepare query.", get_class($this));
+
+        try {
+            $query = $this->database->prepare($query['query']);
+        } catch (\PDOException $e) {
+            $this->logger->log($this->logger::ERROR, "Failed to preapre query - ({$e->getCode()}): {$e->getMessage()}!", get_class($this));
+            throw new \Exception($e->getMessage(), (int)$e->getCode());
+        }
+        
+        $this->logger->log($this->logger::INFO, "Trying to execute query.", get_class($this));
+        
         $query_bool = $query->execute($params);
 
         if ($query_bool === false) {
-            $this->logger->write_to_log("Query execution failed!", "error");
-            return false;
+            $this->logger->log($this->logger::ERROR, "Failed to execute query!", get_class($this));
+            throw new \Exception("Query execution failed!", 1020);
         }
 
-        $this->logger->write_to_log("Successfully obtained the data!", "info");
-
-        return $query_bool;
-    }
-
-    protected function databaseClearQueryParams(string $query, string $type)
-    {
-        
+        return $query;
     }
 }

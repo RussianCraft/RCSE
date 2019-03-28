@@ -49,7 +49,7 @@ class JSONParser
 
         if (empty($types) === false) {
             if ($this->compareType($type2, $types) === false) {
-                throw new \Exception("Chosen key ({$type}) doesn't exist in file {$file_name}.", 1014);
+                throw new \Exception("Chosen key ({$type2}) doesn't exist in file {$file_name}.", 1014);
             }
         }
 
@@ -79,8 +79,7 @@ class JSONParser
     {
         $type = strtolower($type);
 
-        
-        $this->logger->log($this->logger::INFO, "Updating data ({$type}) in file {$file_name}.");
+        $this->logger->log($this->logger::INFO, "Updating data ({$type}) in file {$file_name}.", get_class($this));
 
         if (empty($types) === false) {
             if ($this->compareType($type, $types) === false) {
@@ -94,7 +93,7 @@ class JSONParser
             throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        if(empty($json[$type]) === false) {
+        if (empty($json[$type]) === false) {
             foreach ($json[$type] as $key => $value) {
                 $json[$type][$key] = $contents[$key];
             }
@@ -109,7 +108,7 @@ class JSONParser
             throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        $this->logger->log($this->logger::INFO, "Data updated successfully.");
+        $this->logger->log($this->logger::INFO, "Data updated successfully.", get_class($this));
         return true;
     }
 
@@ -117,7 +116,7 @@ class JSONParser
     {
         $type = strtolower($type);
 
-        $this->logger->log($this->logger::INFO, "Trying to remove data ({$type}) from {$file_name}.");
+        $this->logger->log($this->logger::INFO, "Trying to remove data ({$type}) from {$file_name}.", get_class($this));
 
         try {
             $json = $this->jsonReadAndParseData($file_dir, $file_name);
@@ -126,7 +125,7 @@ class JSONParser
         }
 
         if (array_key_exists($type, $json) === false) {
-            $this->logger->log($this->logger::WARNING, "Failed to remove data ({$type}): data key not found.");
+            $this->logger->log($this->logger::WARNING, "Failed to remove data ({$type}): data key not found.", get_class($this));
             return false;
         }
 
@@ -138,13 +137,13 @@ class JSONParser
             throw new \Exception($e->getMessage(), $e->getCode());
         }
 
-        $this->logger->log($this->logger::INFO, "Data removed successfuly.");
+        $this->logger->log($this->logger::INFO, "Data removed successfuly.", get_class($this));
         return true;
     }
 
     protected function jsonObtainAndCheckData(string $file_dir, string $file_name, string $entry)
     {
-        $this->logger->log($this->logger::INFO, "Trying to obtain data from {$file_name}.");
+        $this->logger->log($this->logger::INFO, "Trying to obtain data ({$entry}) from {$file_name}.", get_class($this));
 
         try {
             $json = $this->jsonReadAndParseData($file_dir, $file_name);
@@ -153,9 +152,10 @@ class JSONParser
         }
 
         if ($this->jsonCheckData($json, $entry)) {
-            $this->logger->log($this->logger::INFO, "Data obtained successfuly.");
+            $this->logger->log($this->logger::INFO, "Data obtained successfuly.", get_class($this));
             return $json[$entry];
         } else {
+            $this->logger->log($this->logger::ERROR, "Failed to obtain data ({$entry}) from {$file_name}!", get_class($this));
             throw new \Exception("Failed to obtain data for {$entry}!", 1012);
         }
     }

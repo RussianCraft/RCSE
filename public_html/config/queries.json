@@ -2,52 +2,361 @@
     "accounts": {
         "insert": {
             "query": "INSERT INTO `accounts`(`login`, `password`, `email`, `sex`, `birthdate`, `origin`, `regdate`, `settings`) VALUES (:login,:password,:email,:sex,:brithdate,:origin,:regdate,:settings)",
-            "params": [":login", ":password", ":email", ":sex", ":birthdate", ":origin", ":regdate", ":settings"]
+            "params": {
+                ":login": "",
+                ":password": "",
+                ":email": "",
+                ":sex": "",
+                ":birthdate": "",
+                ":origin": "",
+                ":regdate": "",
+                ":settings": ""
+            }
         },
         "update": {
-            "query": "UPDATE `accounts` SET `sex`=:sex, `brithdate`=:brithdate, `origin`=:origin, `settings`=:settings WHERE `login`=:login",
-            "params": []
+            "query": "UPDATE `accounts` SET `sex`=:sex, `birthdate`=:birthdate, `origin`=:origin, `settings`=:settings WHERE `login`=:marker",
+            "params": {
+                ":sex": "",
+                ":birthdate": "",
+                ":origin": "",
+                ":settings": "",
+                ":marker": ""
+            }
         },
-        "update_pass": "UPDATE `accounts` SET `password`=:password WHERE `login`=:login",
-        "update_email": "UPDATE `accounts` SET `email`=:email WHERE `login`=:login",
-        "delete": "DELETE FROM `accounts` WHERE `login`=:login",
-        "select_by_login": "SELECT * FROM `accounts` WHERE `login`=:login",
-        "select_by_email": "SELECT * FROM `accounts` WHERE `email`=:email",
-        "select_all": "SELECT * FROM `accounts`"
+        "update_pass": {
+            "query": "UPDATE `accounts` SET `password`=:password WHERE `login`=:marker",
+            "params": {
+                ":password": "",
+                ":marker": ""
+            }
+        },
+        "update_email": {
+            "query": "UPDATE `accounts` SET `email`=:email WHERE `login`=:marker",
+            "params": {
+                ":email": "",
+                ":marker": ""
+            }
+        },
+        "delete": {
+            "query": "DELETE FROM `accounts` WHERE `login`=:marker",
+            "params": {
+                ":marker" :""
+            }
+        },
+        "select_by_login": {
+            "query": "SELECT * FROM `accounts` WHERE `login`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_email": {
+            "query": "SELECT * FROM `accounts` WHERE `email`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_all": {
+            "query": "SELECT * FROM `accounts`",
+            "params": {
+                ":marker": null
+            }
+        },
+        "check_by_login": {
+            "query": "SELECT 1 FROM `accounts` WHERE `login`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_email": {
+            "query": "SELECT 1 FROM `accounts` WHERE `email`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        }
     },
     "punishments": {
-        "insert": "INSERT INTO `punishments`(`login`, `type`, `reason`, `rule`, `date`, `expires`) VALUES (:login,:type,:reason,:rule,:date,:expires)",
-        "update": "UPDATE `punishments` SET `type`=:type, `reason`=:reason, `rule`=:rule, `date`=:date, `expires`=:expires WHERE `login`=:login",
-        "delete": "DELETE FROM `punishments` WHERE `login`=:login",
-        "select_by_login": "SELECT * FROM `punishments` WHERE `login`=:login",
-        "select_by_type": "SELECT * FROM `punishments` WHERE `type`=:type",
-        "select_all": "SELECT * FROM `punishments`"
+        "insert": {
+            "query": "INSERT INTO `punishments`(`login`, `type`, `reason`, `rule`, `date`, `expires`) VALUES (:login,:type,:reason,:rule,:date,:expires)",
+            "params": {
+                ":login": "",
+                ":type": "",
+                ":reason": "",
+                ":rule": "",
+                ":date": "",
+                ":expires": ""
+            }
+        },
+        "update": {
+            "query": "UPDATE `punishments` SET `type`=:type, `reason`=:reason, `rule`=:rule, `date`=:date, `expires`=:expires WHERE `login`=:marker",
+            "params": {
+                ":type": "",
+                ":reason": "",
+                ":rule": "",
+                ":date": "",
+                ":expires": "",
+                ":marker": ""
+            }
+        },
+        "delete": {
+            "query": "DELETE FROM `punishments` WHERE `login`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_login": {
+            "query": "SELECT * FROM `punishments` WHERE `login`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_type": {
+            "query": "SELECT * FROM `punishments` WHERE `type`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_all": {
+            "query": "SELECT * FROM `punishments`",
+            "params": {
+                ":marker": null
+            }
+        },
+        "сheck_by_login": {
+            "query": "SELECT 1 FROM `punishments` WHERE `login`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_type": {
+            "query": "SELECT 1 FROM `punishments` WHERE `type`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        }
     },
     "posts": {
-        "insert": "INSERT INTO `posts`(`title`, `date`, `author`, `description`, `tags`, `content`, `settings`) VALUES (:title,:date,:author,:description,:tags,:content,:settings)",
-        "update": "UPDATE `posts` SET `title`=:title, `voteups`=:voteups, `votedowns`=:votedowns, `description`=:description, `tags`=:tags, `content`=:content, `settings`=:settings WHERE `post_id`=:post_id",
-        "delete": "DELETE FROM `posts` WHERE `post_id`=:post_id",
-        "select_by_post_id": "SELECT * FROM `posts` WHERE `post_id`=:post_id",
-        "select_by_title": "SELECT * FROM `posts` WHERE `title`=:title",
-        "select_by_date": "SELECT * FROM `posts` WHERE `date`=:date",
-        "select_by_author": "SELECT * FROM `posts` WHERE `author`=:author",
-        "select_by_tags": "SELECT * FROM `posts` WHERE `tags`=:tags",
-        "select_all": "SELECT * FROM `posts`"
+        "insert": {
+            "query": "INSERT INTO `posts`(`title`, `date`, `author`, `voteups`, `votedowns`, `description`, `tags`, `content`, `settings`) VALUES (:title,:date,:author,:voteups,:votedowns,:description,:tags,:content,:settings)",
+            "params": {
+                ":title": "",
+                ":date": "",
+                ":author": "",
+                ":voteups": "",
+                ":votedowns": "",
+                ":description": "",
+                ":tags": "",
+                ":content": "",
+                ":settings": ""
+            }
+        },
+        "update": {
+            "query": "UPDATE `posts` SET `title`=:title, `voteups`=:voteups, `votedowns`=:votedowns, `description`=:description, `tags`=:tags, `content`=:content, `settings`=:settings WHERE `post_id`=:marker",
+            "params": {
+                ":title": "",
+                ":voteups": "",
+                ":votedowns": "",
+                ":description": "",
+                ":tags": "",
+                ":content": "",
+                ":settings": "",
+                ":marker": ""
+            }
+        },
+        "delete": {
+            "query": "DELETE FROM `posts` WHERE `post_id`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_post_id": {
+            "query": "SELECT * FROM `posts` WHERE `post_id`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_title": {
+            "query": "SELECT * FROM `posts` WHERE `title`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_date": {
+            "query": "SELECT * FROM `posts` WHERE `date`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_author": {
+            "query": "SELECT * FROM `posts` WHERE `author`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_tags": {
+            "query": "SELECT * FROM `posts` WHERE `tags`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_all": {
+            "query": "SELECT * FROM `posts`",
+            "params": {
+                ":marker": null
+            }
+        },
+        "check_by_post_id": {
+            "query": "SELECT 1 FROM `posts` WHERE `post_id`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_title": {
+            "query": "SELECT 1 FROM `posts` WHERE `title`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_date": {
+            "query": "SELECT 1 FROM `posts` WHERE `date`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_author": {
+            "query": "SELECT 1 FROM `posts` WHERE `author`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_tags": {
+            "query": "SELECT 1 FROM `posts` WHERE `tags`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        }
     },
     "comments": {
-        "insert": "INSERT INTO `comments`( `reply_to`, `date`, `author`, `content`, `settings`) VALUES (:reply_to,:date,:author,:contents,:settings)",
-        "update": "UPDATE `comments` SET `date`=:data,`voteups`=:voteups,`votedowns`=:votedowns,`content`=:content,`settings`=:settings WHERE `comment_id`=:comment_id",
-        "delete": "DELETE FROM `comments` WHERE `comment_id`=:comment_id",
-        "select_by_comment_id": "SELECT * FROM `comments` WHERE `comment_id`=:comment_id",
-        "select_by_reply_to": "SELECT * FROM `comments` WHERE `reply_to`=:reply_to",
-        "select_by_date": "SELECT * FROM `comments` WHERE `date`=:date",
-        "select_by_author": "SELECT * FROM `comments` WHERE `author`=:author",
-        "select_all": "SELECT * FROM `comments`"
+        "insert": {
+            "query": "INSERT INTO `comments`( `reply_to`, `date`, `voteups`, `votedowns`, `author`, `content`, `settings`) VALUES (:reply_to,:date,:voteups,:votedowns,:author,:contents,:settings)",
+            "params": {
+                ":reply_to": "",
+                ":date": "",
+                ":voteups": "",
+                ":votedowns": "",
+                ":author": "",
+                ":contents": "",
+                ":settings": ""
+            }
+        
+        },
+        "update": {
+            "query": "UPDATE `comments` SET `date`=:date,`voteups`=:voteups,`votedowns`=:votedowns,`content`=:content,`settings`=:settings WHERE `comment_id`=:marker",
+            "params": {
+                ":date": "",
+                ":voteups": "",
+                ":votedowns": "",
+                ":content": "",
+                ":settings": "",
+                ":marker": ""
+            }
+        },
+        "delete": {
+            "query": "DELETE FROM `comments` WHERE `comment_id`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_comment_id": {
+            "query": "SELECT * FROM `comments` WHERE `comment_id`=:marker",
+            "params": {
+                ":marker": ""
+            }        
+        },
+        "select_by_reply_to": {
+            "query": "SELECT * FROM `comments` WHERE `reply_to`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_date": {
+            "query": "SELECT * FROM `comments` WHERE `date`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_by_author": {
+            "query": "SELECT * FROM `comments` WHERE `author`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "select_all": {
+            "query": "SELECT * FROM `comments`",
+            "params": {
+                ":marker": null
+            }
+        },
+        "check_by_comment_id": {
+            "query": "SELECT 1 FROM `comments` WHERE `comment_id`=:marker",
+            "params": {
+                ":marker": ""
+            }        
+        },
+        "check_by_reply_to": {
+            "query": "SELECT 1 FROM `comments` WHERE `reply_to`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_date": {
+            "query": "SELECT 1 FROM `comments` WHERE `date`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        },
+        "check_by_author": {
+            "query": "SELECT 1 FROM `comments` WHERE `author`=:marker",
+            "params": {
+                ":marker": ""
+            }
+        }
     },
     "topics": {
-        "insert": "INSERT INTO `topics`(`title`, `section`, `date`, `author`, `tags`, `content`, `settings`) VALUES (:title,:section,:date,:author,:tags,:contents,:settings)",
-        "update": "UPDATE `topics` SET `title`=:title, `section`=:section, `date`=:date, `voteups`=:voteups, `votedowns`=:votedowns, `tags`=:tags, `content`=:content, `settings`=:settings WHERE `topic_id`=:topic_id",
-        "select_by_topic_id": "SELECT * FROM `topics` WHERE `topic_id`=:topic_id",
+        "insert": {
+            "query": "INSERT INTO `topics`(`title`, `section`, `date`, `voteups`, `votedowns`, `author`, `tags`, `content`, `settings`) VALUES (:title,:section,:date,:voteups,:votedowns,:author,:tags,:contents,:settings)",
+            "params": {
+                ":title": "",
+                ":section": "",
+                ":date": "",
+                ":voteups": "",
+                ":votedowns": "",
+                ":author": "",
+                ":tags": "",
+                ":contents": "",
+                ":settings": ""
+            }
+        },
+        "update": {
+            "query": "UPDATE `topics` SET `title`=:title, `section`=:section, `date`=:date, `voteups`=:voteups, `votedowns`=:votedowns, `tags`=:tags, `content`=:content, `settings`=:settings WHERE `topic_id`=:marker",
+            "params": {
+                ":title": "",
+                ":section": "",
+                ":date": "",
+                ":voteups": "",
+                ":votedowns": "",
+                ":tags": "",
+                ":content": "",
+                ":settings": "",
+                ":marker": ""
+            }
+        },
+        "select_by_topic_id": {
+            "query": "SELECT * FROM `topics` WHERE `topic_id`=:marker",
+            "params": {
+
+            }
+        
+        },
         "select_by_title": "SELECT * FROM `topics` WHERE `title`=:title",
         "select_by_section": "SELECT * FROM `topics` WHERE `section`=:section",
         "select_by_date": "SELECT * FROM `topics` WHERE `date`=:date",

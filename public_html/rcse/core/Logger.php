@@ -35,7 +35,7 @@ class Logger
         $this->logSetLevelThreshold($level_threshold);
         $this->logSetFilePath();
 
-        $this->file_handler = new \RCSE\Core\Handlers\FileHandler($this->log_dir, $this->log_file);
+        $this->file_handler = new Handlers\FileHandler($this->log_dir, $this->log_file);
         $this->file_handler->fileOpen("c");
 
     }
@@ -58,7 +58,6 @@ class Logger
 
         $this->log_dir = $path;
         $this->log_file = $file;
-        var_dump($this->log_file);
     }
 
     public function logSetLevelThreshold($level_threshold)
@@ -83,21 +82,21 @@ class Logger
         }
     }
 
-    public function log($level, string $message, array $context = array())
+    public function log($level, string $message, string $source)
     {
         if($this->message_levels[$this->level_threshold] <= $this->message_levels[$level]) {
             return;
         }
 
-        $message_formatted = $this->logFormatMessage($level, $message);
+        $message_formatted = $this->logFormatMessage($level, $message, $source);
 
         $this->file_handler->fileWriteLine($message_formatted);
     }
 
-    private function logFormatMessage(string $level, string $message)
+    private function logFormatMessage(string $level, string $message, string $source)
     {
         $level = strtoupper($level);
-        $message_formatted = "[{$this->logGetTimestamp()}][{$level}] {$message}";
+        $message_formatted = "[{$this->logGetTimestamp()}][{$level}][{$source}] {$message}";
         return $message_formatted.PHP_EOL;
     }
 
