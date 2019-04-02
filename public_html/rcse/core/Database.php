@@ -6,9 +6,7 @@ if (defined("ROOT") === false) {
     define("ROOT", $_SERVER['DOCUMENT_ROOT']);
 }
 
-/**
- * Database Manager, provides access to database operations
- */
+/** Database Manager, provides access to database operations */
 class Database
 {
     /** @var Logger */
