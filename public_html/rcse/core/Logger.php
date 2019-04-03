@@ -35,7 +35,7 @@ class Logger
         $this->logSetLevelThreshold($level_threshold);
         $this->logSetFilePath();
 
-        $this->file_handler = new Handlers\FileHandler($this->log_dir, $this->log_file);
+        $this->file_handler = new File($this->log_dir, $this->log_file);
         $this->file_handler->fileOpen("c");
 
     }

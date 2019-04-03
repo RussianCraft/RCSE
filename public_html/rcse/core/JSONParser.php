@@ -13,7 +13,7 @@ class JSONParser
 
     public function __construct(Logger $logger)
     {
-        $this->file_handler = new Handlers\FileHandler();
+        $this->file_handler = new File();
         $this->logger = $logger;
     }
 
@@ -139,6 +139,17 @@ class JSONParser
 
         $this->logger->log($this->logger::INFO, "Data removed successfuly.", get_class($this));
         return true;
+    }
+
+    protected function jsonObtainDataSimpliest(string $file_dir, string $file_name)
+    {
+        try {
+            $json = $this->jsonReadAndParseData($file_dir, $file_name);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+
+        return $json;
     }
 
     protected function jsonObtainAndCheckData(string $file_dir, string $file_name, string $entry)

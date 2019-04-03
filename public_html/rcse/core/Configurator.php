@@ -55,7 +55,7 @@ class Configurator extends JSONParser
     {
         $dir = "/resources/locale/". $source ."/";
         $name = "lang.json";
-        $types = ["errors", "info", "panel", "user"];
+        $types = ["errors", "info", "panel", "user", "interface"];
 
         return $this->jsonObtainDataDouble($lang, $element, $dir, $name, $types);
     }
@@ -119,9 +119,9 @@ class Configurator extends JSONParser
         return $this->jsonRemoveDataSimple($type, $this->config_path["ban_types"]["dir"], $this->config_path["ban_types"]["name"]);
     }
     
-    public function configObtainMenu(string $type)
+    public function configObtainMenu()
     {
-        return $this->jsonObtainDataAllNSmall($type, $this->config_path["menu"]["dir"], $this->config_path["menu"]["name"], []);
+        return $this->jsonObtainDataSimpliest($this->config_path["menu"]["dir"], $this->config_path["menu"]["name"]);
     }
 
     public function configUpdateMenu(string $type, array $contents)

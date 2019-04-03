@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
-namespace RCSE\Core\Handlers;
+namespace RCSE\Core;
 
 if (defined("ROOT") === false) {
     define("ROOT", $_SERVER['DOCUMENT_ROOT']);
 }
 
 /** File Handler, provides functions to write and read files */
-class FileHandler
+class File
 {
     /** @var bool|resource Opened file pointer or bool answer if file opening fails */
     private $file_stream;
