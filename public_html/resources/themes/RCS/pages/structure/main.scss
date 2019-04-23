@@ -1,0 +1,52 @@
+
+/*========Wrapper=========*/
+
+#main_wrapper {
+    display: flex;
+    min-height: 512px;
+    margin-top: 46px;
+    position: relative;
+    right: 32px;
+    z-index: 9000;
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        width: 64px;
+        background-color: $light_black;
+        padding-top: 10px;
+
+        ul {
+            list-style-type: none;
+
+            .menu_button {
+                display: block;
+                height: 64px;
+
+                a .menu_button_text {
+                    display: inline-block;
+                    position: relative;
+                    right: 64px;
+                    height: inherit;
+                }
+
+                a .menu_button_icon {
+                    display: inline-block;
+                    width: inherit;
+                    height: inherit;
+                }
+            }
+
+            .menu_button:hover {
+                background-color: $lighter_black;
+            }
+        }
+        
+    }
+
+    main {
+        display: flex;
+        width: $main_width;
+        background: $bright_gray;
+    }
+}

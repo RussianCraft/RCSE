@@ -1,8 +1,8 @@
 //Sass
 var gulp = require("gulp");
 var sass = require("gulp-sass");
-var sourceDir = "public_html/themes/RCS-New/pages/**/";
-var finalDir = "public_html/themes/RCS-New/pages/";
+var sourceDir = "public_html/resources/themes/RCS/pages/**/";
+var finalDir = "public_html/resources/themes/RCS/pages/";
 
 gulp.task("sass", function(){
     gulp.src(sourceDir + "structure.scss")

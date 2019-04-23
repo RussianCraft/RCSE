@@ -11,6 +11,7 @@
         "editor.fontLigatures": true,
         "editor.mouseWheelZoom": true,
         "files.autoSave": "afterDelay",
-        "breadcrumbs.enabled": true
+        "breadcrumbs.enabled": true,
+        "files.autoSaveDelay": 2000
     }
 }

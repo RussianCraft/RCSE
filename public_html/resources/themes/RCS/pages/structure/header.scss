@@ -1,0 +1,52 @@
+
+/*========Header=========*/
+
+header {
+    display: flex;
+    width: 100%;
+    height: 56px;
+    justify-content: center;
+    background: $black;
+    z-index: 9500;
+    position: fixed;
+    box-shadow: $main_shadow;
+}
+
+#headbar {
+    display: flex;
+    flex-direction: row;
+    width: $main_width - 64px;
+    justify-content: space-between;
+    padding: 0 32px;
+
+    .logo{
+        height: 128px;
+    }
+
+    .account {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin: 0 8px;
+        width: auto;
+
+        .name {
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 16pt;
+            text-align: left;
+            color: $bright_gray;
+            float: left;
+        }
+
+        .avatar {
+            height: 40px;
+            width: 40px;
+            border-radius: 20px;
+            float: right;
+            background-color: $bright_gray;
+        }
+
+        
+    }
+}
