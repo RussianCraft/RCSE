@@ -72,7 +72,7 @@ class Logger
 
     private function logGetTimestamp(bool $formatted = true)
     {
-        $stamp = date('Y-m-d H:i:s');
+        $stamp = date('Y-m-d H:i:s.v');
         $date = new \DateTime($stamp);
         
         if($formatted) {

@@ -87,7 +87,7 @@ class Database
      * @param string $table Table to send data to
      * @param string $type Type of query (e.g. "insert", "update", etc), described in queries.json
      * @param array $contents Array of data to send
-     * @param string $marker Data to be used as marker (user login, comment id, or null in case of "insert" query)
+     * @param string $marker [optional] Data to be used as marker (user login, comment id, or null in case of "insert" query)
      * @return boolean True if succeeds, false if fails (duh)
      * @throws \Exception In case of prepare or execution failure
      */
