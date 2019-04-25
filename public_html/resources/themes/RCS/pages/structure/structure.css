@@ -84,23 +84,48 @@ header {
 #main_wrapper nav ul .menu_button {
   display: block;
   height: 64px;
+  position: relative;
 }
 
 #main_wrapper nav ul .menu_button a .menu_button_text {
-  display: inline-block;
-  position: relative;
-  right: 64px;
-  height: inherit;
+  display: inline-flex;
+  position: absolute;
+  width: 0;
+  overflow: hidden;
+  right: 100%;
+  height: 64px;
+  font-size: 24pt;
+  font-weight: bold;
+  color: #e0e0e0;
+  text-transform: uppercase;
+  text-decoration: none;
+  background-color: #272e43;
+  text-align: center;
+  align-items: center;
+  transition: 0.1s ease-out;
+  transform-origin: right;
 }
 
 #main_wrapper nav ul .menu_button a .menu_button_icon {
   display: inline-block;
-  width: inherit;
-  height: inherit;
+  width: 64px;
+  height: 64px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 48px;
+}
+
+#main_wrapper nav ul .menu_button .home {
+  background-image: url("../../images/svg/home.svg") !important;
 }
 
 #main_wrapper nav ul .menu_button:hover {
   background-color: #003153;
+}
+
+#main_wrapper nav ul .menu_button:hover a .menu_button_text {
+  padding: 0 10px;
+  width: 245%;
 }
 
 #main_wrapper main {
