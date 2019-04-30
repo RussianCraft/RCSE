@@ -29,6 +29,7 @@ header {
         align-items: center;
         margin: 0 8px;
         width: auto;
+        position: relative;
 
         .name {
             margin-right: 8px;
@@ -47,6 +48,13 @@ header {
             background-color: $bright_gray;
         }
 
-        
+        .account_menu {
+            /*width: 100%;*/
+            min-width: 128px;
+            position: absolute;
+            top: 56px;
+            border: 2px solid $lighter_black;
+            background-color: $mid_gray;
+        }
     }
 }

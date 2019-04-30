@@ -40,6 +40,7 @@ header {
   align-items: center;
   margin: 0 8px;
   width: auto;
+  position: relative;
 }
 
 #headbar .account .name {
@@ -57,6 +58,15 @@ header {
   border-radius: 20px;
   float: right;
   background-color: #e0e0e0;
+}
+
+#headbar .account .account_menu {
+  /*width: 100%;*/
+  min-width: 128px;
+  position: absolute;
+  top: 56px;
+  border: 2px solid #003153;
+  background-color: #bebebe;
 }
 
 /*========Wrapper=========*/
@@ -99,7 +109,7 @@ header {
   color: #e0e0e0;
   text-transform: uppercase;
   text-decoration: none;
-  background-color: #272e43;
+  background-color: #003153;
   text-align: center;
   align-items: center;
   transition: 0.1s ease-out;
