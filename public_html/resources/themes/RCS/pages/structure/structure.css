@@ -38,7 +38,6 @@ header {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 0 8px;
   width: auto;
   position: relative;
 }
@@ -50,6 +49,7 @@ header {
   text-align: left;
   color: #e0e0e0;
   float: left;
+  margin-left: 8px;
 }
 
 #headbar .account .avatar {
@@ -58,15 +58,43 @@ header {
   border-radius: 20px;
   float: right;
   background-color: #e0e0e0;
+  margin-right: 8px;
 }
 
 #headbar .account .account_menu {
   /*width: 100%;*/
-  min-width: 128px;
+  width: 144px;
   position: absolute;
   top: 56px;
-  border: 2px solid #003153;
+  border: 1px solid #003153;
   background-color: #bebebe;
+  padding: 2.5px 0;
+  box-shadow: 0 4px 16px RGBA(0, 0, 0, 40%);
+  z-index: 9600;
+}
+
+#headbar .account .account_menu ul {
+  list-style-type: none;
+}
+
+#headbar .account .account_menu ul .account_menu_button {
+  padding: 5px 7px;
+}
+
+#headbar .account .account_menu ul .account_menu_button .account_menu_button_text {
+  font-size: 12pt;
+}
+
+#headbar .account .account_menu ul .account_menu_button:hover {
+  background-color: #e0e0e0;
+}
+
+#headbar .account .account_menu ul .first {
+  border-bottom: 1px solid #003153;
+}
+
+#headbar .account .account_menu ul .last {
+  border-top: 1px solid #003153;
 }
 
 /*========Wrapper=========*/
