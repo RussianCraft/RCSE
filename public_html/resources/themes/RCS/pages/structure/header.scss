@@ -23,12 +23,21 @@ header {
         height: 128px;
     }
 
-    .account {
+    #account.active {
+        background-color: $lighter_black;
+    }
+
+    #account:hover {
+        background-color: $lighter_black;
+    }
+
+    #account {
         display: flex;
         justify-content: flex-end;
         align-items: center;
         width: auto;
         position: relative;
+
 
         .name {
             margin-right: 8px;
@@ -49,16 +58,26 @@ header {
             margin-right: 8px;
         }
 
-        .account_menu {
-            /*width: 100%;*/
-            width: 144px;
-            position: absolute;
-            top: 56px;
-            border: 1px solid $lighter_black;
-            background-color: $mid_gray;
+        #account_menu.open {
+            height: 200%;
             padding: 2.5px 0;
             box-shadow: $main_shadow;
+            border: 1px solid $lighter_black;
+        }
+
+        #account_menu {
+            /*width: 100%;*/
+            width: 144px;
+            height: 0%;
+            position: absolute;
+            overflow: hidden;
+            top: 56px;
+            border: none;
+            background-color: $mid_gray;
+            padding: 0;
+            box-shadow: $main_shadow;
             z-index: 9600;
+            transition: height 0.05s ease-out, padding 0.05s ease-out, box-shadow 0.1s ease-out, border 0.1s ease-out;
 
             ul {
                 list-style-type: none;

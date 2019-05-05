@@ -34,7 +34,15 @@ header {
   height: 128px;
 }
 
-#headbar .account {
+#headbar #account.active {
+  background-color: #003153;
+}
+
+#headbar #account:hover {
+  background-color: #003153;
+}
+
+#headbar #account {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -42,7 +50,7 @@ header {
   position: relative;
 }
 
-#headbar .account .name {
+#headbar #account .name {
   margin-right: 8px;
   font-weight: bold;
   font-size: 16pt;
@@ -52,7 +60,7 @@ header {
   margin-left: 8px;
 }
 
-#headbar .account .avatar {
+#headbar #account .avatar {
   height: 40px;
   width: 40px;
   border-radius: 20px;
@@ -61,39 +69,49 @@ header {
   margin-right: 8px;
 }
 
-#headbar .account .account_menu {
-  /*width: 100%;*/
-  width: 144px;
-  position: absolute;
-  top: 56px;
-  border: 1px solid #003153;
-  background-color: #bebebe;
+#headbar #account #account_menu.open {
+  height: 200%;
   padding: 2.5px 0;
   box-shadow: 0 4px 16px RGBA(0, 0, 0, 40%);
-  z-index: 9600;
+  border: 1px solid #003153;
 }
 
-#headbar .account .account_menu ul {
+#headbar #account #account_menu {
+  /*width: 100%;*/
+  width: 144px;
+  height: 0%;
+  position: absolute;
+  overflow: hidden;
+  top: 56px;
+  border: none;
+  background-color: #bebebe;
+  padding: 0;
+  box-shadow: 0 4px 16px RGBA(0, 0, 0, 40%);
+  z-index: 9600;
+  transition: height 0.05s ease-out, padding 0.05s ease-out, box-shadow 0.1s ease-out, border 0.1s ease-out;
+}
+
+#headbar #account #account_menu ul {
   list-style-type: none;
 }
 
-#headbar .account .account_menu ul .account_menu_button {
+#headbar #account #account_menu ul .account_menu_button {
   padding: 5px 7px;
 }
 
-#headbar .account .account_menu ul .account_menu_button .account_menu_button_text {
+#headbar #account #account_menu ul .account_menu_button .account_menu_button_text {
   font-size: 12pt;
 }
 
-#headbar .account .account_menu ul .account_menu_button:hover {
+#headbar #account #account_menu ul .account_menu_button:hover {
   background-color: #e0e0e0;
 }
 
-#headbar .account .account_menu ul .first {
+#headbar #account #account_menu ul .first {
   border-bottom: 1px solid #003153;
 }
 
-#headbar .account .account_menu ul .last {
+#headbar #account #account_menu ul .last {
   border-top: 1px solid #003153;
 }
 
