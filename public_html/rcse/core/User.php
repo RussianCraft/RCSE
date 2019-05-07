@@ -116,26 +116,70 @@ class User
     public function userRemove()
     { }
 
-    private function userSessionCreate(string $login)
+    private function userSessionCreate(string $login, bool $save_session)
     {
         $file_path = "/userdata/{$login}/";
         $file_name = "session.json";
+        $date = new DateTime();
+        $current_date = $date->format("H:i d-m-Y");
+        $delayed_date = $date->add(new DateInterval('P10D'))->format("H:i d-m-Y");
 
-        $session_id = Utils::utilsRandomString(16);
+        $session_id = $this->utils->utilsRandomString(16);
         
         try {
-            $session_file_data = $this->file->fileRead($file_path, $file_name);
+            $session_file_data = json_decode($this->file->fileRead($file_path, $file_name));
         } catch(\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
             return false;
         }
+
+        if($save_session) $session_exp = 0;
+        else $session_exp = $delayed_date;
+
+        $session_data = [
+            "date_created" => $current_date,
+            "date_expires" => $session_exp,
+            "ip_created" => $this->userGetIP(),
+            "ips" => [$this->userGetIP()]
+        ];
+
+        $session_file_data[$session_id] = $session_data;
+
+        try {
+            $this->file->fileWrite($file_path, $file_name, json_encode($session_file_data));
+        } catch(\Exception $e) {
+            $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
+            return false;
+        }
+
+        if($session_exp !== 0) $session_exp = time()+60*60*24*10;
+
+        setcookie("session_id", $session_id, $session_exp);
+        setcookie("session_login", $login, $session_exp);
+
+        return true;
     }
 
     private function userSessionObtain(string $login, string $session_id)
     { }
 
-    private function userSessionValidate(string $login, string $session_id)
-    { }
+    private function userSessionValidate(string $login, string $session_id, bool $save_session)
+    { 
+        $file_path = "/userdata/{$login}/";
+        $file_name = "session.json";
+
+        $current_date = new DateTime();
+
+        try {
+            $session_file_data = json_decode($this->file->fileRead($file_path, $file_name));
+        } catch(\Exception $e) {
+            $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
+            return false;
+        }
+
+        $date_expires = new DateTime($session_file_data[$session_id]['date_expires']);
+
+    }
 
     private function userGetIP(): string
     {
