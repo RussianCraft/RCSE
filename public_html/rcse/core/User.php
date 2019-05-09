@@ -154,8 +154,8 @@ class User
 
         if($session_exp !== 0) $session_exp = time()+60*60*24*10;
 
-        setcookie("session_id", $session_id, $session_exp);
-        setcookie("session_login", $login, $session_exp);
+        setcookie("session_id", $session_id, $session_exp, '/');
+        setcookie("session_login", $login, $session_exp, '/');
 
         return true;
     }
@@ -179,6 +179,14 @@ class User
 
         $date_expires = new DateTime($session_file_data[$session_id]['date_expires']);
 
+        if($date_expires <= $current_date) {
+            unset($_COOKIE["session_id"]);
+            unset($_COOKIE["session_login"]);
+            setcookie("session_id", "", time() - 3600, '/');
+            setcookie("session_login", "", time() - 3600, '/');
+        } else {
+            
+        }
     }
 
     private function userGetIP(): string
