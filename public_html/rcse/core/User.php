@@ -63,7 +63,7 @@ class User
         $file_path = "/userdata/{$login}/";
         $file_name = "session.json";
 
-        file_put_contents($file_path.$file_name,"{}");
+        file_put_contents($file_path . $file_name, "{}");
 
         try {
             return $this->database->databaseSendData('accounts', 'insert', $params);
@@ -124,16 +124,19 @@ class User
         $current_date = $date->format("H:i d-m-Y");
         $delayed_date = $date->add(new DateInterval('P10D'))->format("H:i d-m-Y");
 
+
         $session_id = $this->utils->utilsRandomString(16);
-        
+
+        $this->logger->log($this->logger::INFO, "Creating new session, id: {$session_id}.", get_class($this));
+
         try {
             $session_file_data = json_decode($this->file->fileRead($file_path, $file_name));
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
             return false;
         }
 
-        if($save_session) $session_exp = 0;
+        if ($save_session) $session_exp = 0;
         else $session_exp = $delayed_date;
 
         $session_data = [
@@ -147,45 +150,70 @@ class User
 
         try {
             $this->file->fileWrite($file_path, $file_name, json_encode($session_file_data));
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
             return false;
         }
 
-        if($session_exp !== 0) $session_exp = time()+60*60*24*10;
+        if ($session_exp !== 0) $session_exp = time() + 60 * 60 * 24 * 10;
 
         setcookie("session_id", $session_id, $session_exp, '/');
         setcookie("session_login", $login, $session_exp, '/');
 
+        $this->logger->log($this->logger::INFO, "Session created successfully.", get_class($this));
+
         return true;
     }
 
-    private function userSessionObtain(string $login, string $session_id)
-    { }
-
-    private function userSessionValidate(string $login, string $session_id, bool $save_session)
-    { 
+    private function userSessionObtainAll(string $login)
+    {
         $file_path = "/userdata/{$login}/";
         $file_name = "session.json";
-
-        $current_date = new DateTime();
+        
+        $this->logger->log($this->logger::INFO, "Obtaining sessions.", get_class($this));
 
         try {
             $session_file_data = json_decode($this->file->fileRead($file_path, $file_name));
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
             return false;
         }
 
-        $date_expires = new DateTime($session_file_data[$session_id]['date_expires']);
+        $this->logger->log($this->logger::INFO, "Sessions obtained successfully.", get_class($this));
 
-        if($date_expires <= $current_date) {
+        return $session_file_data;
+    }
+
+    private function userSessionObtain(string $login, string $session_id)
+    {
+        $this->logger->log($this->logger::INFO, "Obtaining session {$session_id}.", get_class($this));
+
+        $session_file_data = $this->userSessionObtainAll($login)[$session_id];
+
+        $this->logger->log($this->logger::INFO, "Session obtained successfully.", get_class($this));
+
+        return $session_file_data;
+    }
+
+    private function userSessionValidate(string $login, string $session_id, bool $save_session)
+    {
+        $current_date = new DateTime();
+
+        $session_file_data = $this->userSessionObtain($login, $session_id);
+
+        $date_expires = new DateTime($session_file_data['date_expires']);
+
+        $this->logger->log($this->logger::INFO, "Validation user session {$session_id}.", get_class($this));
+
+        if ($date_expires <= $current_date) {
             unset($_COOKIE["session_id"]);
             unset($_COOKIE["session_login"]);
             setcookie("session_id", "", time() - 3600, '/');
             setcookie("session_login", "", time() - 3600, '/');
+            $this->logger->log($this->logger::INFO, "Session expired.", get_class($this));
         } else {
-            
+            $session_file_data["ips"][] = $this->userGetIP();
+            $this->logger->log($this->logger::INFO, "Session valid.", get_class($this));
         }
     }
 
