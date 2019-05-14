@@ -41,9 +41,10 @@ class User
             return $message;
         }
 
-        $birthdate = new DateTime($birthdate) . format('Y-m-d');
+        $birthdate_unf = new \DateTime($birthdate);
+        $birthdate = $birthdate_unf->format('Y-m-d');
         $regdate = date('Y-m-d');
-        $passhash = password_hash($password, PASSWORD_ARGON2I);
+        $passhash = password_hash($password, PASSWORD_DEFAULT);
         $settings = [
             "avatar" => "default",
             "group" => "user"
@@ -63,7 +64,8 @@ class User
         $file_path = "/userdata/{$login}/";
         $file_name = "session.json";
 
-        file_put_contents($file_path . $file_name, "{}");
+        $this->file->fileOpen("c", $file_path, $file_name);
+        $this->file->fileWriteLine("{}");
 
         try {
             return $this->database->databaseSendData('accounts', 'insert', $params);
@@ -73,9 +75,9 @@ class User
         }
     }
 
-    public function userLogin(string $id, string $pass)
+    public function userLogin(string $id, string $pass, bool $save_session)
     {
-        if (strpos($id, '@') !== false && strpos($id, '.') !== false) {
+        if (strpos($id, '@') != false && strpos($id, '.') != false) {
             $type = "by_email";
         } else {
             $type = "by_login";
@@ -99,6 +101,10 @@ class User
             $this->logger->log($this->logger::NOTICE, $message, get_class($this));
             return $message;
         }
+
+        $this->userSessionCreate($user_data['login'], $save_session);
+
+        return true;
     }
 
     public function userVerify()
@@ -120,9 +126,9 @@ class User
     {
         $file_path = "/userdata/{$login}/";
         $file_name = "session.json";
-        $date = new DateTime();
+        $date = new \DateTime();
         $current_date = $date->format("H:i d-m-Y");
-        $delayed_date = $date->add(new DateInterval('P10D'))->format("H:i d-m-Y");
+        $delayed_date = $date->add(new \DateInterval('P10D'))->format("H:i d-m-Y");
 
 
         $session_id = $this->utils->utilsRandomString(16);
@@ -130,11 +136,12 @@ class User
         $this->logger->log($this->logger::INFO, "Creating new session, id: {$session_id}.", get_class($this));
 
         try {
-            $session_file_data = json_decode($this->file->fileRead($file_path, $file_name));
+            $session_file_data = json_decode($this->file->fileRead($file_path, $file_name), true);
         } catch (\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
             return false;
         }
+
 
         if ($save_session) $session_exp = 0;
         else $session_exp = $delayed_date;
@@ -148,12 +155,7 @@ class User
 
         $session_file_data[$session_id] = $session_data;
 
-        try {
-            $this->file->fileWrite($file_path, $file_name, json_encode($session_file_data));
-        } catch (\Exception $e) {
-            $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
-            return false;
-        }
+        $this->userSessionUpdate($login, $session_file_data);
 
         if ($session_exp !== 0) $session_exp = time() + 60 * 60 * 24 * 10;
 
@@ -184,6 +186,25 @@ class User
         return $session_file_data;
     }
 
+    private function userSessionUpdate(string $login, $data)
+    {
+        $file_path = "/userdata/{$login}/";
+        $file_name = "session.json";
+        
+        $this->logger->log($this->logger::INFO, "Udating session file.", get_class($this));
+
+        try {
+            $this->file->fileWrite($file_path, $file_name, json_encode($data));
+        } catch (\Exception $e) {
+            $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
+            return false;
+        }
+
+        $this->logger->log($this->logger::INFO, "Sessions obtained successfully.", get_class($this));
+
+        return true;
+    }
+
     private function userSessionObtain(string $login, string $session_id)
     {
         $this->logger->log($this->logger::INFO, "Obtaining session {$session_id}.", get_class($this));
@@ -197,11 +218,9 @@ class User
 
     private function userSessionValidate(string $login, string $session_id, bool $save_session)
     {
-        $current_date = new DateTime();
-
+        $current_date = new \DateTime();
         $session_file_data = $this->userSessionObtain($login, $session_id);
-
-        $date_expires = new DateTime($session_file_data['date_expires']);
+        $date_expires = new \DateTime($session_file_data['date_expires']);
 
         $this->logger->log($this->logger::INFO, "Validation user session {$session_id}.", get_class($this));
 
@@ -215,6 +234,31 @@ class User
             $session_file_data["ips"][] = $this->userGetIP();
             $this->logger->log($this->logger::INFO, "Session valid.", get_class($this));
         }
+    }
+
+    private function userSessionEndAll(string $login)
+    {
+
+    }
+
+    private function userSessionEnd(string $login, string $session_id) 
+    {
+        $current_date = new \DateTime();
+        $session_file_data = $this->userSessionObtain($login, $session_id);
+
+        $session_file_data['date_expires'] = $current_date->format("H:i d-m-Y");
+
+        try {
+            $this->file->fileWrite($file_path, $file_name, json_encode($session_file_data));
+        } catch (\Exception $e) {
+            $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
+            return false;
+        }
+
+        unset($_COOKIE["session_id"]);
+        unset($_COOKIE["session_login"]);
+        setcookie("session_id", "", time() - 3600, '/');
+        setcookie("session_login", "", time() - 3600, '/');
     }
 
     private function userGetIP(): string

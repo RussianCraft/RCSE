@@ -19,12 +19,12 @@ $data = [
     ":settings" => "{}"
 ];
 
-echo "Checking DB for account \"Test\": ";
+/*echo "Checking DB for account \"Test\": ";
 var_dump($db->databaseCheckData("accounts", "by_login", "Test"));
 echo "<br>";
 echo "Reading account \"Test\": ";
 var_dump($db->databaseGetData("accounts", "by_login", "Test"));
-echo "<br>";
+echo "<br>";*/
 echo "Writing account \"Test1\" to DB: ";
 var_dump($db->databaseSendData("accounts", "insert", $data));
 echo "<br>";

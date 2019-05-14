@@ -50,9 +50,12 @@ class File
      * @throws \Exception In case of fopen failure
      * @throws \Exception In case of flock failure
      */
-    public function fileOpen(string $mode)
+    public function fileOpen(string $mode, string $file_dir = null, string $file_name = null)
     {
         $lock = "";
+
+        if($file_dir !== null) $this->file_dir = $file_dir;
+        if($file_name !== null) $this->file_name = $file_name;
         
         if (is_dir($this->file_dir) === false) {
             $this->fileCreateDir();

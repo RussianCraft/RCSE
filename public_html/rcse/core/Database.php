@@ -226,7 +226,7 @@ class Database
         $this->logger->log($this->logger::INFO, "Trying to execute query.", get_class($this));
         
         $query_bool = $query->execute($params);
-
+        
         if ($query_bool === false) {
             $this->logger->log($this->logger::ERROR, "Failed to execute query!", get_class($this));
             throw new \Exception("Query execution failed!", 1020);
