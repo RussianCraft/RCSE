@@ -70,15 +70,15 @@ header {
 }
 
 #headbar #account #account_menu.open {
-  height: 200%;
+  height: 150%;
+  max-height: 200%;
   padding: 2.5px 0;
   box-shadow: 0 4px 16px RGBA(0, 0, 0, 40%);
   border: 1px solid #003153;
 }
 
 #headbar #account #account_menu {
-  /*width: 100%;*/
-  width: 144px;
+  min-width: 144px;
   height: 0%;
   position: absolute;
   overflow: hidden;
@@ -113,6 +113,11 @@ header {
 
 #headbar #account #account_menu ul .last {
   border-top: 1px solid #003153;
+}
+
+#headbar #account #account_menu p {
+  text-align: center;
+  padding: 5px;
 }
 
 /*========Wrapper=========*/
@@ -172,7 +177,23 @@ header {
 }
 
 #main_wrapper nav ul .menu_button .home {
-  background-image: url("../../images/svg/home.svg") !important;
+  background-image: url("/resources/themes/RCS/images/svg/home.svg") !important;
+}
+
+#main_wrapper nav ul .menu_button .news {
+  background-image: url("/resources/themes/RCS/images/svg/news.svg") !important;
+}
+
+#main_wrapper nav ul .menu_button .forum {
+  background-image: url("/resources/themes/RCS/images/svg/forum.svg") !important;
+}
+
+#main_wrapper nav ul .menu_button .search {
+  background-image: url("/resources/themes/RCS/images/svg/search.svg") !important;
+}
+
+#main_wrapper nav ul .menu_button .faq {
+  background-image: url("/resources/themes/RCS/images/svg/faq.svg") !important;
 }
 
 #main_wrapper nav ul .menu_button:hover {

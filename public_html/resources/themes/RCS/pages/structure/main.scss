@@ -54,7 +54,23 @@
                 }
                     
                 .home {
-                    background-image: url('../../images/svg/home.svg') !important;
+                    background-image: url('/resources/themes/RCS/images/svg/home.svg') !important;
+                }
+
+                .news {
+                    background-image: url('/resources/themes/RCS/images/svg/news.svg') !important;
+                }
+
+                .forum {
+                    background-image: url('/resources/themes/RCS/images/svg/forum.svg') !important;
+                }
+
+                .search {
+                    background-image: url('/resources/themes/RCS/images/svg/search.svg') !important;
+                }
+
+                .faq {
+                    background-image: url('/resources/themes/RCS/images/svg/faq.svg') !important;
                 }
             }
 

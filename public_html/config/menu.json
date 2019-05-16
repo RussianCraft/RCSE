@@ -1,6 +1,6 @@
 {
-    "homepage": "/",
-    "news": "/news",
-    "forum": "/forum",
-    "faq": "/faq"
+    "home": "/",
+    "news": "/?page=news",
+    "forum": "/?page=forum",
+    "faq": "/?page=faq"
 }

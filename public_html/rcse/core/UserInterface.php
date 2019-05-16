@@ -18,10 +18,10 @@ class UserInterface
     private $page_contents;
     private $theme_dir, $pages_dir, $locales_dir;
 
-    public function __construct()
+    public function __construct(Logger $logger, Configurator $config)
     {
-        $this->logger = new Logger();
-        $this->config = new Configurator($this->logger);
+        $this->logger = $logger;
+        $this->config = $config;
         $this->file = new File();
 
         $this->uiInitPage();
@@ -35,8 +35,10 @@ class UserInterface
         $page_locale = $this->config->configObtainMain("site")['lang'];
         $this->page_contents = $this->file->fileRead($this->pages_dir, "structure.html");
         
+        
         $this->uiSetPageElement("LANG", $page_locale);
-        $this->uiSetPageElement("MENU", $this->uiGenerateMenu());
+        $this->uiSetPageElement("PAGE_STYLE", $this->pages_dir . "structure/structure.css");
+        $this->uiSetPageElement("MAIN_MENU", $this->uiGenerateMenu());
     }
 
     public function uiGeneratePage()
@@ -48,7 +50,11 @@ class UserInterface
             $page = str_replace("[{$key}]", $value, $page);
         }
 
-        print($page);
+        $this->page_contents = $page;
+
+        $this->uiLocalize($this->config->configObtainMain('site')['lang']);
+
+        print($this->page_contents);
     }
 
     protected function uiLocalize(string $lang)
@@ -56,23 +62,26 @@ class UserInterface
         $locale_by_theme = $this->config->configObtainLocale($lang, 'interface', $this->config->configObtainMain('site')['theme']);
         $locale = $this->config->configObtainLocale($lang, 'interface', 'engine');
         $locale = array_merge($locale, $locale_by_theme);
+        $page = $this->page_contents;
 
         foreach($locale as $key => $value) {
-            $this->page_contents = str_replace("\\{$key}\\", $value, $this->page_contents);
+            $page = str_replace("*{$key}*", $value, $page);
         }
+
+        $this->page_contents = $page;
     }
 
     protected function uiGenerateMenu()
     {
         $menu_raw = $this->config->configObtainMenu();
 
-        $menu = "<menu>";
+        $menu = "<ul>";
         
         foreach($menu_raw as $key => $value) {
-            $menu .= "<li><a class=\"text {$key}\" href=\"{$value}\">\\{$key}\\</a><a class=\"icon {$key}\" href=\"{$value}\"><\a></li>";
+            $menu .= "<li class=\"menu_button\"><a href=\"{$value}\"><span class=\"menu_button_text\"><span>*{$key}*</span></span><span class=\"menu_button_icon {$key}\"></span></a></li>";
         }
 
-        $menu .= "</menu>";
+        $menu .= "</ul>";
 
         return $menu;
     }
@@ -82,5 +91,9 @@ class UserInterface
         $this->page_elements[$element] = $content;
     }    
 
+    public function uiCreateUserPage(string $login)
+    {
+        $user_data = $this->user->userGetInfo($login);
+    }
 
 }

@@ -59,15 +59,15 @@ header {
         }
 
         #account_menu.open {
-            height: 200%;
+            height: 150%;
+            max-height: 200%;
             padding: 2.5px 0;
             box-shadow: $main_shadow;
             border: 1px solid $lighter_black;
         }
 
         #account_menu {
-            /*width: 100%;*/
-            width: 144px;
+            min-width: 144px;
             height: 0%;
             position: absolute;
             overflow: hidden;
@@ -101,6 +101,11 @@ header {
                 .last {
                     border-top: 1px solid $lighter_black;
                 }
+            }
+
+            p {
+                text-align: center;
+                padding: 5px;
             }
         }
     }
