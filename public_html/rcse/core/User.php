@@ -30,7 +30,7 @@ class User
 
     public function userRegister(string $login, string $password, string $email, string $sex, string $birthdate, string $origin)
     {
-        if ($this->database->databaseCheckData('accounts', 'by_login', $login)) {
+       if ($this->database->databaseCheckData('accounts', 'by_login', $login)) {
             $message = "Failed to register account: login {$login} is already claimed!";
             $this->logger->log($this->logger::ERROR, $message, get_class($this));
             return $message;
@@ -66,6 +66,7 @@ class User
 
         $this->file->fileOpen("c", $file_path, $file_name);
         $this->file->fileWriteLine("{}");
+
 
         try {
             return $this->database->databaseSendData('accounts', 'insert', $params);
@@ -110,7 +111,7 @@ class User
     public function userGetInfo(string $login)
     {
         if ($this->database->databaseCheckData('accounts', 'by_login', $login) === false) {
-            $message = "Failed to login: account for {$login} not found!";
+            $message = "Failed to obtain data: account for {$login} not found!";
             $this->logger->log($this->logger::ERROR, $message, get_class($this));
             return $message;
         }
@@ -122,7 +123,7 @@ class User
             return false;
         }
 
-        
+        return $user_data;
     }
 
     public function userVerify()
@@ -192,13 +193,14 @@ class User
         $this->logger->log($this->logger::INFO, "Obtaining sessions.", get_class($this));
 
         try {
-            $session_file_data = json_decode($this->file->fileRead($file_path, $file_name));
+            $session_file_data = json_decode($this->file->fileRead($file_path, $file_name), true);
         } catch (\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
             return false;
         }
 
         $this->logger->log($this->logger::INFO, "Sessions obtained successfully.", get_class($this));
+
 
         return $session_file_data;
     }

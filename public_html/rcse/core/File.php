@@ -76,7 +76,7 @@ class File
             throw new \Exception("Failed to create file: {$this->file_name}!", 1000);
         }
 
-        if (flock($this->file_stream, $lock, $eWouldBlock) === false) {
+        if (flock($this->file_stream, $lock) === false) {
             throw new \Exception("Failed to lock the file: {$this->file_path}!", 1001);
         }
 
