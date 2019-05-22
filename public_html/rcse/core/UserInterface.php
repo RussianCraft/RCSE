@@ -37,7 +37,6 @@ class UserInterface
         
         
         $this->uiSetPageElement("LANG", $page_locale);
-        $this->uiSetPageElement("PAGE_STYLE", $this->pages_dir . "structure/structure.css");
         $this->uiSetPageElement("MAIN_MENU", $this->uiGenerateMenu());
     }
 
@@ -94,6 +93,12 @@ class UserInterface
     public function uiCreateUserPage(string $login)
     {
         $user_data = $this->user->userGetInfo($login);
+    }
+
+    public function uiCreateUserLoginPage()
+    {
+        $page_content = $this->file->fileRead($this->pages_dir, "login.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_content, $this->page_contents);
     }
 
 }

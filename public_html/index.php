@@ -16,7 +16,7 @@ if(!empty($_GET)) {
         $page = htmlspecialchars($_GET['page']);
     }
     if (isset($_GET['mode'])) {
-        $mode = htmlspecialchars($_GET['mode]']);
+        $mode = htmlspecialchars($_GET['mode']);
     }
 }
 
@@ -48,12 +48,24 @@ switch($page) {
 
                 break;
             case 'exit':
-
+                $user->userSessionEnd();
+                $data = "<h1>Выход из аккаунта...</h1>
+                <script>
+                document.addEventListener(\"DOMContentLoaded\", function(event) {
+                    window.location.href = \"/\";
+                });
+                </script>";
+                $ui->uiSetPageElement("PAGE_CONTENT", $data);
+                $ui->uiSetPageElement("PAGE_TITLE", "Выход из аккаунта");
                 break;
             case 'login':
-
+                $ui->uiCreateUserLoginPage();
+                $ui->uiSetPageElement("PAGE_TITLE", "Вход в аккаунт");
                 break;
             case 'register':
+
+                break;
+            default:
 
                 break;
         }
@@ -69,11 +81,44 @@ switch($page) {
     case 'faq':
         
         break;
-    case 'home':
-    default:
+    case 'auth':
+        switch($mode){
+            case 'login':
+                $id = htmlspecialchars($_POST['id']);
+                $pass = htmlspecialchars($_POST['password']);
+                if($_POST['save_session'] === null) $save_session = false;
+                else $save_session = $_POST['save_session'];
+                $login = $user->userLogin($id, $pass, $save_session);
+                if($login !== true) {
+                    $data = "
+                    <form action='/?page=error' id='form' method='POST'>
+                        <input type='hidden' name='message' value='{$login}'
+                    </form>
+                    <script>
+                        document.getElementById('form').submit();
+                    </script>";
+                } else {
+                    $data = "
+                    <script>
+                        window.location.href = '/';
+                    </script>";
+                }
+                $ui->uiSetPageElement("PAGE_CONTENT", $data);
+                break;
+            case 'register':
+
+                break;
+        }
+        break;
+    case 'error':
 
         break;
+    case 'home':
+    default:
+        $data = "<h1>No content yet!</h1>";
+        break;
 }
+
 //!Page data setup
 
 //Page render

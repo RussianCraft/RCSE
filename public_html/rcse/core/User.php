@@ -30,7 +30,7 @@ class User
 
     public function userRegister(string $login, string $password, string $email, string $sex, string $birthdate, string $origin)
     {
-       if ($this->database->databaseCheckData('accounts', 'by_login', $login)) {
+        if ($this->database->databaseCheckData('accounts', 'by_login', $login)) {
             $message = "Failed to register account: login {$login} is already claimed!";
             $this->logger->log($this->logger::ERROR, $message, get_class($this));
             return $message;
@@ -67,7 +67,6 @@ class User
         $this->file->fileOpen("c", $file_path, $file_name);
         $this->file->fileWriteLine("{}");
 
-
         try {
             return $this->database->databaseSendData('accounts', 'insert', $params);
         } catch (\Exception $e) {
@@ -94,7 +93,7 @@ class User
             $user_data = $this->database->databaseGetData('accounts', $type, $id);
         } catch (\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
-            return false;
+            return $e->getMessage();
         }
 
         if (password_verify($pass, $user_data['password']) === false) {
@@ -126,19 +125,22 @@ class User
         return $user_data;
     }
 
-    public function userVerify()
+    public function userVerify(string $login, string $code)
     { }
 
-    public function userPunish()
+    public function userPunish(string $login, array $params)
     { }
 
-    public function userEdit()
+    public function userEdit(string $login, array $data)
     { }
 
-    public function userSuspend()
+    public function userSuspend(string $login)
     { }
 
-    public function userRemove()
+    public function userRemove(string $login)
+    { }
+
+    public function userResetPass(string $login, string $code = null)
     { }
 
     private function userSessionCreate(string $login, bool $save_session)
@@ -167,8 +169,8 @@ class User
         $session_data = [
             "date_created" => $current_date,
             "date_expires" => $session_exp,
-            "ip_created" => $this->userGetIP(),
-            "ips" => [$this->userGetIP()]
+            "ip_created" => $this->utils->utilsGetClientIP(),
+            "ips" => [$this->utils->utilsGetClientIP()]
         ];
 
         $session_file_data[$session_id] = $session_data;
@@ -239,7 +241,11 @@ class User
     {
         $current_date = new \DateTime();
         $session_file_data = $this->userSessionObtain($login, $session_id);
-        $date_expires = new \DateTime($session_file_data['date_expires']);
+        if($session_file_data['date_expires'] == 0) {
+            $date_expires = new \DateTime($session_file_data['date_created']);
+        } else {
+            $date_expires = new \DateTime($session_file_data['date_expires']);
+        }
 
         $this->logger->log($this->logger::INFO, "Validation user session {$session_id}.", get_class($this));
 
@@ -251,7 +257,7 @@ class User
             $this->logger->log($this->logger::INFO, "Session expired.", get_class($this));
             return false;
         } else {
-            $session_file_data["ips"][] = $this->userGetIP();
+            $session_file_data["ips"][] = $this->utils->utilsGetClientIP();
             $this->logger->log($this->logger::INFO, "Session valid.", get_class($this));
             return true;
         }
@@ -271,17 +277,22 @@ class User
 
     }
 
-    private function userSessionEnd(string $login, string $session_id) 
-    {
+    public function userSessionEnd() : bool
+    {        
+        if(!isset($_COOKIE['session_id']) && !isset($_COOKIE['session_login'])) {
+            $this->logger->log($this->logger::INFO, "No active sessions found!", get_class($this));
+            return true;
+        }
+
+        $session_id = htmlspecialchars($_COOKIE['session_id']);
+        $login = htmlspecialchars($_COOKIE['session_login']);
         $current_date = new \DateTime();
-        $session_file_data = $this->userSessionObtain($login, $session_id);
+        $session_file_data = $this->userSessionObtainAll($login);
 
-        $session_file_data['date_expires'] = $current_date->format("H:i d-m-Y");
+        $session_file_data[$session_id]['date_expires'] = $current_date->format("H:i d-m-Y");
 
-        try {
-            $this->file->fileWrite($file_path, $file_name, json_encode($session_file_data));
-        } catch (\Exception $e) {
-            $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
+        if($this->userSessionUpdate($login, $session_file_data) === false) {
+            $this->logger->log($this->logger::ERROR, "Failed to end session {$session_id}!", get_class($this));
             return false;
         }
 
@@ -289,18 +300,9 @@ class User
         unset($_COOKIE["session_login"]);
         setcookie("session_id", "", time() - 3600, '/');
         setcookie("session_login", "", time() - 3600, '/');
-    }
 
-    private function userGetIP(): string
-    {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
+        $this->logger->log($this->logger::INFO, "Session {$session_id} ended successfully.", get_class($this));
 
-        return $ip;
+        return true;
     }
 }

@@ -8,8 +8,8 @@ $logger = new \RCSE\Core\Logger();
 $config = new \RCSE\Core\Configurator($logger);
 $user = new \RCSE\Core\User($logger, $config);
 
-$reg_res = $user->userRegister("test", "HelloWorld", "test@xya.a", "m", "1999-01-01", "MSK");
-$log_res = $user->userLogin("test", "HelloWorld", true);
+$reg_res = $user->userRegister("test", "HelloWorld1", "test@xya.a", "m", "1999-01-01", "MSK");
+$log_res = $user->userLogin("test", "HelloWorld1", false);
 $data = $user->userGetInfo("test");
 
 echo "Registering user \"test\", result: ";

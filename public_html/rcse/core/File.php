@@ -54,7 +54,7 @@ class File
     {
         $lock = "";
 
-        if($file_dir !== null) $this->file_dir = $file_dir;
+        if($file_dir !== null) $this->file_dir = ROOT . $file_dir;
         if($file_name !== null) $this->file_name = $file_name;
         
         if (is_dir($this->file_dir) === false) {

@@ -88,7 +88,36 @@
 
     main {
         display: flex;
-        width: $main_width;
+        width: $main_width - 10px;
         background: $bright_gray;
+        padding: 5px;
+        padding-top: 82px;
+    }
+}
+
+
+
+/*========Footer=========*/
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    height: 24px;
+    z-index: 9500;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 8px;
+    background: $black;
+    color: $bright_gray;
+    font-weight: bold;
+
+    a {
+        text-decoration: none;
+        color: inherit;
     }
 }

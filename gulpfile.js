@@ -5,7 +5,7 @@ var sourceDir = "public_html/resources/themes/RCS/pages/**/";
 var finalDir = "public_html/resources/themes/RCS/pages/";
 
 gulp.task("sass", function(){
-    gulp.src(sourceDir + "structure.scss")
+    gulp.src(sourceDir + "style.scss")
         .pipe(sass({ outputStyle: "expanded" }))
         .pipe(gulp.dest(finalDir));
 });

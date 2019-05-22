@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="[PAGE_STYLE]">
-    <title>Document</title>
+    <link rel="stylesheet" href="/resources/themes/RCS/pages/structure/style.css">
+    <title>[PAGE_TITLE]</title>
     <script>
         function toggleMenu() {
             var el1 = document.getElementById("account");
@@ -41,19 +41,13 @@
 </head>
 
 <body>
-    <header>
+    <header id="page_header">
         <div id="headbar">
             <img src="/resources/themes/RCS/images/svg/logo.svg" alt="logo" class="logo">
             <div id="account" onclick="toggleMenu('account', 'account_menu')">
                 <span class="name">[USER_NAME]</span>
-                <img src="" alt="avatar" class="avatar">
+                <img class="avatar">
                 <div id="account_menu">
-                    <!--<ul>
-                        <li class="account_menu_button first"><span class="account_menu_button_text">Личный кабинет</span></li>
-                        <li class="account_menu_button"><span class="account_menu_button_text">Настройки</span></li>
-                        <li class="account_menu_button"><span class="account_menu_button_text">Вопросы</span></li>
-                        <li class="account_menu_button last"><span class="account_menu_button_text">Выход</span></li>
-                    </ul>-->
                     [USER_MENU]
                 </div>
             </div>
@@ -61,16 +55,16 @@
     </header>
     <div id="main_wrapper">
         <nav>
-            <!--<ul>
-                <li class="menu_button"><a href="/"><span class="menu_button_text"><span>Главная</span></span><span
-                            class="menu_button_icon home"></span></a></li>
-                
-            </ul>-->
             [MAIN_MENU]
         </nav>
-        <main></main>
+        <main>
+            [PAGE_CONTENT]
+        </main>
     </div>
-    <footer></footer>
+    <footer>
+        <a href="https://github.com/LoneSimba/RCSE">RussianCraft Site Engine</a>
+        <a href="/">RussianCraft Studio 2015-2019</a>
+    </footer>
 </body>
 
 </html>

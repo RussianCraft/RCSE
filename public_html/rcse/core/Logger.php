@@ -17,6 +17,7 @@ class Logger
     private $log_file;
     private $log_dir;
     private $file_handler;
+    private $utils;
     private $file_perms = 0777;
     private $message_levels = [
         self::EMERGENCY => 0,
@@ -32,6 +33,8 @@ class Logger
 
     public function __construct($level_threshold = self::DEBUG)
     {
+        $this->utils = new Utils();
+
         $this->logSetLevelThreshold($level_threshold);
         $this->logSetFilePath();
 
@@ -48,7 +51,7 @@ class Logger
     private function logSetFilePath()
     {
         $datetime = $this->logGetTimestamp(false)->format('Y-m-d_H-i-s');
-        $path = "/logs/{$this->logGetClientIP()}/";
+        $path = "/logs/{$this->utils->utilsGetClientIP()}/";
 
         if(is_dir(ROOT . $path) === false) {
             mkdir(ROOT . $path, $this->file_perms);
@@ -98,23 +101,5 @@ class Logger
         $level = strtoupper($level);
         $message_formatted = "[{$this->logGetTimestamp()}][{$level}][{$source}] {$message}";
         return $message_formatted.PHP_EOL;
-    }
-
-    /**
-     * Получает IP адрес посетителя. КОСТЫЛЬ, ПЕРЕНЕСТИ В ДРУГОЙ КЛАСС!!!!
-     *
-     * @return string
-     */
-    private function logGetClientIP() : string
-    {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        return $ip;
     }
 }
