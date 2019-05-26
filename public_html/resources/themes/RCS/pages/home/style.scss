@@ -1,0 +1,158 @@
+@import "base";
+
+#home_page_wrapper {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;       
+
+    .news_section_wrapper, .forum_section_wrapper {
+        display: flex;
+        flex-direction: column;
+        width: $main-width - 10px;
+        padding: 5px;
+    }
+
+    .news_section_wrapper {
+        header.news_section_header {
+            display: flex;
+            align-items: center;
+            width: $main_width - 20px;
+            padding: 0px 5px;
+            height: 36px;
+            background-color: $light_black;
+            color: $bright_gray;
+            font-weight: bold;
+            font-size: 18pt;
+        }
+
+        main.news_section_main {
+            display: flex;
+            width: $main_width - 20px;
+            padding: 5px;
+            flex-wrap: wrap;
+
+            .news_post {
+                display: flex;
+                flex-direction: column;
+                width: $panel_width;
+                min-height: 320px;
+                border: 1px solid lightgray;
+                background-color: #e5e5e5;
+                margin: 5px 1.5px;
+                
+                .news_post_image {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: $panel_width;
+                    height: $panel_width;
+                    background-color: #f5f5f5;
+                }
+
+                .news_post_text {
+                    display: flex;
+                    flex-direction: column;
+                    width: $panel_width - 8px;
+                    padding: 2px 4px;
+
+                    .news_post_title {
+                        display: block;
+                        font-size: 15pt;
+                        font-weight: bold;
+                        width: $panel_width - 8px;
+                        margin-top: 3px;
+                        margin-bottom: 5px;
+                        
+                        a {
+                            color: black;
+                        }
+                    }
+
+                    .news_post_descr {
+                        display: block;
+                        font-size: 13.75pt;
+                        width: $panel_width - 8px;
+                    }
+                }
+
+            }
+        }
+    }
+
+    .forum_section_wrapper {
+        header.forum_section_header {
+            display: flex;
+            align-items: center;
+            width: $main_width - 20px;
+            padding: 0px 5px;
+            height: 36px;
+            background-color: $light_black;
+            color: $bright_gray;
+            font-weight: bold;
+            font-size: 18pt;
+        }
+
+        main.forum_section_main {
+            display: flex;
+            width: $main_width - 20px;
+            padding: 5px;
+            flex-wrap: wrap;
+
+            .forum_post {
+                display: flex;
+                flex-direction: column;
+                width: $panel_width;
+                border: 1px solid lightgray;
+                background-color: #f5f5f5;
+                margin: 5px 1.5px;
+
+                .forum_post_text {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: stretch; 
+                    width: $panel_width - 8px;
+                    padding: 4px 4px;
+
+                    .forum_post_title {
+                        display: block;
+                        font-size: 15pt;
+                        font-weight: bold;
+                        width: $panel_width - 8px;
+                        margin-top: 3px;
+                        margin-bottom: 5px;
+                        
+                        a {
+                            color: black;
+                        }
+                    }
+
+                    .forum_post_info {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 13pt;
+                        font-weight: bold;
+                        width: $panel_width - 8px;
+                        margin-top: 3px;
+                        margin-bottom: 5px;
+                        
+                        a {
+                            color: black;
+                        }
+
+                        .vote_positive {
+                            color: green;
+                        }
+
+                        .vote_negative {
+                            color: lightcoral;
+                        }
+
+                    }
+                }
+
+            }
+        }
+    }
+}

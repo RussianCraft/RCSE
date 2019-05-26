@@ -1,0 +1,197 @@
+#post_page_wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 12pt;
+}
+
+#post_page_wrapper header.post_header {
+  display: flex;
+  align-items: center;
+  width: 940px;
+  padding: 0px 5px;
+  height: 56px;
+  background-color: #091023;
+  color: #e0e0e0;
+  font-weight: bold;
+  font-size: 24pt;
+}
+
+#post_page_wrapper div.post_data_upper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 940px;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: #272e43;
+  color: #e0e0e0;
+  font-weight: bold;
+  font-size: 14pt;
+}
+
+#post_page_wrapper div.post_data_upper .post_author_upper a {
+  color: #e0e0e0;
+}
+
+#post_page_wrapper div.post_data_upper .post_votes .vote_positive {
+  color: green;
+}
+
+#post_page_wrapper div.post_data_upper .post_votes .vote_negative {
+  color: lightcoral;
+}
+
+#post_page_wrapper .post_image_description {
+  display: flex;
+  justify-content: space-between;
+  width: 940px;
+  padding: 5px 5px;
+}
+
+#post_page_wrapper .post_image_description .post_image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 310px;
+  height: 310px;
+  background-color: #f5f5f5;
+}
+
+#post_page_wrapper .post_image_description .post_description {
+  width: 620px;
+  font-size: 13pt;
+}
+
+#post_page_wrapper .post_contents {
+  display: flex;
+  flex-direction: column;
+  width: 940px;
+  font-size: 18pt;
+}
+
+#post_page_wrapper .recommended_posts {
+  display: flex;
+  flex-direction: column;
+  width: 950px;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+#post_page_wrapper .recommended_posts header.posts_header {
+  display: flex;
+  align-items: center;
+  width: 940px;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: #272e43;
+  color: #e0e0e0;
+  font-weight: bold;
+  font-size: 14pt;
+}
+
+#post_page_wrapper .recommended_posts main.posts_main {
+  display: flex;
+  width: 940px;
+  padding: 5px;
+  flex-wrap: wrap;
+}
+
+#post_page_wrapper .recommended_posts main.posts_main .news_post {
+  display: flex;
+  flex-direction: column;
+  width: 230px;
+  min-height: 320px;
+  border: 1px solid lightgray;
+  background-color: #e5e5e5;
+  margin: 5px 1.5px;
+}
+
+#post_page_wrapper .recommended_posts main.posts_main .news_post .news_post_image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 230px;
+  height: 230px;
+  background-color: #f5f5f5;
+}
+
+#post_page_wrapper .recommended_posts main.posts_main .news_post .news_post_text {
+  display: flex;
+  flex-direction: column;
+  width: 222px;
+  padding: 2px 4px;
+}
+
+#post_page_wrapper .recommended_posts main.posts_main .news_post .news_post_text .news_post_title {
+  display: block;
+  font-size: 15pt;
+  font-weight: bold;
+  width: 222px;
+  margin-top: 3px;
+  margin-bottom: 5px;
+}
+
+#post_page_wrapper .recommended_posts main.posts_main .news_post .news_post_text .news_post_title a {
+  color: black;
+}
+
+#post_page_wrapper .recommended_posts main.posts_main .news_post .news_post_text .news_post_descr {
+  display: block;
+  font-size: 13.75pt;
+  width: 222px;
+}
+
+#post_page_wrapper .post_comments {
+  display: flex;
+  flex-direction: column;
+  width: 950px;
+  padding: 5px;
+}
+
+#post_page_wrapper .post_comments header.comments_header {
+  display: flex;
+  align-items: center;
+  width: 940px;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: #272e43;
+  color: #e0e0e0;
+  font-weight: bold;
+  font-size: 14pt;
+}
+
+#post_page_wrapper .post_comments main.comments_main {
+  display: flex;
+  width: 940px;
+  padding: 5px;
+  flex-wrap: wrap;
+}
+
+#post_page_wrapper .post_comments main.comments_main .comment {
+  display: flex;
+  flex-direction: column;
+  width: 230px;
+  min-height: 320px;
+  border: 1px solid lightgray;
+  background-color: #e5e5e5;
+  margin: 5px 1.5px;
+}
+
+#post_page_wrapper .post_comments main.comments_main .comment .author_image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 230px;
+  height: 230px;
+  background-color: #f5f5f5;
+}
+
+#post_page_wrapper .post_comments main.comments_main .comment .comment_text {
+  display: flex;
+  flex-direction: column;
+  width: 222px;
+  padding: 2px 4px;
+}

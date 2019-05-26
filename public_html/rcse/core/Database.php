@@ -68,6 +68,8 @@ class Database
 
         if ($query_statement['params'][':marker'] !== null) {
             $params[":marker"] = $marker;
+        } else {
+            $params[":marker"] = "";
         }
 
         try {
@@ -75,10 +77,13 @@ class Database
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
-
         $this->logger->log($this->logger::INFO, "Data obtained successfully.", get_class($this));
-
-        return $query->fetch(\PDO::FETCH_ASSOC);
+        
+        if($type === "all" || $type === "by_section") {
+            return $query->fetchAll(\PDO::FETCH_ASSOC);
+        } else {
+            return $query->fetch(\PDO::FETCH_ASSOC);
+        }
     }
 
     /**

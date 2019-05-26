@@ -1,17 +1,17 @@
 @import "base";
 
-#login_form_wrapper {
+#reg_form_wrapper {
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;       
+    margin-bottom: 20px;    
 
     form {
         width: $form_width;
         border: 1px solid lightgray;
 
-        header.login_form_header {
+        header.reg_form_header {
             display: flex;
             align-items: center;
             width: $form_width - 10px;
@@ -85,6 +85,22 @@
             .form_register:hover {
                 background-color: $lighter_black;
                 cursor: pointer;
+            }
+        }
+
+        div.form_radio_container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+
+            div {
+                width: 50%;
+                display: inline-flex;
+                justify-content: center;
+
+                input {
+                    margin-right: 4px;
+                }
             }
         }
     }

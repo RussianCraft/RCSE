@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="/resources/themes/RCS/pages/create_post/style.css">
+<div id="login_form_wrapper">
+    <form action="/?page=action&mode=news_post" method="POST">
+        <header class="login_form_header">
+            <span class="login_form_title">Создание публикации</span>
+        </header>
+        <div>
+            <label for="title">Заголовок</label>
+            <input type="text" name="title" class="form_input" pattern="^[A-Za-zА-ЯЁа-яё0-9-_]+{1,22}" required>
+        </div>
+        <div>
+            <label for="description">Описание</label>
+            <textarea name="description" class="form_input" rows="2" cols="27" maxlength="54" pattern="^[A-Za-zА-ЯЁа-яё0-9-_]+{1,54}"></textarea>
+        </div>
+        <div>
+            <label for="contents">Содержание</label>
+            <textarea name="contents" class="form_input" rows="10" required></textarea>
+        </div>
+        <div>
+            <label for="tags">Тэги</label>
+            <input type="text" name="tags" class="form_input" pattern="^[A-Za-zА-ЯЁа-яё0-9-_]+">
+        </div>
+        <div class="form_button_container">
+            <input type="submit" value="Опубликовать" class="form_submit">
+        </div>
+    </form>
+</div>

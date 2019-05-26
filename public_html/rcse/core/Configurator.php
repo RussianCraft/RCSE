@@ -89,9 +89,9 @@ class Configurator extends JSONParser
         return $this->jsonUpdateDataSimple($type, $this->config_path["forbidden_words"]["dir"], $this->config_path["forbidden_words"]["name"], $types, $contents);
     }
 
-    public function configObtainSection(string $type)
+    public function configObtainSection()
     {
-        return $this->jsonObtainDataAllNSmall($type, $this->config_path["forum_sections"]["dir"], $this->config_path["forum_sections"]["name"], []);
+        return $this->jsonObtainDataSimpliest($this->config_path["forum_sections"]["dir"], $this->config_path["forum_sections"]["name"]);
     }
 
     public function configUpdateSection(string $type, array $contents)

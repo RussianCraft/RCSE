@@ -5,6 +5,8 @@ User {
     public userRegister(string $login, string $password, string $email, string $sex, string $birthdate, string $origin)
     public userLogin(string $id, string $pass, bool $save_session)
     public userGetInfo(string $login)
+    public userGetUsergroup(string $login)
+    public userGroupIsPermitted(string $usergroup, string $permission)
     public userVerify(string $login, string $code)
     public userPunish(string $login, array $params)
     public userEdit(string $login, array $data)
@@ -19,5 +21,4 @@ User {
     public userIsSessionSet()
     private userSessionEndAll(string $login)
     public userSessionEnd() : bool
-
 }

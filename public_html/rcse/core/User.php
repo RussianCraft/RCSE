@@ -40,9 +40,10 @@ class User
             $this->logger->log($this->logger::ERROR, $message, get_class($this));
             return $message;
         }
-
-        $birthdate_unf = new \DateTime($birthdate);
-        $birthdate = $birthdate_unf->format('Y-m-d');
+        if ($birthdate !== null) {
+            $birthdate_unf = new \DateTime($birthdate);
+            $birthdate = $birthdate_unf->format('Y-m-d');
+        }
         $regdate = date('Y-m-d');
         $passhash = password_hash($password, PASSWORD_DEFAULT);
         $settings = [
@@ -71,7 +72,7 @@ class User
             return $this->database->databaseSendData('accounts', 'insert', $params);
         } catch (\Exception $e) {
             $this->logger->log($this->logger::ERROR, $e->getMessage(), get_class($this));
-            return false;
+            return $e->getMessage();
         }
     }
 
@@ -125,6 +126,12 @@ class User
         return $user_data;
     }
 
+    public function userGetUsergroup(string $login)
+    { }
+
+    public function userGroupIsPermitted(string $usergroup, string $permission)
+    { }
+
     public function userVerify(string $login, string $code)
     { }
 
@@ -149,7 +156,6 @@ class User
         $file_name = "session.json";
         $date = new \DateTime();
         $current_date = $date->format("H:i d-m-Y");
-        $delayed_date = $date->add(new \DateInterval('P5Y'))->format("H:i d-m-Y");
 
 
         $session_id = $this->utils->utilsRandomString(16);
@@ -163,8 +169,8 @@ class User
             return false;
         }
 
-        if (!$save_session) $session_exp = 0;
-        else $session_exp = $delayed_date;
+        if (!$save_session) $session_exp = $date->add(new \DateInterval('P1D'))->format("H:i d-m-Y");
+        else $session_exp = $date->add(new \DateInterval('P5Y'))->format("H:i d-m-Y");
 
         $session_data = [
             "date_created" => $current_date,
@@ -191,7 +197,7 @@ class User
     {
         $file_path = "/userdata/{$login}/";
         $file_name = "session.json";
-        
+
         $this->logger->log($this->logger::INFO, "Obtaining sessions.", get_class($this));
 
         try {
@@ -211,7 +217,7 @@ class User
     {
         $file_path = "/userdata/{$login}/";
         $file_name = "session.json";
-        
+
         $this->logger->log($this->logger::INFO, "Updating session file.", get_class($this));
 
         try {
@@ -241,7 +247,7 @@ class User
     {
         $current_date = new \DateTime();
         $session_file_data = $this->userSessionObtain($login, $session_id);
-        if($session_file_data['date_expires'] == 0) {
+        if ($session_file_data['date_expires'] == 0) {
             $date_expires = new \DateTime($session_file_data['date_created']);
         } else {
             $date_expires = new \DateTime($session_file_data['date_expires']);
@@ -265,7 +271,7 @@ class User
 
     public function userIsSessionSet()
     {
-        if(isset($_COOKIE['session_id']) && isset($_COOKIE['session_login'])) {
+        if (isset($_COOKIE['session_id']) && isset($_COOKIE['session_login'])) {
             return $this->userSessionValidate($_COOKIE['session_login'], $_COOKIE['session_id']);
         } else {
             return false;
@@ -273,13 +279,11 @@ class User
     }
 
     private function userSessionEndAll(string $login)
+    { }
+
+    public function userSessionEnd(): bool
     {
-
-    }
-
-    public function userSessionEnd() : bool
-    {        
-        if(!isset($_COOKIE['session_id']) && !isset($_COOKIE['session_login'])) {
+        if (!isset($_COOKIE['session_id']) && !isset($_COOKIE['session_login'])) {
             $this->logger->log($this->logger::INFO, "No active sessions found!", get_class($this));
             return true;
         }
@@ -291,7 +295,7 @@ class User
 
         $session_file_data[$session_id]['date_expires'] = $current_date->format("H:i d-m-Y");
 
-        if($this->userSessionUpdate($login, $session_file_data) === false) {
+        if ($this->userSessionUpdate($login, $session_file_data) === false) {
             $this->logger->log($this->logger::ERROR, "Failed to end session {$session_id}!", get_class($this));
             return false;
         }

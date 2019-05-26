@@ -31,6 +31,10 @@
                 display: block;
             }
 
+            textarea {
+                resize: none;
+            }
+
             .form_input {
                 width: $form_width - 14px;
                 padding: 2px;
@@ -53,39 +57,20 @@
             flex-direction: column;
             align-items: center;
 
-            div {
-                margin: 0;
-                width: 200px;
-                margin-bottom: 5px;
-
-                .form_submit, .form_reset {
-                    display: inline-block;
+            .form_submit {
+                    width: 200px;
                     font-size: 14pt;
                     border: none;
                     background-color: $light_black;
                     color: $bright_gray;
                     padding: 5px;
-                }
+            }
 
-                .form_submit:hover, .form_reset:hover {
+                .form_submit:hover {
                     background-color: $lighter_black;
                     cursor: pointer;
                 }
             }
-
-            .form_register {
-                width: 200px;
-                font-size: 14pt;
-                border: none;
-                background-color: $light_black;
-                color: $bright_gray;
-                padding: 5px;
-            }
-
-            .form_register:hover {
-                background-color: $lighter_black;
-                cursor: pointer;
-            }
         }
-    }
+    
 }

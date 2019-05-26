@@ -1,0 +1,105 @@
+#reg_form_wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#reg_form_wrapper form {
+  width: 310px;
+  border: 1px solid lightgray;
+}
+
+#reg_form_wrapper form header.reg_form_header {
+  display: flex;
+  align-items: center;
+  width: 300px;
+  padding: 0px 5px;
+  height: 36px;
+  background-color: #272e43;
+  color: #e0e0e0;
+  font-weight: bold;
+  font-size: 18pt;
+}
+
+#reg_form_wrapper form div {
+  margin: 5px 3px;
+  width: 100%;
+}
+
+#reg_form_wrapper form div label {
+  display: block;
+}
+
+#reg_form_wrapper form div .form_input {
+  width: 296px;
+  padding: 2px;
+  margin-bottom: 10px;
+}
+
+#reg_form_wrapper form div .form_check {
+  display: inline-block;
+  padding: 2px;
+  margin-bottom: 10px;
+}
+
+#reg_form_wrapper form div .form_check_label {
+  display: inline-block;
+}
+
+#reg_form_wrapper form div.form_button_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#reg_form_wrapper form div.form_button_container div {
+  margin: 0;
+  width: 200px;
+  margin-bottom: 5px;
+}
+
+#reg_form_wrapper form div.form_button_container div .form_submit, #reg_form_wrapper form div.form_button_container div .form_reset {
+  display: inline-block;
+  font-size: 14pt;
+  border: none;
+  background-color: #272e43;
+  color: #e0e0e0;
+  padding: 5px;
+}
+
+#reg_form_wrapper form div.form_button_container div .form_submit:hover, #reg_form_wrapper form div.form_button_container div .form_reset:hover {
+  background-color: #003153;
+  cursor: pointer;
+}
+
+#reg_form_wrapper form div.form_button_container .form_register {
+  width: 200px;
+  font-size: 14pt;
+  border: none;
+  background-color: #272e43;
+  color: #e0e0e0;
+  padding: 5px;
+}
+
+#reg_form_wrapper form div.form_button_container .form_register:hover {
+  background-color: #003153;
+  cursor: pointer;
+}
+
+#reg_form_wrapper form div.form_radio_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#reg_form_wrapper form div.form_radio_container div {
+  width: 50%;
+  display: inline-flex;
+  justify-content: center;
+}
+
+#reg_form_wrapper form div.form_radio_container div input {
+  margin-right: 4px;
+}

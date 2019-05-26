@@ -136,13 +136,11 @@
     },
     "posts": {
         "insert": {
-            "query": "INSERT INTO `posts`(`title`, `date`, `author`, `voteups`, `votedowns`, `description`, `tags`, `content`, `settings`) VALUES (:title,:date,:author,:voteups,:votedowns,:description,:tags,:content,:settings)",
+            "query": "INSERT INTO `posts`(`title`, `date`, `author`, `description`, `tags`, `content`, `settings`) VALUES (:title,:date,:author,:description,:tags,:content,:settings)",
             "params": {
                 ":title": "",
                 ":date": "",
                 ":author": "",
-                ":voteups": "",
-                ":votedowns": "",
                 ":description": "",
                 ":tags": "",
                 ":content": "",
@@ -237,12 +235,10 @@
     },
     "comments": {
         "insert": {
-            "query": "INSERT INTO `comments`( `reply_to`, `date`, `voteups`, `votedowns`, `author`, `content`, `settings`) VALUES (:reply_to,:date,:voteups,:votedowns,:author,:contents,:settings)",
+            "query": "INSERT INTO `comments`( `reply_to`, `date`, `author`, `content`, `settings`) VALUES (:reply_to,:date,:author,:contents,:settings)",
             "params": {
                 ":reply_to": "",
                 ":date": "",
-                ":voteups": "",
-                ":votedowns": "",
                 ":author": "",
                 ":contents": "",
                 ":settings": ""
@@ -323,13 +319,11 @@
     },
     "topics": {
         "insert": {
-            "query": "INSERT INTO `topics`(`title`, `section`, `date`, `voteups`, `votedowns`, `author`, `tags`, `content`, `settings`) VALUES (:title,:section,:date,:voteups,:votedowns,:author,:tags,:contents,:settings)",
+            "query": "INSERT INTO `topics`(`title`, `section`, `date`, `author`, `tags`, `content`, `settings`) VALUES (:title,:section,:date,:author,:tags,:contents,:settings)",
             "params": {
                 ":title": "",
                 ":section": "",
                 ":date": "",
-                ":voteups": "",
-                ":votedowns": "",
                 ":author": "",
                 ":tags": "",
                 ":contents": "",
@@ -433,12 +427,10 @@
     },
     "replies": {
         "insert": {
-            "query": "INSERT INTO `replies`( `reply_to`, `date`, `voteups`, `votedowns, `author`, `content`, `settings`) VALUES (:reply_to,:date,:voteups,:votedowns,:author,:content,:settings)",
+            "query": "INSERT INTO `replies`( `reply_to`, `date`, `author`, `content`, `settings`) VALUES (:reply_to,:date,:author,:content,:settings)",
             "params": {
                 ":reply_to": "",
                 ":date": "",
-                ":voteups": "",
-                ":votedowns": "",
                 ":author": "",
                 ":content": "",
                 ":settings": ""

@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="/resources/themes/RCS/pages/register/style.css">
+<div id="reg_form_wrapper">
+    <form action="/?page=auth&mode=register" method="POST">
+        <header class="reg_form_header">
+            <span class="reg_form_title">Создание аккаунта</span>
+        </header>
+        <div>
+            <label for="login" title="Обязательное поле">Логин<sup>*</sup></label>
+            <input type="text" name="login" class="form_input" pattern="^[A-Za-z0-9-_]+{3,20}" required>
+        </div>
+        <div>
+            <label for="email" title="Обязательное поле">EMail<sup>*</sup></label>
+            <input type="email" name="email" class="form_input" required>
+        </div>
+        <div>
+            <label for="password" title="Обязательное поле">Пароль<sup>*</sup></label>
+            <input type="password" name="password" class="form_input"
+                pattern="(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$" required>
+        </div>
+        <div>
+            <label for="confirm_password" title="Обязательное поле">Повторите пароль<sup>*</sup></label>
+            <input type="password" name="confirm_password" class="form_input"
+                pattern="(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$" required>
+        </div>
+        <div>
+            <label title="Обязательное поле">Ваш пол<sup>*</sup></label>
+            <div class="form_radio_container">
+                <div>
+                    <input type="radio" name="sex" class="form_check" value="m" required>
+                    <label for="confirm_password" class="form_check_label">Мужской</label>
+                </div>
+                <div>
+                    <input type="radio" name="sex" class="form_check" value="f">
+                    <label for="confirm_password" class="form_check_label">Женский</label>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label for="birthdate" title="Необязательное поле">Дата рождения</label>
+            <input type="date" name="birthdate" class="form_input">
+        </div>
+        <div>
+            <label for="origin" title="Необязательное поле">Город</label>
+            <input type="text" name="origin" class="form_input"  pattern="^[A-Za-zА-ЯЁа-яё0-9-_]+">
+        </div>
+        <div class="form_button_container">
+            <div style="width: auto;">
+                <input type="checkbox" name="agree" class="form_check" required>
+                <label for="agree" class="form_check_label">Я согласен с <a href="/?page=rules"
+                        target="_blank">правилами</a>.</label>
+            </div>
+            <input type="submit" value="Зарегестрироваться" class="form_register">
+        </div>
+    </form>
+</div>
+<script>
+    var login = document.getElementsByName("login")[0],
+        password = document.getElementsByName("password")[0],
+        confirm_password = document.getElementsByName("confirm_password")[0]
+        origin = document.getElementsByName("origin")[0];
+
+    login.addEventListener("input", function (e) {
+        if (login.validity.patternMismatch) {
+            login.setCustomValidity("Допускаются только латинские буквы, цифры и символы - и _. Также, логин должен быть не короче 3 и не длиннее 20 символов!");
+        } else {
+            login.setCustomValidity("");
+        }
+    });
+
+    password.addEventListener("input", function (e) {
+        if (password.validity.patternMismatch) {
+            password.setCustomValidity("Пароль должен содержать заглавные и строчные латинские буквы, цифры и иметь длинну от 8 символов!");
+        } else {
+            password.setCustomValidity("");
+        }
+
+        if (password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Пароли не совпадают!");
+        } else {
+            confirm_password.setCustomValidity("");
+        }
+    });
+
+    confirm_password.addEventListener("input", function (e) {
+        if (password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Пароли не совпадают!");
+        } else {
+            confirm_password.setCustomValidity("");
+        }
+    });
+
+    origin.addEventListener("input", function (e) {
+        if (origin.validity.patternMismatch) {
+            origin.setCustomValidity("Допускаются только латинские и русские буквы, цифры и символы - и _!");
+        } else {
+            origin.setCustomValidity("");
+        }
+    });
+</script>

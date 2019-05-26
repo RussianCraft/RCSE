@@ -7,14 +7,14 @@
 }
 
 #login_form_wrapper form {
-  width: 310px;
+  width: 470px;
   border: 1px solid lightgray;
 }
 
 #login_form_wrapper form header.login_form_header {
   display: flex;
   align-items: center;
-  width: 300px;
+  width: 460px;
   padding: 0px 5px;
   height: 36px;
   background-color: #272e43;
@@ -32,8 +32,12 @@
   display: block;
 }
 
+#login_form_wrapper form div textarea {
+  resize: none;
+}
+
 #login_form_wrapper form div .form_input {
-  width: 296px;
+  width: 456px;
   padding: 2px;
   margin-bottom: 10px;
 }
@@ -54,27 +58,7 @@
   align-items: center;
 }
 
-#login_form_wrapper form div.form_button_container div {
-  margin: 0;
-  width: 200px;
-  margin-bottom: 5px;
-}
-
-#login_form_wrapper form div.form_button_container div .form_submit, #login_form_wrapper form div.form_button_container div .form_reset {
-  display: inline-block;
-  font-size: 14pt;
-  border: none;
-  background-color: #272e43;
-  color: #e0e0e0;
-  padding: 5px;
-}
-
-#login_form_wrapper form div.form_button_container div .form_submit:hover, #login_form_wrapper form div.form_button_container div .form_reset:hover {
-  background-color: #003153;
-  cursor: pointer;
-}
-
-#login_form_wrapper form div.form_button_container .form_register {
+#login_form_wrapper form div.form_button_container .form_submit {
   width: 200px;
   font-size: 14pt;
   border: none;
@@ -83,7 +67,7 @@
   padding: 5px;
 }
 
-#login_form_wrapper form div.form_button_container .form_register:hover {
+#login_form_wrapper form div.form_button_container .form_submit:hover {
   background-color: #003153;
   cursor: pointer;
 }

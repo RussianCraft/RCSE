@@ -16,7 +16,7 @@ class UserInterface
 
     private $page_elements = [];
     private $page_contents;
-    private $theme_dir, $pages_dir, $locales_dir;
+    private $theme_dir, $pages_dir;
 
     public function __construct(Logger $logger, Configurator $config)
     {
@@ -31,7 +31,6 @@ class UserInterface
     {
         $this->theme_dir = "/resources/themes/" . $this->config->configObtainMain("site")['theme'] ."/";
         $this->pages_dir = $this->theme_dir . "pages/";
-        $this->locales_dir = $this->theme_dir . "locale/";
         $page_locale = $this->config->configObtainMain("site")['lang'];
         $this->page_contents = $this->file->fileRead($this->pages_dir, "structure.html");
         
@@ -90,15 +89,60 @@ class UserInterface
         $this->page_elements[$element] = $content;
     }    
 
-    public function uiCreateUserPage(string $login)
+    public function uiCreateUserPage()
     {
-        $user_data = $this->user->userGetInfo($login);
+        $page_content = $this->file->fileRead($this->pages_dir, "user.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_content, $this->page_contents);
     }
 
     public function uiCreateUserLoginPage()
     {
         $page_content = $this->file->fileRead($this->pages_dir, "login.html");
         $this->page_contents = str_replace("[PAGE_CONTENT]", $page_content, $this->page_contents);
+    }
+
+    public function uiCreateUserRegPage()
+    {
+        $page_content = $this->file->fileRead($this->pages_dir, "register.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_content, $this->page_contents);
+    }
+
+    public function uiCreateHomePage()
+    {
+        $page_contents = $this->file->fileRead($this->pages_dir, "home.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_contents, $this->page_contents);
+    }
+
+    public function uiCreateNewsPage()
+    {
+        $page_contents = $this->file->fileRead($this->pages_dir, "news.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_contents, $this->page_contents);
+    }
+
+    public function uiCreatePostPage()
+    {
+        $page_contents = $this->file->fileRead($this->pages_dir, "post.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_contents, $this->page_contents);
+    }
+
+    public function uiCreatePostCreationPage() {
+        $page_contents = $this->file->fileRead($this->pages_dir, "create_post.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_contents, $this->page_contents);
+    }
+
+    public function uiCreateForumPage() {
+        $page_contents = $this->file->fileRead($this->pages_dir, "forum.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_contents, $this->page_contents);
+    }
+
+    public function uiCreateTopicPage() {
+        $page_contents = $this->file->fileRead($this->pages_dir, "topic.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_contents, $this->page_contents);
+    }
+
+    public function uiCreateTopicCreationPage() {
+        $page_contents = $this->file->fileRead($this->pages_dir, "create_topic.html");
+        $this->page_contents = str_replace("[PAGE_CONTENT]", $page_contents, $this->page_contents);
     }
 
 }
