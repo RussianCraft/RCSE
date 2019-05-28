@@ -101,6 +101,7 @@ switch ($page) {
                 $ui->uiSetPageElement("USER_RDAY", $reg_day);
 
                 $ui->uiCreateUserPage();
+                $ui->uiSetPageElement("PAGE_TITLE", "Страница пользователя {$login}");
                 break;
         }
         break;
@@ -110,6 +111,7 @@ switch ($page) {
                 if ($user_online === false) {
                     $page_contents = "<script>window.location.href = '/?page=news' </script>";
                     $ui->uiSetPageElement("PAGE_CONTENT", $page_contents);
+                    break;
                 }
 
                 $ui->uiCreatePostCreationPage();
@@ -188,6 +190,7 @@ switch ($page) {
                     }
                 }
                 $ui->uiSetPageElement("POST_BLOCK", $post_block);
+                $ui->uiSetPageElement("PAGE_TITLE", "Просмотр публикации {$posts[$id]['title']}");
                 break;
             default:
                 $ui->uiCreateNewsPage();
@@ -196,7 +199,7 @@ switch ($page) {
                 $post_count = count($posts);
 
                 if ($post_count === 0) {
-                    if ($user_online) {
+                    if ($user_online === true) {
                         $post_block = "<div class=\"news_post\">
                                 <div class=\"news_post_image\">
                                     <span>*</span>
@@ -231,7 +234,7 @@ switch ($page) {
                                 </div>";
                     }
 
-                    if ($user_online) {
+                    if ($user_online === true) {
                         $post_block .= "<div class=\"news_post\">
                                             <div class=\"news_post_image\">
                                                 <span>*</span>
@@ -254,6 +257,7 @@ switch ($page) {
                 if ($user_online === false) {
                     $page_contents = "<script>window.location.href = '/?page=news' </script>";
                     $ui->uiSetPageElement("PAGE_CONTENT", $page_contents);
+                    break;
                 }
 
                 $sections = $forum->forumGetSectionsList();
@@ -320,7 +324,7 @@ switch ($page) {
                         $topics_count = (empty($topics)) ? 0 : count($topics);
 
                         if ($topics_count === 0) {
-                            if ($user_online) { 
+                            if ($user_online === true) { 
                                 $page_data .= "<div class=\"forum_post\">
                                                 <div class=\"forum_post_text\">
                                                     <span class=\"forum_post_title\"><a href=\"/?page=forum&mode=create\">Создать пост</a></span>
@@ -355,6 +359,7 @@ switch ($page) {
                                                     </div>
                                                 </div>";
                             }
+                            if($user_online === true) {
                             $page_data .= "<div class=\"forum_post\">
                                                 <div class=\"forum_post_text\">
                                                     <span class=\"forum_post_title\"><a href=\"/?page=forum&mode=create\">Создать пост</a></span>
@@ -367,6 +372,7 @@ switch ($page) {
                                                     </div>
                                                 </div>
                                             </div>";
+                            }
                         }
 
                         $page_data .= "</main>";
@@ -548,7 +554,8 @@ switch ($page) {
         $post_count = count($posts);
 
         if ($post_count === 0) {
-            $post_block = "<div class=\"news_post\">
+            if ($user_online === true) {
+                        $post_block = "<div class=\"news_post\">
                                 <div class=\"news_post_image\">
                                     <span>*</span>
                                 </div>
@@ -557,6 +564,17 @@ switch ($page) {
                                     <span class=\"news_post_descr\">Пока нововстей нет. Исправте это!</span>
                                 </div>
                             </div>";
+                    } else {
+                        $post_block = "<div class=\"news_post\">
+                        <div class=\"news_post_image\">
+                            <span>*</span>
+                        </div>
+                        <div class=\"news_post_text\">
+                            <span class=\"news_post_title\"><a nohref>Здесь пусто</a></span>
+                            <span class=\"news_post_descr\">Пока других новостей нет.</span>
+                        </div>
+                    </div>";
+                    }
         } elseif ($post_count >= 4) {
             $post_block = "";
             for ($i = 0; $i < 3; $i++) {
@@ -592,15 +610,17 @@ switch ($page) {
                                     </div>
                                 </div>";
             }
-            $post_block .= "<div class=\"news_post\">
+            if ($user_online === true) {
+                        $post_block .= "<div class=\"news_post\">
                                 <div class=\"news_post_image\">
                                     <span>*</span>
                                 </div>
                                 <div class=\"news_post_text\">
                                     <span class=\"news_post_title\"><a href=\"/?page=news&mode=create\">Создать новую публикацию</a></span>
-                                    <span class=\"news_post_descr\">Расскажите что-нибудь новое!</span>
+                                    <span class=\"news_post_descr\">Пока нововстей нет. Исправте это!</span>
                                 </div>
                             </div>";
+                    }
         }
         $ui->uiSetPageElement("POST_BLOCK", $post_block);
 
@@ -671,6 +691,7 @@ switch ($page) {
                             </div>";
         }
         $ui->uiSetPageElement("FORUM_BLOCK", $forum_block);
+        $ui->uiSetPageElement("PAGE_TITLE", "Главная страница");
 
         break;
 }
