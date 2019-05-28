@@ -20,3 +20,5 @@ var_dump($log_res);
 echo "<br>";
 echo "Obtainin user data for \"test\", result: ";
 var_dump($data);
+
+//just fooling around
